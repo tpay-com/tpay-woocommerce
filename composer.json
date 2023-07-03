@@ -36,16 +36,5 @@
     "phpmd/phpmd": "@stable",
     "phpunit/phpunit": "^8",
     "mockery/mockery": "^1.2"
-  },
-  "scripts": {
-    "build:prod": "composer install -v --no-dev",
-    "test": [
-      "@putenv XDEBUG_MODE=coverage",
-      "@php -d date.timezone=UTC ./vendor/bin/phpunit -c tests/php/phpunit.xml"
-    ],
-    "test:coverage": [
-      "@putenv XDEBUG_MODE=coverage",
-      "phpunit --color=always --coverage-html=\"build\""
-    ]
   }
 }
