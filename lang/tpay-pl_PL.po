@@ -1,0 +1,411 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Tpay Payment Gateway\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-12-02 01:33+0000\n"
+"PO-Revision-Date: 2023-03-09 02:58+0000\n"
+"Last-Translator: dqw dqw\n"
+"Language-Team: Polski\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 "
+"&&(n%100<10||n%100 >= 20)? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.2; wp-6.1.1\n"
+"X-Domain: tpay"
+
+#: includes/TpaySettings.php:230
+msgid "Amount"
+msgstr "Kwota"
+
+msgid "I understand"
+msgstr "Rozumiem"
+
+msgid "You do not need to enter the BLIK code, because you linked your account to this device during one of the previous payments. The payment still requires confirmation in the app."
+msgstr "Nie musisz wpisywać kodu BLIK, gdyż powiązałeś swoje konto z tym urządzeniem podczas jednej z poprzednich płatności. Płatność nadal wymaga potwierdzenia w aplikacji."
+
+msgid "MID number"
+msgstr "Numer MID"
+
+msgid "MID domain"
+msgstr "Domena MID"
+
+msgid "Merchant email"
+msgstr "Email merchanta"
+
+msgid ""
+"In order to purchase a subscription service, you must agree to save the card."
+msgstr ""
+"W celu zakupu usługi subskrypcyjnej należy wyrazić zgodę na zapisanie karty"
+
+msgid "Percentage fee"
+msgstr "Dodatkowa kwota %"
+
+msgid "Enter the correct card details"
+msgstr "Wpisz poprawne dane karty"
+
+msgid "BLIK user or system timeout"
+msgstr "Wystąpił problem z połączeniem, spróbuj ponownie za chwilę"
+
+msgid "Amount fee"
+msgstr "Dodatkowa kwota"
+
+msgid "Client ID"
+msgstr "ID Klienta"
+
+msgid "Secret key (in notifications)"
+msgstr "Sekretny Klucz (w powiadomieniach)"
+
+msgid "BLIK insufficient funds / user authorization error"
+msgstr "Niewystarczająca ilość środków na pokrycie transakcji"
+
+msgid "invalid BLIK six-digit code"
+msgstr "Podano błędy kod BLIK"
+
+msgid "Blik code is too short"
+msgstr "Podany kod BLIK jest za krótki. Spróbuj ponownie."
+
+msgid "BLIK payment declined by user"
+msgstr "Autoryzacja transakcji została odrzucona przez użytkownika"
+
+#: includes/TpaySettings.php:32
+msgid "API key"
+msgstr "Klucz API"
+
+#: includes/TpaySettings.php:33
+msgid "API key generated in tpay.com payment recipient's panel."
+msgstr "Klucz API wygenerowany w panelu merchanta tpay.com"
+
+#: includes/TpaySettings.php:37 includes/TpaySettings.php:38
+msgid "API key password"
+msgstr "Hasło API"
+
+#: includes/WC_TpayGateways.php:116
+msgid "Blik payment"
+msgstr "Płatność Blik"
+
+#: includes/helpers/GatewayHelper.php:232
+msgid "BLIK system general error"
+msgstr "Wystąpił błąd systemowy, spróbuj ponownie za chwilę"
+
+#: includes/helpers/GatewayHelper.php:234
+msgid "BLIK system or user timeout"
+msgstr "Wystąpił problem z połączeniem, spróbuj ponownie za chwilę"
+
+#: views/html/sf.php:6
+msgid "Card number"
+msgstr "Numer karty"
+
+#: includes/WC_TpayGateways.php:110
+msgid "Choose payment method."
+msgstr "Wybierz metodę płatności."
+
+#: includes/Tpay.php:43 includes/Tpay.php:44
+msgid "Custom order, separate payment methods with commas"
+msgstr "Własna kolejność, oddziel metody przecinkami"
+
+#: includes/Tpay.php:41
+msgid "Custom order:"
+msgstr "Własna kolejność:"
+
+#: views/html/sf.php:18
+msgid "CVC"
+msgstr "CVC"
+
+#. id
+#: includes/TpaySettings.php:121
+msgid "Default on-hold status"
+msgstr "Domyślny status po utworzeniu zamówienia"
+
+#: includes/WC_TpayGateways.php:273
+msgid "Description of Tpay Payment Gateway that users sees on Checkout page."
+msgstr "Opis bramki płatności, który widzą użytkownicy na stronie zamówienia"
+
+#: includes/WC_TpayGateways.php:271
+msgid "Description:"
+msgstr "Opis"
+
+#: includes/TpaySettings.php:229
+msgid "Disabled"
+msgstr "Wyłączony"
+
+#: includes/TpayBlik.php:50
+msgid "Enable"
+msgstr "Włącz"
+
+#: includes/TpayBlik.php:49
+msgid "Enable Blik lvl 0"
+msgstr "Włącz Blik 0"
+
+#: includes/TpayBlik.php:47
+msgid "Enable Blik lvl 0:"
+msgstr "Włącz Blik 0:"
+
+#. id
+#: includes/TpaySettings.php:128
+msgid "Enable fee"
+msgstr "Dodatkowa kwota"
+
+#: includes/WC_TpayGateways.php:279
+msgid "Enable for shipping methods"
+msgstr "Włącz dla podanych metod dostawy"
+
+#: includes/WC_TpayGateways.php:199
+msgid "Enable Tpay payment method"
+msgstr "Włącz płatność Tpay"
+
+#: views/html/blik0.php:27
+msgid "Enter BLIK code"
+msgstr "Wpisz kod Blik"
+
+#: includes/TpayBlik.php:87 includes/helpers/GatewayHelper.php:98
+msgid "Enter Blik code"
+msgstr "Wpisz kod Blik"
+
+#: views/html/sf.php:12
+msgid "Expiry date"
+msgstr "Data ważności"
+
+#: includes/WC_TpayGateways.php:122
+msgid "Google Pay"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://www.tpay.com"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://tpay.com"
+msgstr ""
+
+#: views/html/blik0.php:10
+msgid "I pay with BLIK from saved account"
+msgstr "Płacę Blikiem przez zapisane konto"
+
+#: includes/WC_TpayGateways.php:284
+msgid ""
+"If Tpay is only available for certain methods, set it up here. Leave blank "
+"to enable for all methods."
+msgstr ""
+"Jeśli Tpay jest dostępny tylko dla niektórych metod dostawy, ustaw go tutaj. "
+"Pozostaw puste, aby włączyć dla wszystkich metod dostawy."
+
+#: includes/WC_TpayGateways.php:201
+msgid ""
+"If you do not already have Tpay account, <a href=\"#\" target=\"_blank\">"
+"please register</a>."
+msgstr "Jeśli nie masz konta Tpay- zarejestruj się."
+
+#: includes/WC_TpayGateways.php:134
+msgid "Installments"
+msgstr "Raty"
+
+#. Author of the plugin
+msgid "Krajowy Integrator Płatności S.A."
+msgstr ""
+
+#: includes/WC_TpayGateways.php:96
+msgid "Official Tpay payment gateway for WooCommerce."
+msgstr "Oficjalna bramka płatności Tpay"
+
+#: includes/WC_TpayGateways.php:115
+msgid "Online payment by Blik"
+msgstr "Płatność Blikiem"
+
+#: includes/WC_TpayGateways.php:139
+msgid "Online payment by Credit Card"
+msgstr "Płatność kartą na stronie tpay.com"
+
+#: includes/WC_TpayGateways.php:145
+msgid "Online payment by Credit Card SF"
+msgstr "Płatność kartą na stronie sklepu"
+
+#: includes/WC_TpayGateways.php:121
+msgid "Online payment by Google Pay"
+msgstr "Płatność przez Google Pay"
+
+#: includes/WC_TpayGateways.php:133
+msgid "Online payment by installments"
+msgstr "Płatność ratalna"
+
+#: includes/WC_TpayGateways.php:109
+msgid "Online payment by Tpay"
+msgstr "Płatność przez Tpay"
+
+#: includes/WC_TpayGateways.php:127
+msgid "Online payment by Twisto"
+msgstr "Płatność przez Twisto"
+
+#: includes/TpaySF.php:29 includes/WC_TpayGateways.php:335
+msgid "Order"
+msgstr "Zamówienie"
+
+#: includes/helpers/GatewayHelper.php:230
+msgid "Other error"
+msgstr "Inny błąd"
+
+#: views/html/sf.php:31
+msgid "Pay by saved card"
+msgstr "Zapłać zapisaną kartą"
+
+#: includes/helpers/GatewayHelper.php:231
+msgid "Payment declined by user"
+msgstr "Płatność anulowana przez użytkownika"
+
+#: includes/TpayBlik.php:99 includes/TpayBlik.php:134 includes/TpayCC.php:49
+#: includes/TpayInstallments.php:55 includes/TpayGPay.php:56
+#: includes/TpaySF.php:198 includes/TpayTwisto.php:55 includes/Tpay.php:85
+msgid "Payment error"
+msgstr "Błąd płatności"
+
+#: includes/TpaySettings.php:231
+msgid "Percentage"
+msgstr "Procentowo"
+
+#: includes/TpaySF.php:133 includes/TpaySF.php:134
+msgid "RSA key"
+msgstr "Klucz RSA"
+
+#: includes/TpaySF.php:131
+msgid "RSA key:"
+msgstr "Klucz RSA:"
+
+#: views/html/sf.php:26
+msgid "Save card"
+msgstr "Zapisz kartę"
+
+#: includes/TpaySettings.php:28
+msgid "Security code"
+msgstr "Kod bezpieczeństwa"
+
+#: includes/Tpay.php:61
+msgid "Select a bank"
+msgstr "Wybierz bank"
+
+#: includes/WC_TpayGateways.php:289
+msgid "Select shipping methods"
+msgstr "Wybierz metody dostawy"
+
+#: includes/TpaySettings.php:23
+msgid "Seller ID"
+msgstr "ID sprzedawcy"
+
+#: includes/Tpay.php:51
+msgid "Show"
+msgstr "Pokaż"
+
+#: includes/Tpay.php:48
+msgid "Show inactive methods:"
+msgstr "Pokaż nieaktywne metody płatności:"
+
+#: includes/Tpay.php:50
+msgid "Show inactive payment methods as grayed out"
+msgstr "Pokaż nieaktywne metody płatności jako wyszarzone"
+
+#: includes/TpaySettings.php:29
+msgid "The security code for your tpay.com account."
+msgstr "Kod bezpieczeństwa twojego konta na tpay.com"
+
+#: includes/WC_TpayGateways.php:208
+msgid "Title of Tpay Payment Gateway that users sees on Checkout page."
+msgstr "Tytuł płatności Tpay widoczny na stronie zamówienia"
+
+#: includes/WC_TpayGateways.php:206
+msgid "Title:"
+msgstr "Nazwa:"
+
+#: includes/WC_TpayGateways.php:108
+msgid "Tpay banks list"
+msgstr "Tpay lista banków"
+
+#: includes/WC_TpayGateways.php:114
+msgid "Tpay Blik"
+msgstr "Blik"
+
+#. id
+#: includes/TpaySettings.php:100
+msgid "Tpay config global"
+msgstr "Ustawienia globalne Tpay"
+
+#: includes/WC_TpayGateways.php:144
+msgid "Tpay Credit Card SF"
+msgstr "Karta kredytowa (strona zamówienia)"
+
+#: includes/WC_TpayGateways.php:138
+msgid "Tpay Credit Card standard"
+msgstr "Karta kredytowa (strona tpay.com)"
+
+#: includes/WC_TpayGateways.php:120
+msgid "Tpay Google Pay"
+msgstr "Płatność Google Pay"
+
+#: includes/WC_TpayGateways.php:132
+msgid "Tpay Installments"
+msgstr "Raty Tpay"
+
+#. Name of the plugin
+msgid "Tpay Payment Gateway"
+msgstr "Płatności Tpay"
+
+#. Description of the plugin
+msgid "Tpay payment gateway for WooCommerce"
+msgstr "Bramka płatności Tpay dla Woocommerce"
+
+#. page_title
+#: includes/TpaySettings.php:54 includes/TpaySettings.php:55
+#: includes/TpaySettings.php:71
+msgid "Tpay settings"
+msgstr "Ustawienia Tpay"
+
+#: includes/WC_TpayGateways.php:126
+msgid "Tpay Twisto"
+msgstr "Twisto"
+
+#: includes/TpaySettings.php:41 includes/TpaySettings.php:42
+msgid "Transaction title"
+msgstr "Tytuł transakcji"
+
+#: includes/WC_TpayGateways.php:128
+msgid "Twisto"
+msgstr "Twisto"
+
+#: includes/TpayBlik.php:180 includes/TpaySF.php:221
+#: includes/WC_TpayGateways.php:369
+msgid "Unable to create transaction"
+msgstr "Nie udało się utworzyć transakcji"
+
+#: includes/WC_TpayGateways.php:215
+msgid "Use global values."
+msgstr "Użyj wartości globalnych."
+
+#: includes/WC_TpayGateways.php:213
+msgid "Use global values:"
+msgstr "Użyj wartości globalnych:"
+
+#: includes/helpers/GatewayHelper.php:233
+msgid "User insufficient funds / user authorization error"
+msgstr "Niewystarczające ilość środków / błąd autoryzacji"
+
+#: views/html/blik0.php:15
+msgid "Why don't I have to enter a code?"
+msgstr "Dlaczego nie muszę wpisywać kodu?"
+
+#: includes/WC_TpayGateways.php:140
+msgid ""
+"You will be redirected to tpay.com where you will enter your credit card "
+"details"
+msgstr ""
+"Zostaniesz przekierowany do strony tpay.com, gdzie podasz dane karty "
+"kredytowej"
+
+#: includes/WC_TpayGateways.php:183
+msgid "Your address for notifications"
+msgstr "Adres do notyfikacji"
+
+#: includes/TpaySettings.php:24
+msgid ""
+"Your tpay.com merchant ID. A number with at least four digits (can be five "
+"digits), e.g. 12345"
+msgstr "Twój ID merchanta w tpay.com. Numer składa się z kilku cyfr"
