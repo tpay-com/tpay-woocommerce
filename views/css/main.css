@@ -236,19 +236,23 @@
   padding: 0;
 }
 .tpay-pbl-container .tpay-pbl {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -10px 10px;
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  
 }
 .tpay-pbl-container .tpay-pbl .tpay-item {
-  width: 48%;
   margin: 0;
+  cursor: pointer;
 }
-@media (min-width: 992px) {
-  .tpay-pbl-container .tpay-pbl .tpay-item {
-    width: 31%;
+
+@media (max-width: 992px) {
+  .tpay-pbl-container .tpay-pbl {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
+
 .tpay-pbl-container .tpay-pbl .tpay-item input {
   display: none;
 }
@@ -257,13 +261,11 @@
   -webkit-box-shadow: 0px 0px 15px 5px rgba(41, 83, 198, 0.15);
   box-shadow: 0px 0px 15px 5px rgba(41, 83, 198, 0.15);
 }
-.tpay-pbl-container .tpay-pbl .tpay-item > div {
-  padding: 5px;
-}
+
 .tpay-pbl-container .tpay-pbl .tpay-item > div > div {
   border: 1px solid #e5e5e5;
   border-radius: 5px;
-  padding: 10px 0;
+  padding: 10px 5px;
 }
 .tpay-pbl-container .tpay-pbl .tpay-item > div > div .tpay-group-logo-holder {
   height: 70px;
