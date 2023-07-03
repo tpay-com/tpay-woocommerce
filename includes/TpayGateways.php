@@ -68,8 +68,12 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         add_filter('woocommerce_available_payment_gateways', [$this, 'unset_gateway']);
     }
 
-    public function try_disable_gateway_by_cart_total()
+    public function try_disable_gateway_by_cart_total($gatewayId = null)
     {
+        $id = $this->id;
+        if ($gatewayId) {
+            $id = $gatewayId;
+        }
         $values = [
             TPAYTWISTO_ID => [
                 'min' => 1,
@@ -85,11 +89,11 @@ abstract class TpayGateways extends \WC_Payment_Gateway
             ],
         ];
 
-        if (!isset($values[$this->id])) {
+        if (!isset($values[$id])) {
             return false;
         }
-        $min = $values[$this->id]['min'];
-        $max = $values[$this->id]['max'];
+        $min = $values[$id]['min'];
+        $max = $values[$id]['max'];
 
         $cart_content_total = WC()->cart->cart_contents_total;
 
@@ -116,7 +120,11 @@ abstract class TpayGateways extends \WC_Payment_Gateway
             self::$tpayConnection = new TpayApi($this->api_key, $this->api_key_password, $isProd, 'read');
             return self::$tpayConnection;
         } catch (\Exception $exception) {
-            $this->gateway_helper->tpay_logger('Bramka Tpay nie została uruchomiona- brak danych lub dane niepoprawne');
+            $this->gateway_helper->tpay_logger('Bramka Tpay nie została uruchomiona - brak danych lub dane niepoprawne');
+            self::$tpayConnection = false; //microcache that tpay connection is unavailable
+            if (is_admin() && strpos($exception->getMessage(), 'Authorization error')) {
+                @add_settings_error('general', 'settings_updated', 'Tpay: Authorization error, wrong credentials.', 'error');
+            }
             return false;
         }
     }
@@ -421,8 +429,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         try {
             $transaction = $this->tpay_api()->Transactions->createTransaction($this->payment_data);
         } catch (\Error $e) {
-            $this->gateway_helper->tpay_logger('Nie udało się utworzyć transakcji');
-            wc_add_notice($e->getMessage(), 'error');
+            $this->gateway_helper->tpay_logger($e->getMessage());
             return false;
         }
         if (isset($transaction['transactionPaymentUrl'])) {

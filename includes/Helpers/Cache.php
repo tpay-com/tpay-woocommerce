@@ -33,7 +33,7 @@ class Cache
 
     public function erase()
     {
-        foreach (glob($this->getCacheDir()) as $file) {
+        foreach (glob($this->getCacheDir().'*') as $file) {
             if($file === $this->getCacheDir()){
                 continue;
             }
