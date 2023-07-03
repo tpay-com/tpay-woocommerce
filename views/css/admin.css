@@ -1,20 +1,23 @@
 .tpay-table input[data-global="can-be-global"][readonly="readonly"] {
-    color: transparent;
+  color: transparent;
 }
 
 .tpay-table .absolute-global fieldset {
-    position: relative;
+  position: relative;
 }
 
 .tpay-table .absolute-global fieldset span {
-    position: absolute;
-    left: 10px;
-    top: 6px;
-    display: block;
-    width: 540px;
-    overflow: hidden;
+  position: absolute;
+  left: 10px;
+  top: 6px;
+  display: block;
+  width: 540px;
+  overflow: hidden;
 }
 
-#woocommerce_tpayblik_api_key, #woocommerce_tpayblik_api_key_password, #woocommerce_tpaysf_api_key, #woocommerce_tpaysf_api_key_password {
-    width: 540px !important;
+#woocommerce_tpayblik_api_key,
+#woocommerce_tpayblik_api_key_password,
+#woocommerce_tpaysf_api_key,
+#woocommerce_tpaysf_api_key_password {
+  width: 540px !important;
 }
