@@ -18,6 +18,17 @@
 #woocommerce_tpayblik_api_key,
 #woocommerce_tpayblik_api_key_password,
 #woocommerce_tpaysf_api_key,
-#woocommerce_tpaysf_api_key_password {
+#woocommerce_tpaysf_api_key_password,
+#woocommerce_tpaypbl_api_key,
+#woocommerce_tpaypbl_api_key_password,
+#woocommerce_tpaycc_api_key,
+#woocommerce_tpaycc_api_password,
+#woocommerce_tpaygpay_api_key,
+#woocommerce_tpaygpay_api_key_password,
+#woocommerce_tpaytwisto_api_key,
+#woocommerce_tpaytwisto_api_key_password,
+#woocommerce_tpayinstallments_api_key,
+#woocommerce_tpayinstallments_api_key_password
+{
   width: 540px !important;
 }
