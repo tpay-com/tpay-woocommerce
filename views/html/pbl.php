@@ -43,7 +43,7 @@ if($cr = get_option('woocommerce_tpaypbl_settings')['custom_order']){
     $list = $new_list + $list;
 }
 ?>
-<div class="tpay-pbl-container">
+<div id="tpay-payment" class="tpay-pbl-container">
     <div class="tpay-pbl">
         <?php foreach ($list as $item): ?>
             <?php if (!in_array($item['id'], $this->unset_banks)): ?>
