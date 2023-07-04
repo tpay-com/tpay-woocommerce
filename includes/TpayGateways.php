@@ -95,7 +95,10 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         $min = $values[$id]['min'];
         $max = $values[$id]['max'];
 
-        $cart_content_total = WC()->cart->cart_contents_total;
+        $cart_content_total = 0;
+        if (!is_admin() && WC()->cart) {
+            $cart_content_total = WC()->cart->cart_contents_total;
+        }
 
         if ($cart_content_total < $min || $cart_content_total > $max) {
             return true;
