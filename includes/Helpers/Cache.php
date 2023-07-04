@@ -28,7 +28,7 @@ class Cache
         $data = base64_encode(serialize($value));
         $fileContent = "return ['ttl' => $ttl, 'data' => '$data'];";
 
-        file_put_contents($file, "<?php $fileContent");die();
+        file_put_contents($file, "<?php $fileContent");
     }
 
     public function erase()

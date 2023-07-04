@@ -18,7 +18,6 @@
  */
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
-session_start();
 error_reporting(E_ALL);
 define('TPAY_PLUGIN_VERSION', '1.2');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
@@ -106,7 +105,7 @@ function tpay_on_activate()
     } else if (file_exists(dirname(ABSPATH) . "/wp-config.php") && is_writable(dirname(ABSPATH) . "/wp-config.php")) {
         wp_config_put('/');
     } else {
-        die();
+        wc_add_notice(__('Cannot modify wp-config.php, you have to do it manually and add WP_TPAY_HASH and WP_TPAY_BLIK_PREFIX', 'tpay'), 'error');
     }
 }
 

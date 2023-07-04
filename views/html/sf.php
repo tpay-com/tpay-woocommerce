@@ -29,7 +29,7 @@
                 </label>
             </div>
         </div>
-        <?php if(get_current_user_id() && $this->cart_contents_total >= 1): ?>
+        <?php if(get_current_user_id() && WC()->cart->cart_contents_total >= 1): ?>
         <label class="save-card">
             <input type="checkbox" value="save" name="save-card" /> <?php _e('Save card', 'tpay') ?>
         </label>
