@@ -409,3 +409,19 @@ msgid ""
 "Your tpay.com merchant ID. A number with at least four digits (can be five "
 "digits), e.g. 12345"
 msgstr "Twój ID merchanta w tpay.com. Numer składa się z kilku cyfr"
+
+#: includes/helpers/GatewayHelper.php:149
+msgid "By paying,"
+msgstr "Opłacając,"
+
+#: includes/helpers/GatewayHelper.php:151
+msgid "you accept the terms and conditions"
+msgstr "akceptujesz warunki i postanowienia."
+
+#: includes/helpers/GatewayHelper.php:152
+msgid "The administrator of the personal data is Krajowy Integrator Płatności S.A., headquartered in Poznań."
+msgstr "Administratorem danych osobowych jest Krajowy Integrator Płatności S.A. z siedzibą w Poznaniu."
+
+#: includes/helpers/GatewayHelper.php:154
+msgid "Read the full text."
+msgstr "Przeczytaj cały tekst."

@@ -139,12 +139,20 @@ class GatewayHelper
      */
     public function agreements_field()
     {
-        return sprintf('<div class="tpay-accept-conditions">
-                    <p>By paying, <a href="%s" target="_blank">you accept the terms and conditions</a>.</p>
-                    <p>The administrator of the personal data is Krajowy Integrator Płatności S.A., headquartered in Poznań.<br />
-                    <a href="%s" target="_blank">Read the full text.</a>
-                    </p>
-                    </div>', $this->get_condition_url(), $this->get_privacy_policy_url());
+        return sprintf(
+            '<div class="tpay-accept-conditions">
+        <p>%s <a href="%s" target="_blank">%s</a></p>
+        <p>%s <br />
+        <a href="%s" target="_blank">%s</a>
+        </p>
+    </div>',
+            __('By paying,', 'tpay'),
+            $this->get_condition_url(),
+            __('you accept the terms and conditions', 'tpay'),
+            __('The administrator of the personal data is Krajowy Integrator Płatności S.A., headquartered in Poznań.', 'tpay'),
+            $this->get_privacy_policy_url(),
+            __('Read the full text.', 'tpay')
+        );
     }
 
     /**
@@ -192,15 +200,18 @@ class GatewayHelper
 
     function payer_data($order)
     {
-        return [
+        $paymentData = [
             'email' => $order->get_billing_email(),
-            'name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-            'phone' => $order->get_billing_phone(),
-            'address' => $order->get_billing_address_1() . ', ' . $order->get_billing_address_2(),
-            'code' => $order->get_billing_postcode(),
-            'city' => $order->get_billing_city(),
-            'country' => $order->get_billing_country()
+            'name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name()
         ];
+        if ($order->get_billing_postcode()) {
+            $paymentData['code'] = $order->get_billing_postcode();
+            $paymentData['address'] = $order->get_billing_address_1() . ', ' . $order->get_billing_address_2();
+            $paymentData['city'] = $order->get_billing_city();
+            $paymentData['country'] = $order->get_billing_country();
+            $paymentData['phone'] = $order->get_billing_phone();
+        }
+        return $paymentData;
     }
 
     function update_blik_alias(){
