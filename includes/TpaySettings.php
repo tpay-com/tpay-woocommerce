@@ -175,6 +175,13 @@ class TpaySettings
             'tpay_settings_setting_section', // section
             $args
         );
+        add_settings_field(
+            'global_render_payment_type', // id
+            __('Displaying the list of payments', 'tpay'), // title
+            [$this, 'global_render_payment_type_callback'], // callback
+            'tpay-settings-admin', // page
+            'tpay_settings_setting_section' // section
+        );
     }
 
     /**
@@ -227,6 +234,9 @@ class TpaySettings
             $sanitary_values['global_tpay_environment'] = sanitize_text_field($input['global_tpay_environment']);
         }
 
+        if (isset($input['global_render_payment_type'])) {
+            $sanitary_values['global_render_payment_type'] = sanitize_text_field($input['global_render_payment_type']);
+        }
 
         return $sanitary_values;
     }
@@ -285,6 +295,27 @@ class TpaySettings
         </select>
         <?php
     }
+
+    /**
+     * @return null
+     */
+    public function global_render_payment_type_callback()
+    {
+        $options = [
+            'tiles' => __('Tiles', 'tpay'),
+            'list' => __('Dropdown list', 'tpay'),
+        ];
+        ?>
+        <select class="regular-text" type="text" name="tpay_settings_option_name[global_render_payment_type]"
+                id="global_render_payment_type">
+            <?php foreach ($options as $key => $value): ?>
+                <option <?php if (@$this->tpay_settings_options['global_render_payment_type'] === $key) echo 'selected="selected"' ?>
+                        value="<?php echo $key ?>"><?php echo $value ?></option>
+            <?php endforeach; ?>
+        </select>
+        <?php
+    }
+
     /**
      * @return array
      */
