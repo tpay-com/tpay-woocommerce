@@ -1,0 +1,312 @@
+//payment_method_tpay
+[class^="wc_payment_method payment_method_tpay"]{
+  label:not(.tpay-item){
+    display: flex !important;
+    align-items: center;
+    img{
+      margin-left: auto;
+      padding-left: 8px;
+      width: 50px;
+    }
+  }
+}
+.tpay-blik0{
+  padding: 20px 0;
+  input:not([type="checkbox"]):not([type="radio"]){
+    height: 40px;
+    padding: 0 10px;
+    width: 100%;
+    max-width: 200px !important;
+  }
+}
+.tpay-row {
+  .tpay-amPmCheckbox {
+    display: flex !important;
+    align-items: center;
+
+    label {
+      margin: 0 !important;
+    }
+  }
+}
+[class*="tpay-"]{
+  +.tpay-accept-conditions{
+    margin-top: 15px;
+  }
+}
+.tpay-accept-conditions{
+  font-size: 13px;
+  color: #676986;
+  a{
+    color: #1B2257;
+    text-decoration: underline;
+  }
+}
+[class*="payment_method_tpay"]{
+  .payment_box{
+    background: #fff !important;
+    padding: 15px !important;
+  }
+}
+.tpay-sf{
+  background: #fff;
+  max-width: 750px;
+  padding: 30px 0;
+  .tpay-sf-form{
+    max-width: 600px;
+    background: linear-gradient(280deg, #dfe3ea, #cbd1dd);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    img{
+      width: 50px;
+      height: auto;
+      margin-left: auto;
+    }
+    input:not([type="checkbox"]):not([type="radio"]){
+      height: 40px;
+      padding: 0 10px;
+      width: calc(100% - 30px);
+      margin: 0;
+    }
+    .card-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      //margin: 0 -15px 0;
+      >div{
+        width: 45%;
+        //padding: 10px 15px 0;
+        &.card-number-container{
+          width: 100%;
+          padding-top: 0;
+          margin-bottom: 10px;
+        }
+        &.cvc-container{
+          margin-left: auto;
+        }
+      }
+      label {
+        font-size: 14px;
+        @include flexcenter;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        margin: 0;
+        input {
+          width: 100%;
+          margin: 6px auto 0;
+          border: 1px solid #dfdede;
+          border-radius: 5px;
+          outline: 0;
+          &[readonly="readonly"]{
+            filter: blur(2px);
+          }
+          &:focus {
+            border-color: #6dac97;
+          }
+          &.valid{
+            border-color: #6dac97;
+          }
+          &.wrong{
+            border-color: red;
+          }
+        }
+
+        span {
+          display: block;
+        }
+      }
+    }
+    .save-card{
+      padding: 12px 0;
+      display: flex;
+      align-items: center;
+      input{
+        margin-right: 8px;
+        top: unset;
+      }
+    }
+    .saved-cards{
+      .saved-cards-title{
+        padding: 12px 0;
+        margin: 0;
+      }
+      label{
+        display: flex;
+        align-items: center;
+        input{
+          margin-right: 8px;
+          top: unset;
+        }
+        input[type="radio"]{
+          display: block !important;
+        }
+      }
+    }
+  }
+}
+.tpay-blik0{
+  background: #fff;
+  max-width: 750px;
+  padding: 30px 0;
+  .tpay_blik-payment-alias{
+    margin-bottom: 20px;
+    a{
+      font-size: 14px;
+      color: #000;
+    }
+  }
+  .tpay_blik-payment-form, .tpay_blik-payment-alias{
+    cursor: pointer;
+    max-width: 400px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border: 1px solid #dfe3ea;
+    .bottom{
+      display: none;
+    }
+    &.active{
+      background: linear-gradient(280deg, #dfe3ea, #cbd1dd);
+      .bottom{
+        display: block;
+        margin-top: 15px;
+      }
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      label{
+        width: calc(100% - 60px);
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        margin-bottom: 0;
+        justify-content: unset;
+        input{
+          margin-right: 10px;
+        }
+      }
+      img {
+        width: 50px;
+        height: auto;
+        margin-left: auto;
+      }
+    }
+    label{
+      font-size: 14px;
+      @include flexcenter;
+      flex-direction: column;
+      input[type="radio"]{
+        display: inline-block;
+      }
+      input[type="text"]{
+        width: 80%;
+        margin: 6px auto 0;
+        border: 1px solid #dfdede;
+        border-radius: 5px;
+        outline: 0;
+        text-align: center;
+        &:focus{
+          border-color: #6dac97;
+        }
+      }
+      span{
+        display: block;
+      }
+    }
+  }
+}
+.tpay-pbl-container {
+  background: #fff;
+  max-width: 750px;
+  padding: 0;
+  .tpay-pbl {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px 10px;
+
+    .tpay-item {
+      //padding: 5px;
+      width: 48%;
+      margin: 0;
+      @include lg {
+        width: 31%;
+      }
+      input{
+        display: none;
+        &:checked{
+          +div{
+            >div{
+              border: 1px solid #6dac97;
+              -webkit-box-shadow: 0px 0px 15px 5px rgba(41,83,198,0.15);
+              box-shadow: 0px 0px 15px 5px rgba(41,83,198,0.15);
+            }
+          }
+        }
+      }
+
+      > div {
+        padding: 5px;
+        >div{
+          border: 1px solid #e5e5e5;
+          border-radius: 5px;
+          padding: 10px 0;
+          .tpay-group-logo-holder{
+            height: 70px;
+            @include flexcenter;
+            img{
+              width: 90px;
+              height: auto;
+            }
+          }
+          .name{
+            color: #808080;
+            text-align: center;
+            display: block;
+            font-size: 13px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.modal-tpay-blik-container{
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: fade_out(#000, .5);
+  @include flexcenter;
+  display: none;
+  .modal-tpay-blik{
+    width: 90%;
+    height: 90%;
+    padding: 20px;
+    @include md{
+      width: 500px;
+      height: unset;
+    }
+    background: #fff;
+    font-size: 16px;
+    .title{
+      font-size: 24px;
+    }
+    p{
+      margin-bottom: 15px;
+    }
+    a{
+      background: red;
+      border-radius: 10px;
+      color: #fff !important;
+      text-decoration: none;
+      padding: 10px;
+    }
+  }
+}
