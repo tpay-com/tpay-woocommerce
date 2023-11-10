@@ -1,2 +1,3 @@
 vendor/tpay-com/tpay-openapi-php/Logs/*
 cache/*
+_dev/node_modules

@@ -68,8 +68,9 @@ class UpdateOrderStatus implements IpnInterface
 
     function orderIsComplete($order_id, $response)
     {
+        $status = (@get_option('tpay_settings_option_name')['global_default_on_hold_status']) == 'completed' ? 'completed' : 'processing';
         $order = new \WC_Order($order_id);
-        $order->update_status('processing');
+        $order->update_status($status);
         $order->payment_complete($order->get_transaction_id());
         $this->gateway_helper->tpay_logger('Przyjęcie płatności dla zamówienia: ' . $order_id . ', zrzut odpowiedzi:');
         $this->gateway_helper->tpay_logger(print_r($response, 1));
