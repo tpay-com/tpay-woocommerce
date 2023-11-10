@@ -419,3 +419,15 @@ msgstr "Administratorem danych osobowych jest Krajowy Integrator Płatności S.A
 #: includes/helpers/GatewayHelper.php:154
 msgid "Read the full text."
 msgstr "Przeczytaj cały tekst."
+
+msgid "Tiles"
+msgstr "Kafelki"
+
+msgid "Dropdown list"
+msgstr "Rozwijana lista"
+
+msgid "Read more"
+msgstr "Czytaj więcej"
+
+msgid "Read less"
+msgstr "Czytaj mniej"

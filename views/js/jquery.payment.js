@@ -649,4 +649,17 @@
         return mon + sep + year;
     };
 
+    $(document).on('click', '.agreement_text_scroller', function (event) {
+        event.preventDefault();
+        var fullText = $(this).closest('div').find('p:nth-of-type(2)');
+
+        if (fullText.is(":visible")) {
+            $(this).text($(this).attr('data-more'));
+            fullText.hide();
+        } else {
+            $(this).text($(this).attr('data-less'));
+            fullText.show();
+        }
+    });
+
 }).call(this);

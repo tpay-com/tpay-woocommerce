@@ -139,20 +139,22 @@ class GatewayHelper
      */
     public function agreements_field()
     {
-        return sprintf(
-            '<div class="tpay-accept-conditions">
-        <p>%s <a href="%s" target="_blank">%s</a></p>
-        <p>%s <br />
-        <a href="%s" target="_blank">%s</a>
-        </p>
-    </div>',
+        return sprintf('<div class="tpay-accept-conditions">
+                       <p>%s <a href="%s" target="_blank">%s</a></p>
+                       <p style="display: none">%s <br />
+                       <a href="%s" target="_blank">%s</a>
+                       </p>
+                       <a href="#" class="agreement_text_scroller" data-less="%s" data-more="%s">%s</a>
+                       </div>',
             __('By paying,', 'tpay'),
             $this->get_condition_url(),
             __('you accept the terms and conditions', 'tpay'),
             __('The administrator of the personal data is Krajowy Integrator Płatności S.A., headquartered in Poznań.', 'tpay'),
             $this->get_privacy_policy_url(),
-            __('Read the full text.', 'tpay')
-        );
+            __('Read the full text.', 'tpay'),
+            __('Read less', 'tpay'),
+            __('Read more', 'tpay'),
+            __('Read more', 'tpay'));
     }
 
     /**
@@ -204,6 +206,7 @@ class GatewayHelper
             'email' => $order->get_billing_email(),
             'name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name()
         ];
+
         if ($order->get_billing_postcode()) {
             $paymentData['code'] = $order->get_billing_postcode();
             $paymentData['address'] = $order->get_billing_address_1() . ', ' . $order->get_billing_address_2();
@@ -211,6 +214,7 @@ class GatewayHelper
             $paymentData['country'] = $order->get_billing_country();
             $paymentData['phone'] = $order->get_billing_phone();
         }
+
         return $paymentData;
     }
 
