@@ -74,24 +74,17 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         if ($gatewayId) {
             $id = $gatewayId;
         }
-        $values = [
-            TPAYTWISTO_ID => [
-                'min' => 1,
-                'max' => 1500
-            ],
-            TPAYINSTALLMENTS_ID => [
-                'min' => 300,
-                'max' => 9259.25
-            ],
-            TPAYPEKAOINSTALLMENTS_ID => [
-                'min' => 100,
-                'max' => 20000
-            ],
-        ];
+
+        $values = $this->get_installments_values($id);
 
         if (!isset($values[$id])) {
             return false;
         }
+
+        if (empty($values[$id])) {
+            return true;
+        }
+
         $min = $values[$id]['min'];
         $max = $values[$id]['max'];
 
@@ -103,6 +96,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         if ($cart_content_total < $min || $cart_content_total > $max) {
             return true;
         }
+
         return false;
     }
 
@@ -558,5 +552,49 @@ abstract class TpayGateways extends \WC_Payment_Gateway
             }
         }
         return false;
+    }
+
+    private function get_installments_values(string $id): array
+    {
+        $valuesNames = [
+            TPAYTWISTO => TPAYTWISTO_ID,
+            TPAYINSTALLMENTS => TPAYINSTALLMENTS_ID,
+            TPAYPEKAOINSTALLMENTS => TPAYPEKAOINSTALLMENTS_ID,
+        ];
+        $values = [
+            TPAYTWISTO_ID => [],
+            TPAYINSTALLMENTS_ID => [],
+            TPAYPEKAOINSTALLMENTS_ID => [],
+        ];
+
+        if (!in_array($id, array_values($valuesNames))) {
+            return $values;
+        }
+
+        $this->tpay_api();
+
+        if (null == self::$tpayConnection) {
+            return $values;
+        }
+
+        return $this->feed_values($id, $valuesNames, $values);
+    }
+
+    private function feed_values(string $id, array $valuesNames, array $values): array
+    {
+        $lookedId = array_flip($valuesNames)[$id];
+        foreach (self::$tpayConnection->Transactions->getChannels()['channels'] as $channel) {
+            $groupId = $channel['groups'][0]['id'];
+            if ($groupId === $lookedId && isset($channel['constraints'][1]['value'])) {
+                $values[$valuesNames[$groupId]] = [
+                    'min' => (float)$channel['constraints'][0]['value'],
+                    'max' => (float)$channel['constraints'][1]['value']
+                ];
+
+                return $values;
+            }
+        }
+
+        return $values;
     }
 }
