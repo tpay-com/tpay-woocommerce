@@ -297,7 +297,7 @@ class TpaySettings
     }
 
     /**
-     * @return null
+     * @return void
      */
     public function global_render_payment_type_callback()
     {
