@@ -1,0 +1,45 @@
+@mixin xs {
+  @media all and (max-width: 575px) {
+    @content;
+  }
+}
+
+@mixin sm {
+  @media (min-width: 576px) {
+    @content;
+  }
+}
+
+@mixin md {
+  @media (min-width: 768px) {
+    @content;
+  }
+}
+
+@mixin lg {
+  @media (min-width: 992px) {
+    @content;
+  }
+}
+
+@mixin xl {
+  @media (min-width: 1200px) {
+    @content;
+  }
+}
+
+@mixin big {
+  @media (min-width: 1550px) {
+    @content;
+  }
+}
+@mixin mobile{
+  @media all and (max-width: 767px) {
+    @content;
+  }
+}
+@mixin flexcenter(){
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
