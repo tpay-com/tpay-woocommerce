@@ -3,18 +3,17 @@ msgstr ""
 "Project-Id-Version: Tpay Payment Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-02 01:33+0000\n"
-"PO-Revision-Date: 2023-03-09 02:58+0000\n"
+"PO-Revision-Date: 2023-11-06 16:22+0100\n"
 "Last-Translator: dqw dqw\n"
 "Language-Team: Polski\n"
 "Language: pl_PL\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 "
-"&&(n%100<10||n%100 >= 20)? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
+"X-Generator: Poedit 3.4.1\n"
 "X-Loco-Version: 2.6.2; wp-6.1.1\n"
-"X-Domain: tpay"
+"X-Domain: tpay\n"
 
 #: includes/TpaySettings.php:230
 msgid "Amount"
@@ -35,10 +34,8 @@ msgstr "Domena MID"
 msgid "Merchant email"
 msgstr "Email merchanta"
 
-msgid ""
-"In order to purchase a subscription service, you must agree to save the card."
-msgstr ""
-"W celu zakupu usługi subskrypcyjnej należy wyrazić zgodę na zapisanie karty"
+msgid "In order to purchase a subscription service, you must agree to save the card."
+msgstr "W celu zakupu usługi subskrypcyjnej należy wyrazić zgodę na zapisanie karty"
 
 msgid "Percentage fee"
 msgstr "Dodatkowa kwota %"
@@ -185,17 +182,11 @@ msgid "I pay with BLIK from saved account"
 msgstr "Płacę Blikiem przez zapisane konto"
 
 #: includes/WC_TpayGateways.php:284
-msgid ""
-"If Tpay is only available for certain methods, set it up here. Leave blank "
-"to enable for all methods."
-msgstr ""
-"Jeśli Tpay jest dostępny tylko dla niektórych metod dostawy, ustaw go tutaj. "
-"Pozostaw puste, aby włączyć dla wszystkich metod dostawy."
+msgid "If Tpay is only available for certain methods, set it up here. Leave blank to enable for all methods."
+msgstr "Jeśli Tpay jest dostępny tylko dla niektórych metod dostawy, ustaw go tutaj. Pozostaw puste, aby włączyć dla wszystkich metod dostawy."
 
 #: includes/WC_TpayGateways.php:201
-msgid ""
-"If you do not already have Tpay account, <a href=\"#\" target=\"_blank\">"
-"please register</a>."
+msgid "If you do not already have Tpay account, <a href=\"#\" target=\"_blank\">please register</a>."
 msgstr "Jeśli nie masz konta Tpay- zarejestruj się."
 
 #: includes/WC_TpayGateways.php:134
@@ -254,9 +245,8 @@ msgstr "Zapłać zapisaną kartą"
 msgid "Payment declined by user"
 msgstr "Płatność anulowana przez użytkownika"
 
-#: includes/TpayBlik.php:99 includes/TpayBlik.php:134 includes/TpayCC.php:49
-#: includes/TpayInstallments.php:55 includes/TpayGPay.php:56
-#: includes/TpaySF.php:198 includes/TpayTwisto.php:55 includes/Tpay.php:85
+#: includes/TpayBlik.php:99 includes/TpayBlik.php:134 includes/TpayCC.php:49 includes/TpayInstallments.php:55 includes/TpayGPay.php:56 includes/TpaySF.php:198
+#: includes/TpayTwisto.php:55 includes/Tpay.php:85
 msgid "Payment error"
 msgstr "Błąd płatności"
 
@@ -354,8 +344,7 @@ msgid "Tpay payment gateway for WooCommerce"
 msgstr "Bramka płatności Tpay dla Woocommerce"
 
 #. page_title
-#: includes/TpaySettings.php:54 includes/TpaySettings.php:55
-#: includes/TpaySettings.php:71
+#: includes/TpaySettings.php:54 includes/TpaySettings.php:55 includes/TpaySettings.php:71
 msgid "Tpay settings"
 msgstr "Ustawienia Tpay"
 
@@ -371,8 +360,7 @@ msgstr "Tytuł transakcji"
 msgid "Twisto"
 msgstr "Twisto"
 
-#: includes/TpayBlik.php:180 includes/TpaySF.php:221
-#: includes/WC_TpayGateways.php:369
+#: includes/TpayBlik.php:180 includes/TpaySF.php:221 includes/WC_TpayGateways.php:369
 msgid "Unable to create transaction"
 msgstr "Nie udało się utworzyć transakcji"
 
@@ -393,44 +381,25 @@ msgid "Why don't I have to enter a code?"
 msgstr "Dlaczego nie muszę wpisywać kodu?"
 
 #: includes/WC_TpayGateways.php:140
-msgid ""
-"You will be redirected to tpay.com where you will enter your credit card "
-"details"
-msgstr ""
-"Zostaniesz przekierowany do strony tpay.com, gdzie podasz dane karty "
-"kredytowej"
+msgid "You will be redirected to tpay.com where you will enter your credit card details"
+msgstr "Zostaniesz przekierowany do strony tpay.com, gdzie podasz dane karty kredytowej"
 
 #: includes/WC_TpayGateways.php:183
 msgid "Your address for notifications"
 msgstr "Adres do notyfikacji"
 
 #: includes/TpaySettings.php:24
-msgid ""
-"Your tpay.com merchant ID. A number with at least four digits (can be five "
-"digits), e.g. 12345"
+msgid "Your tpay.com merchant ID. A number with at least four digits (can be five digits), e.g. 12345"
 msgstr "Twój ID merchanta w tpay.com. Numer składa się z kilku cyfr"
 
-#: includes/helpers/GatewayHelper.php:149
-msgid "By paying,"
-msgstr "Opłacając,"
+#: includes/Tpay.php:64
+msgid "Hide bank selection"
+msgstr "Ukryj listę wyboru banku"
 
-#: includes/helpers/GatewayHelper.php:151
-msgid "you accept the terms and conditions"
-msgstr "akceptujesz warunki i postanowienia."
+#: includes/Tpay.php:66
+msgid "Redirect to payment panel without choosing bank in advance"
+msgstr "Przekieruj na panel płatnosci tpay bez wybrania banku"
 
-#: includes/helpers/GatewayHelper.php:152
-msgid "The administrator of the personal data is Krajowy Integrator Płatności S.A., headquartered in Poznań."
-msgstr "Administratorem danych osobowych jest Krajowy Integrator Płatności S.A. z siedzibą w Poznaniu."
-
-#: includes/helpers/GatewayHelper.php:154
-msgid "Read the full text."
-msgstr "Przeczytaj cały tekst."
-
-msgid "Displaying the list of payments"
-msgstr "Wyświetlanie listy płatności"
-
-msgid "Tiles"
-msgstr "Kafelki"
-
-msgid "Dropdown list"
-msgstr "Rozwijana lista"
+#: includes/Tpay.php:67
+msgid "Hide"
+msgstr "Schowaj"

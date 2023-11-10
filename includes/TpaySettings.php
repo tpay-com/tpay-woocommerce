@@ -324,7 +324,7 @@ class TpaySettings
         $statuses = wc_get_order_statuses();
         $available = [];
         foreach ($statuses as $key => $value) {
-            if (in_array($key, ['wc-pending', 'wc-on-hold'])) {
+            if (in_array($key, ['wc-completed', 'wc-pending', 'wc-on-hold'])) {
                 $available[str_replace('wc-', '', $key)] = $value;
             }
         }
