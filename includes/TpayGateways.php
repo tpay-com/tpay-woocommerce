@@ -76,12 +76,15 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         }
 
         $values = $this->get_installments_values($id);
+
         if (!isset($values[$id])) {
             return false;
         }
+
         if (empty($values[$id])) {
             return true;
         }
+
         $min = $values[$id]['min'];
         $max = $values[$id]['max'];
 
@@ -93,6 +96,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         if ($cart_content_total < $min || $cart_content_total > $max) {
             return true;
         }
+
         return false;
     }
 
@@ -550,11 +554,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         return false;
     }
 
-    /**
-     * @param string $id
-     * @return array
-     */
-    private function get_installments_values($id)
+    private function get_installments_values(string $id): array
     {
         $valuesNames = [
             TPAYTWISTO => TPAYTWISTO_ID,
@@ -580,25 +580,21 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         return $this->feed_values($id, $valuesNames, $values);
     }
 
-    /**
-     * @param string $id
-     * @param array $valuesNames
-     * @param array $values
-     * @return array
-     */
-    private function feed_values($id, $valuesNames, $values): array
+    private function feed_values(string $id, array $valuesNames, array $values): array
     {
         $lookedId = array_flip($valuesNames)[$id];
         foreach (self::$tpayConnection->Transactions->getChannels()['channels'] as $channel) {
-            $channelId = $channel['groups'][0]['id'];
-            if ($channelId == $lookedId && isset($channel['constraints'][1]['value'])) {
-                $values[$valuesNames[$channelId]] = [
+            $groupId = $channel['groups'][0]['id'];
+            if ($groupId === $lookedId && isset($channel['constraints'][1]['value'])) {
+                $values[$valuesNames[$groupId]] = [
                     'min' => (float)$channel['constraints'][0]['value'],
                     'max' => (float)$channel['constraints'][1]['value']
                 ];
+
                 return $values;
             }
         }
+
         return $values;
     }
 }
