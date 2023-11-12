@@ -53,7 +53,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         $this->init_form_fields();
         $this->init_settings();
 
-        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__) . '../views/img/tpay.svg');
+        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__) . '../views/img/tpay.jpg');
         $this->title = $this->get_option('title');
         $this->description = $this->get_option('description', ' ');
         $this->enable_for_shipping = $this->get_option('enable_for_shipping', []);
