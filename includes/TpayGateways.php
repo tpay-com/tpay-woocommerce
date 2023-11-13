@@ -29,6 +29,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
     public $valid_mid = false;
 
     protected static $banksGroupMicrocache = [true => null, false => null];
+    protected static $banksChannels = null;
 
     protected static $tpayConnection = null;
 
@@ -88,16 +89,21 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         $min = $values[$id]['min'];
         $max = $values[$id]['max'];
 
-        $cart_content_total = 0;
-        if (!is_admin() && WC()->cart) {
-            $cart_content_total = WC()->cart->cart_contents_total;
-        }
-
+        $cart_content_total = $this->getCartTotal();
         if ($cart_content_total < $min || $cart_content_total > $max) {
             return true;
         }
 
         return false;
+    }
+
+    public function getCartTotal()
+    {
+        $cart_content_total = 0;
+        if (!is_admin() && WC()->cart) {
+            $cart_content_total = WC()->cart->cart_contents_total;
+        }
+        return $cart_content_total;
     }
 
     public function tpay_api()
@@ -190,6 +196,13 @@ abstract class TpayGateways extends \WC_Payment_Gateway
                 'default_description' => __('Installments', 'tpay'),
                 'api' => TPAYINSTALLMENTS_ID,
                 'group_id' => TPAYINSTALLMENTS
+            ],
+            'pekaoinstallments' => [
+                'name' => __('Pekao Installments', 'tpay'),
+                'front_name' => __('Online payment by installments', 'tpay'),
+                'default_description' => __('Installments', 'tpay'),
+                'api' => TPAYPEKAOINSTALLMENTS_ID,
+                'group_id' => TPAYPEKAOINSTALLMENTS
             ],
             'tpaycc' => [
                 'name' => __('Tpay Credit Card standard', 'tpay'),
@@ -424,7 +437,11 @@ abstract class TpayGateways extends \WC_Payment_Gateway
     public function process_transaction($order)
     {
         try {
-            $transaction = $this->tpay_api()->Transactions->createTransaction($this->payment_data);
+            if (isset($this->payment_data['pay']['channelId'])) {
+                $transaction = $this->tpay_api()->Transactions->createTransactionWithInstantRedirection($this->payment_data);
+            } else {
+                $transaction = $this->tpay_api()->Transactions->createTransaction($this->payment_data);
+            }
         } catch (\Error $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
             return false;
@@ -468,7 +485,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         }
 
         self::$banksGroupMicrocache[$onlineOnly] = $result['groups'];
-        $this->cache->set($cacheKey, $result['groups'], 1800);
+        $this->cache->set($cacheKey, $result['groups'], 600);
         return $result['groups'];
     }
 
@@ -540,6 +557,33 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         return false;
     }
 
+    public function getChannels()
+    {
+        if (null !== self::$banksChannels) {
+            return self::$banksChannels;
+        }
+        $cacheKey = 'getChancnels';
+        $cached = $this->cache->get($cacheKey);
+        if ($cached) {
+            self::$banksChannels = $cached;
+            return $cached;
+        }
+        $api = $this->tpay_api();
+        if (!$api) {
+            return [];
+        }
+
+        $result = $api->Transactions->getChannels();
+        if (!isset($result['result']) || $result['result'] !== 'success') {
+            $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
+            wc_add_notice('Unable to get channels list', 'error');
+        }
+
+        self::$banksChannels = $result['channels'];
+        $this->cache->set($cacheKey, self::$banksChannels, 600);
+        return self::$banksChannels;
+    }
+
     private function is_on_banks_list()
     {
         if (null === $this->tpay_numeric_id && count($this->getBanksList())) {
@@ -571,30 +615,28 @@ abstract class TpayGateways extends \WC_Payment_Gateway
             return $values;
         }
 
-        $this->tpay_api();
-
-        if (null == self::$tpayConnection) {
-            return $values;
-        }
-
         return $this->feed_values($id, $valuesNames, $values);
     }
 
     private function feed_values(string $id, array $valuesNames, array $values): array
     {
         $lookedId = array_flip($valuesNames)[$id];
-        foreach (self::$tpayConnection->Transactions->getChannels()['channels'] as $channel) {
-            $groupId = $channel['groups'][0]['id'];
-            if ($groupId === $lookedId && isset($channel['constraints'][1]['value'])) {
-                $values[$valuesNames[$groupId]] = [
-                    'min' => (float)$channel['constraints'][0]['value'],
-                    'max' => (float)$channel['constraints'][1]['value']
-                ];
+        $channels = $this->getChannels();
 
-                return $values;
+        foreach ($channels as $channel) {
+            $groupId = $channel['groups'][0]['id'];
+            if ($groupId == $lookedId && isset($channel['constraints'][1]['value'])) {
+                if (!isset($values[$valuesNames[$groupId]]['min'])) {
+                    $values[$valuesNames[$groupId]] = [
+                        'min' => (float)$channel['constraints'][0]['value'],
+                        'max' => (float)$channel['constraints'][1]['value']
+                    ];
+                } else {
+                    $values[$valuesNames[$groupId]]['min'] = min($values[$valuesNames[$groupId]]['min'], (float)$channel['constraints'][0]['value']);
+                    $values[$valuesNames[$groupId]]['max'] = max($values[$valuesNames[$groupId]]['max'], (float)$channel['constraints'][1]['value']);
+                }
             }
         }
-
         return $values;
     }
 }
