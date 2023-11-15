@@ -47,7 +47,8 @@ const TPAY_CLASSMAP = [
     TPAYSF_ID => \Tpay\TpaySF::class,
     TPAYGPAY_ID => \Tpay\TpayGPay::class,
     TPAYTWISTO_ID => \Tpay\TpayTwisto::class,
-    TPAYINSTALLMENTS_ID => \Tpay\TpayInstallments::class
+    TPAYINSTALLMENTS_ID => \Tpay\TpayInstallments::class,
+    TPAYPEKAOINSTALLMENTS_ID => \Tpay\PekaoInstallments::class
 ];
 
 
