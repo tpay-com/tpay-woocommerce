@@ -31,9 +31,6 @@ msgstr "Numer MID"
 msgid "MID domain"
 msgstr "Domena MID"
 
-msgid "Merchant email"
-msgstr "Email merchanta"
-
 msgid "In order to purchase a subscription service, you must agree to save the card."
 msgstr "W celu zakupu usługi subskrypcyjnej należy wyrazić zgodę na zapisanie karty"
 
@@ -431,3 +428,12 @@ msgstr "Czytaj więcej"
 
 msgid "Read less"
 msgstr "Czytaj mniej"
+
+msgid "Tpay environment"
+msgstr "Środowisko Tpay"
+
+msgid "Displaying the list of payments"
+msgstr "Sposób wyświetlania płatności"
+
+msgid "Merchant email"
+msgstr "E-mail sprzedawcy"
