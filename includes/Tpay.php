@@ -50,14 +50,14 @@ class Tpay extends TpayGateways
     {
         return [
             'custom_order' => [
-                'title' => __('Custom order:', 'tpay'),
+                'title' => __('Custom order', 'tpay'),
                 'type' => 'text',
                 'description' => __('Custom order, separate payment methods with commas', 'tpay'),
                 'placeholder' => __('Custom order, separate payment methods with commas', 'tpay'),
                 'desc_tip' => true
             ],
             'show_inactive_methods' => [
-                'title' => __('Show inactive methods:', 'tpay'),
+                'title' => __('Show inactive methods', 'tpay'),
                 'type' => 'checkbox',
                 'description' => __('Show inactive payment methods as grayed out', 'tpay'),
                 'label' => __('Show', 'tpay'),
