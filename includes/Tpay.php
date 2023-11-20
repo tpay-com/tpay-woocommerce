@@ -13,7 +13,7 @@ class Tpay extends TpayGateways
     {
         parent::__construct(TPAYPBL_ID);
         $this->has_terms_checkbox = true;
-        $this->hide_bank_selection = get_option('woocommerce_tpaypbl_settings')['hide_bank_selection'] ?? false;
+        $this->hide_bank_selection = $this->get_tpay_option(['woocommerce_tpaypbl_settings', 'hide_bank_selection']) === 'yes';
     }
 
     function init_form_fields()
