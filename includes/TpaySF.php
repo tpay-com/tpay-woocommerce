@@ -293,6 +293,7 @@ class TpaySF extends TpayGateways
     {
         $this->crc = $this->createCRC($order_id);
         $order = new \WC_Order($order_id);
+        $user_id = $order->get_user_id();
         $groupID = TPAYSF;
         $this->set_payment_data($order, $groupID);
         if (!$this->additional_payment_data($order_id)) {
@@ -313,6 +314,11 @@ class TpaySF extends TpayGateways
                 update_post_meta($order->ID, '_md5_checksum', $md5);
                 update_post_meta($order->ID, '_crc', $this->crc);
                 update_post_meta($order->ID, '_payment_method', $this->id);
+
+                if ($user_id) {
+                    update_post_meta($order->ID, '_customer_user', $user_id);
+                }
+
                 $this->gateway_helper->tpay_logger('Udane zamówienie, płatność kartą na stronie sklepu, redirect na: ' . $redirect);
                 return [
                     'result' => 'success',
