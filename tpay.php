@@ -23,6 +23,9 @@ define('TPAY_PLUGIN_VERSION', '1.3');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
+
+
+
 const TPAYPBL = NULL;
 const TPAYPBL_ID = 'tpaypbl';
 const TPAYGPAY = 166;
@@ -38,7 +41,7 @@ const TPAYSF_ID = 'tpaysf';
 const TPAYBLIK = 150;
 const TPAYBLIK_ID = 'tpayblik';
 const TPAYPEKAOINSTALLMENTS = 169;
-const TPAYPEKAOINSTALLMENTS_ID = 'tpaypekaoinstallments';
+const TPAYPEKAOINSTALLMENTS_ID = 'pekaoinstallments';
 
 const TPAY_CLASSMAP = [
     TPAYPBL_ID => \Tpay\Tpay::class,
@@ -56,6 +59,8 @@ if (get_option('tpay_settings_option_name')['global_enable_fee'] != 'disabled') 
     add_action('woocommerce_cart_calculate_fees', 'tpay_add_checkout_fee_for_gateway');
     add_action('woocommerce_after_checkout_form', 'tpay_refresh_checkout_on_payment_methods_change');
 }
+
+
 
 function tpay_add_checkout_fee_for_gateway()
 {
@@ -177,4 +182,22 @@ function enqueue_tpay_gateway_assets()
     wp_enqueue_style('tpay_gateway_css', plugin_dir_url(__FILE__) . 'views/css/main.css', [], time());
 }
 
+
+function childPluginHasParentPlugin()
+{
+    if (is_admin() && current_user_can('activate_plugins')) {
+        add_action('admin_notices', 'displayChildPluginNotice');
+        deactivate_plugins(plugin_basename(__FILE__));
+        if (filter_input(INPUT_GET, 'activate')) {
+            unset($_GET['activate']);
+        }
+    }
+}
+
+function displayChildPluginNotice()
+{
+    echo '<div class="error"><p>';
+    echo 'Tpay requires a WooCommerce plugin, <a target="_blank" href="https://wordpress.org/plugins/woocommerce/">download it</a>';
+    echo '</p></div>';
+}
 

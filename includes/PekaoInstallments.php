@@ -38,7 +38,11 @@ class PekaoInstallments extends TpayGateways
                     $list[] = $channel;
                 }
             }
+        }
+        $agreements = '';
 
+        if ($this->has_terms_checkbox) {
+            $agreements = $this->gateway_helper->agreements_field();
         }
         include plugin_dir_path(__FILE__) . '../views/html/pekao.php';
 
@@ -51,7 +55,7 @@ class PekaoInstallments extends TpayGateways
         $groupID = TPAYPEKAOINSTALLMENTS;
         $this->set_payment_data($order, $groupID);
         $channelId = $this->request->get('tpay-channelID');
-        if($channelId){
+        if ($channelId) {
             $this->payment_data['pay'] = ['channelId' => (int)$channelId];
         }
         $result = $this->process_transaction($order);

@@ -186,7 +186,7 @@ class TpaySF extends TpayGateways
     {
         $fields = [];
         $fields['sf_rsa'] = [
-            'title' => __('RSA key:', 'tpay'),
+            'title' => __('RSA key', 'tpay'),
             'type' => 'text',
             'class' => 'sf-rsa-global',
             'description' => __('RSA key', 'tpay'),

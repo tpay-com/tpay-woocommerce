@@ -104,8 +104,8 @@ msgid "Custom order, separate payment methods with commas"
 msgstr "Własna kolejność, oddziel metody przecinkami"
 
 #: includes/Tpay.php:41
-msgid "Custom order:"
-msgstr "Własna kolejność:"
+msgid "Custom order"
+msgstr "Własna kolejność"
 
 #: views/html/sf.php:18
 msgid "CVC"
@@ -121,7 +121,7 @@ msgid "Description of Tpay Payment Gateway that users sees on Checkout page."
 msgstr "Opis bramki płatności, który widzą użytkownicy na stronie zamówienia"
 
 #: includes/WC_TpayGateways.php:271
-msgid "Description:"
+msgid "Description"
 msgstr "Opis"
 
 #: includes/TpaySettings.php:229
@@ -135,10 +135,6 @@ msgstr "Włącz"
 #: includes/TpayBlik.php:49
 msgid "Enable Blik lvl 0"
 msgstr "Włącz Blik 0"
-
-#: includes/TpayBlik.php:47
-msgid "Enable Blik lvl 0:"
-msgstr "Włącz Blik 0:"
 
 #. id
 #: includes/TpaySettings.php:128
@@ -186,8 +182,8 @@ msgid "If Tpay is only available for certain methods, set it up here. Leave blan
 msgstr "Jeśli Tpay jest dostępny tylko dla niektórych metod dostawy, ustaw go tutaj. Pozostaw puste, aby włączyć dla wszystkich metod dostawy."
 
 #: includes/WC_TpayGateways.php:201
-msgid "If you do not already have Tpay account, <a href=\"#\" target=\"_blank\">please register</a>."
-msgstr "Jeśli nie masz konta Tpay- zarejestruj się."
+msgid "If you do not already have Tpay account, <a href=\"https://register.tpay.com/\" target=\"_blank\">please register</a>."
+msgstr "Jeśli nie masz konta Tpay- <a href=\"https://register.tpay.com/\">zarejestruj się.</a>"
 
 #: includes/WC_TpayGateways.php:134
 msgid "Installments"
@@ -258,10 +254,6 @@ msgstr "Procentowo"
 msgid "RSA key"
 msgstr "Klucz RSA"
 
-#: includes/TpaySF.php:131
-msgid "RSA key:"
-msgstr "Klucz RSA:"
-
 #: views/html/sf.php:26
 msgid "Save card"
 msgstr "Zapisz kartę"
@@ -287,8 +279,8 @@ msgid "Show"
 msgstr "Pokaż"
 
 #: includes/Tpay.php:48
-msgid "Show inactive methods:"
-msgstr "Pokaż nieaktywne metody płatności:"
+msgid "Show inactive methods"
+msgstr "Pokaż nieaktywne metody płatności"
 
 #: includes/Tpay.php:50
 msgid "Show inactive payment methods as grayed out"
@@ -303,8 +295,8 @@ msgid "Title of Tpay Payment Gateway that users sees on Checkout page."
 msgstr "Tytuł płatności Tpay widoczny na stronie zamówienia"
 
 #: includes/WC_TpayGateways.php:206
-msgid "Title:"
-msgstr "Nazwa:"
+msgid "Title"
+msgstr "Nazwa"
 
 #: includes/WC_TpayGateways.php:108
 msgid "Tpay banks list"
@@ -369,8 +361,8 @@ msgid "Use global values."
 msgstr "Użyj wartości globalnych."
 
 #: includes/WC_TpayGateways.php:213
-msgid "Use global values:"
-msgstr "Użyj wartości globalnych:"
+msgid "Use global values"
+msgstr "Użyj wartości globalnych"
 
 #: includes/helpers/GatewayHelper.php:233
 msgid "User insufficient funds / user authorization error"
@@ -406,7 +398,7 @@ msgstr "Schowaj"
 
 #: includes/helpers/GatewayHelper.php:149
 msgid "By paying,"
-msgstr "Opłacając,"
+msgstr "Płacąc,"
 
 #: includes/helpers/GatewayHelper.php:151
 msgid "you accept the terms and conditions"
@@ -431,3 +423,6 @@ msgstr "Czytaj więcej"
 
 msgid "Read less"
 msgstr "Czytaj mniej"
+
+msgid "Tpay requires a WooCommerce plugin, <a target=\"_blank\" href=\"https://wordpress.org/plugins/woocommerce/\">download it</a>"
+msgstr "Tpay wymaga pluginu WooCommerce, <a target=\"_blank\" href=\"https://wordpress.org/plugins/woocommerce/\">pobierz go tutaj</a>"

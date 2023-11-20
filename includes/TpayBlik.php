@@ -59,7 +59,7 @@ class TpayBlik extends TpayGateways
     {
         return [
             'enable_blik0' => [
-                'title' => __('Enable Blik lvl 0:', 'tpay'),
+                'title' => __('Enable Blik lvl 0', 'tpay'),
                 'type' => 'checkbox',
                 'description' => __('Enable Blik lvl 0', 'tpay'),
                 'label' => __('Enable', 'tpay'),

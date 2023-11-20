@@ -270,19 +270,19 @@ abstract class TpayGateways extends \WC_Payment_Gateway
                 'title' => __('Enable/Disable', 'woocommerce'),
                 'label' => __('Enable Tpay payment method', 'tpay'),
                 'type' => 'checkbox',
-                'description' => __('If you do not already have Tpay account, <a href="#" target="_blank">please register</a>.',
+                'description' => __('If you do not already have Tpay account, <a href="https://register.tpay.com/" target="_blank">please register</a>.',
                     'tpay'),
                 'default' => 'no',
             ],
             'title' => [
-                'title' => __('Title:', 'tpay'),
+                'title' => __('Title', 'tpay'),
                 'type' => 'text',
                 'description' => __('Title of Tpay Payment Gateway that users sees on Checkout page.', 'tpay'),
                 'default' => self::gateways_list()[$this->id]['front_name'],
                 'desc_tip' => true
             ],
             'use_global' => [
-                'title' => __('Use global values:', 'tpay'),
+                'title' => __('Use global values', 'tpay'),
                 'type' => 'checkbox',
                 'label' => __('Use global values.', 'tpay'),
                 'default' => 'yes',
@@ -340,7 +340,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
     {
         return [
             'description' => [
-                'title' => __('Description:', 'tpay'),
+                'title' => __('Description', 'tpay'),
                 'type' => 'text',
                 'description' => __('Description of Tpay Payment Gateway that users sees on Checkout page.', 'tpay'),
                 'default' => self::gateways_list()[$this->id]['default_description'],
@@ -562,7 +562,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         if (null !== self::$banksChannels) {
             return self::$banksChannels;
         }
-        $cacheKey = 'getChancnels';
+        $cacheKey = 'get_channels';
         $cached = $this->cache->get($cacheKey);
         if ($cached) {
             self::$banksChannels = $cached;
@@ -577,6 +577,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         if (!isset($result['result']) || $result['result'] !== 'success') {
             $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
             wc_add_notice('Unable to get channels list', 'error');
+            return [];
         }
 
         self::$banksChannels = $result['channels'];
@@ -624,7 +625,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         $channels = $this->getChannels();
 
         foreach ($channels as $channel) {
-            $groupId = $channel['groups'][0]['id'];
+            $groupId = isset($channel['groups'][0]['id']) ? $channel['groups'][0]['id'] : null;
             if ($groupId == $lookedId && isset($channel['constraints'][1]['value'])) {
                 if (!isset($values[$valuesNames[$groupId]]['min'])) {
                     $values[$valuesNames[$groupId]] = [
