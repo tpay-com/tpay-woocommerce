@@ -1,13 +1,16 @@
-.tpay-table{
-  input[data-global="can-be-global"]{
-    &[readonly="readonly"]{
+.tpay-table {
+  input[data-global="can-be-global"] {
+    &[readonly="readonly"] {
+      width: 540px !important;
       color: transparent;
     }
   }
-  .absolute-global{
-    fieldset{
+
+  .absolute-global {
+    fieldset {
       position: relative;
-      span{
+
+      span {
         position: absolute;
         left: 10px;
         top: 6px;
@@ -18,3 +21,4 @@
     }
   }
 }
+
