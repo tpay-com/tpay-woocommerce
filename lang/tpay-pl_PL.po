@@ -31,9 +31,6 @@ msgstr "Numer MID"
 msgid "MID domain"
 msgstr "Domena MID"
 
-msgid "Merchant email"
-msgstr "Email merchanta"
-
 msgid "In order to purchase a subscription service, you must agree to save the card."
 msgstr "W celu zakupu usługi subskrypcyjnej należy wyrazić zgodę na zapisanie karty"
 
@@ -426,3 +423,12 @@ msgstr "Czytaj mniej"
 
 msgid "Tpay requires a WooCommerce plugin, <a target=\"_blank\" href=\"https://wordpress.org/plugins/woocommerce/\">download it</a>"
 msgstr "Tpay wymaga pluginu WooCommerce, <a target=\"_blank\" href=\"https://wordpress.org/plugins/woocommerce/\">pobierz go tutaj</a>"
+
+msgid "Tpay environment"
+msgstr "Środowisko Tpay"
+
+msgid "Displaying the list of payments"
+msgstr "Sposób wyświetlania płatności"
+
+msgid "Merchant email"
+msgstr "E-mail sprzedawcy"
