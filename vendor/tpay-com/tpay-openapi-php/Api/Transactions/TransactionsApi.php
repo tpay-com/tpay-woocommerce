@@ -3,6 +3,7 @@ namespace tpaySDK\Api\Transactions;
 
 use tpaySDK\Api\ApiAction;
 use tpaySDK\Model\Objects\RequestBody\Pay;
+use tpaySDK\Model\Objects\RequestBody\PayWithInstantRedirection;
 use tpaySDK\Model\Objects\RequestBody\Refund;
 use tpaySDK\Model\Objects\RequestBody\Transaction;
 use tpaySDK\Model\Objects\RequestBody\TransactionWithInstantRedirection;
@@ -56,6 +57,11 @@ class TransactionsApi extends ApiAction
     public function createPaymentByTransactionId($fields, $transactionId)
     {
         return $this->run(static::POST, sprintf('/transactions/%s/pay', $transactionId), $fields, new Pay());
+    }
+
+    public function createInstantPaymentByTransactionId($fields, $transactionId)
+    {
+        return $this->run(static::POST, sprintf('/transactions/%s/pay', $transactionId), $fields, new PayWithInstantRedirection());
     }
 
     public function createRefundByTransactionId($fields, $transactionId)

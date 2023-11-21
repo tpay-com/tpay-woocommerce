@@ -9,14 +9,14 @@ class Tpay extends TpayGateways
     /** @var bool */
     private $hide_bank_selection;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct(TPAYPBL_ID);
         $this->has_terms_checkbox = true;
         $this->hide_bank_selection = $this->get_tpay_option(['woocommerce_tpaypbl_settings', 'hide_bank_selection']) === 'yes';
     }
 
-    function init_form_fields()
+    public function init_form_fields()
     {
         parent::tpay_init_form_fields(true);
     }
@@ -43,10 +43,7 @@ class Tpay extends TpayGateways
         include plugin_dir_path(__FILE__) . '../views/html/pbl.php';
     }
 
-    /**
-     * @return array
-     */
-    public static function get_form_custom_order()
+    public static function get_form_custom_order(): array
     {
         return [
             'custom_order' => [
@@ -73,22 +70,23 @@ class Tpay extends TpayGateways
         ];
     }
 
-    function process_payment($order_id)
+    public function process_payment($order_id)
     {
         $this->crc = $this->createCRC($order_id);
         $order = new \WC_Order($order_id);
 
         if (!$this->hide_bank_selection) {
-            $groupID = $this->request->get('tpay-groupID');
+            $channelId = $this->request->get('tpay-channel-id');
 
-            if (!$groupID || !is_numeric($groupID)) {
+
+            if (!$channelId || !is_numeric($channelId)) {
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności PBL- użytkownik nie wybrał banku');
                 wc_add_notice(__('Select a bank', 'tpay'), 'error');
                 return false;
             }
         }
 
-        $this->set_payment_data($order, $groupID ?? null);
+        $this->set_payment_data($order, $channelId);
         $result = $this->process_transaction($order);
 
         if ($result['result'] == 'success') {
@@ -97,7 +95,7 @@ class Tpay extends TpayGateways
                 wc_add_notice(implode(' ', $errors_list), 'error');
                 return false;
             } else {
-                $redirect = $result['transactionPaymentUrl'] ? $result['transactionPaymentUrl'] : $this->get_return_url($order);
+                $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
                 $md5 = md5($this->id_seller . $result['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code);
                 update_post_meta($order->ID, '_transaction_id', $result['transactionId']);
                 update_post_meta($order->ID, '_md5_checksum', $md5);
@@ -116,7 +114,7 @@ class Tpay extends TpayGateways
         }
     }
 
-    public function set_payment_data($order, $groupID)
+    public function set_payment_data($order, $channelId)
     {
         $payer_data = $this->gateway_helper->payer_data($order);
         $merchant_email = get_option('admin_email');
@@ -142,7 +140,7 @@ class Tpay extends TpayGateways
 
         if (!$this->hide_bank_selection) {
             $this->payment_data['pay'] = [
-                'groupId' => (int) $groupID,
+                'channelId' => (int) $channelId,
                 'method' => 'pay_by_link'
             ];
         }

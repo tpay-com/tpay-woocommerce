@@ -4,6 +4,7 @@ namespace Tpay;
 
 class TpayInstallments extends TpayGateways
 {
+    const CHANNEL_ID = 49;
 
     function __construct()
     {
@@ -37,13 +38,14 @@ class TpayInstallments extends TpayGateways
     {
         $this->crc = $this->createCRC($order_id);
         $order = new \WC_Order($order_id);
-        $groupID = TPAYINSTALLMENTS;
-        $this->set_payment_data($order, $groupID);
+        $this->set_payment_data($order, self::CHANNEL_ID);
         $result = $this->process_transaction($order);
+
         if ($result['result'] == 'success') {
             if ($errors_list = $this->gateway_helper->tpay_has_errors($result)) {
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności ratalnej- zwrócone następujące błędy: ' . implode(' ', $errors_list));
                 wc_add_notice(implode(' ', $errors_list), 'error');
+
                 return false;
             } else {
                 $redirect = $result['transactionPaymentUrl'] ? $result['transactionPaymentUrl'] : $this->get_return_url($order);
@@ -53,16 +55,16 @@ class TpayInstallments extends TpayGateways
                 update_post_meta($order->ID, '_crc', $this->crc);
                 update_post_meta($order->ID, '_payment_method', $this->id);
                 $this->gateway_helper->tpay_logger('Udane zamówienie, płatność ratalna, redirect na: ' . $redirect);
+
                 return [
                     'result' => 'success',
                     'redirect' => $redirect,
                 ];
             }
-
         } else {
             wc_add_notice(__('Payment error', 'tpay'), 'error');
+
             return false;
         }
     }
-
 }

@@ -15,11 +15,13 @@ class TpaySF extends TpayGateways
         $this->setSubscriptionsSupport();
         $list = $this->getBanksList(false);
         $has_sf = false;
+
         foreach ($list as $item) {
             if ($item['id'] == TPAYSF) {
                 $has_sf = true;
             }
         }
+
         if (!$has_sf || get_woocommerce_currency() != 'PLN') {
             add_filter('woocommerce_available_payment_gateways', [$this, 'unset_gateway']);
         }
@@ -33,8 +35,10 @@ class TpaySF extends TpayGateways
     public function scheduled_subscription_payment($chargeAmount, $order)
     {
         $user_id = $order->get_user_id();
+
         if ($user_id) {
             $cards = $this->userCards($user_id);
+
             foreach ($cards as $card) {
                 $use_card = $card;
             }
@@ -44,7 +48,7 @@ class TpaySF extends TpayGateways
                 'description' => __('Order', 'tpay') . ' #' . $order->ID,
                 'amount' => $chargeAmount,
                 'pay' => [
-                    'groupId' => 103,
+                    'channelId' => TpayCC::CHANNEL_ID,
                 ],
                 'payer' => $payer_data,
                 'callbacks' => [
@@ -64,7 +68,7 @@ class TpaySF extends TpayGateways
 
 
             $paydata = [
-                'groupId' => 103,
+                'channelId' => TpayCC::CHANNEL_ID,
                 'method' => 'sale',
                 'cardPaymentData' => [
                     'token' => $use_card['token']
@@ -75,17 +79,22 @@ class TpaySF extends TpayGateways
             do {
                 $crc = $this->createCRC($order->get_id());
                 $payment_data['hiddenDescription'] = $crc;
+
                 try {
-                    $transaction = $this->tpay_api()->Transactions->createTransaction($payment_data);
+                    $transaction = $this->tpay_api()->Transactions->createTransactionWithInstantRedirection($payment_data);
                 } catch (\Error $e) {
                     $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia ' . $order->ID);
+
                     return false;
                 }
+
                 $md5 = md5($this->id_seller . $transaction['title'] . $this->payment_data['amount'] . $crc . $this->security_code);
-                $result = $this->tpay_api()->Transactions->createPaymentByTransactionId($paydata, $transaction['transactionId']);
+                $result = $this->tpay_api()->Transactions->createInstantPaymentByTransactionId($paydata, $transaction['transactionId']);
+
                 if ($result['status'] == 'correct' || $i >= 1) {
                     $stop = true;
                 }
+
                 sleep(1);
                 $i++;
                 update_option('CREATE_PAYMENT' . time() . '__SUBS_TRY_' . $i, print_r($result, true));
@@ -99,6 +108,7 @@ class TpaySF extends TpayGateways
                 $order->payment_complete($result['transactionId']);
                 $order->update_status('completed');
                 \WC_Subscriptions_Manager::process_subscription_payments_on_order($order);
+
                 return true;
             } else {
                 $order->add_order_note(__('Nieudana płatność kartą'));
@@ -128,6 +138,7 @@ class TpaySF extends TpayGateways
             'subscription_payment_method_change_admin',
             'multiple_subscriptions',
         );
+
         if (class_exists('WC_Subscriptions', false)) {
             $this->supports = array_merge($this->supports, $subscriptionsSupport);
             add_action(
@@ -142,14 +153,18 @@ class TpaySF extends TpayGateways
     private function userCards($user_id = null)
     {
         if (!get_current_user_id() && !$user_id) return false;
+
         $result = [];
         global $wpdb;
         $table = $wpdb->prefix . 'tpay_cards';
+
         if (!$user_id) {
             $user_id = get_current_user_id();
         }
+
         $sql = $wpdb->prepare('select id, vendor, short_code, token from ' . $table . ' where `user_id` = %d and token is not null', $user_id);
         $cards = $wpdb->get_results($sql);
+
         if ($cards) {
             foreach ($cards as $card) {
                 $result[$card->id] = [
@@ -159,8 +174,8 @@ class TpaySF extends TpayGateways
                 ];
             }
         }
-        return $result;
 
+        return $result;
     }
 
     /**
@@ -171,9 +186,11 @@ class TpaySF extends TpayGateways
         if ($this->description) {
             echo wpautop(wp_kses_post($this->description));
         }
+
         if ($this->has_terms_checkbox) {
             $agreements = $this->gateway_helper->agreements_field();
         }
+
         $cards = $this->userCards();
         include plugin_dir_path(__FILE__) . '../views/html/sf.php';
 
@@ -250,19 +267,18 @@ class TpaySF extends TpayGateways
 
     private function additional_payment_data($order_id)
     {
-        $this->additional_payment_data['groupId'] = $this->payment_data['pay']['groupId'];
+        $this->additional_payment_data['channelId'] = $this->payment_data['pay']['channelId'];
         $this->additional_payment_data['method'] = $this->payment_data['pay']['method'];
+
         if ($card_id = $this->request->get('saved-card')) {
             $card = $this->card_helper->get_card_by_id($card_id);
+
             if ($card) {
-                $this->additional_payment_data['cardPaymentData'] = [
-                    'token' => $card['token'],
-                ];
+                $this->additional_payment_data['cardPaymentData'] = ['token' => $card['token']];
             }
         } elseif ($carddata = $this->request->get('carddata')) {
-            $this->additional_payment_data['cardPaymentData'] = [
-                'card' => $carddata,
-            ];
+            $this->additional_payment_data['cardPaymentData'] = ['card' => $carddata];
+
             if ($this->request->get('save-card')) {
                 $save_card = [
                     'card_vendor' => $this->request->get('card_vendor'),
@@ -270,6 +286,7 @@ class TpaySF extends TpayGateways
                     'card_short_code' => $this->request->get('card_short_code'),
                     'crc' => $this->crc,
                 ];
+
                 if ($this->card_helper->save_card($save_card)) {
                     $this->additional_payment_data['cardPaymentData']['save'] = true;
                 }
@@ -277,12 +294,15 @@ class TpaySF extends TpayGateways
         } else {
             $this->gateway_helper->tpay_logger('Nieudana próba płatności kartą na stronie sklepu- niepoprawne dane karty');
             wc_add_notice(__('Enter the correct card details', 'tpay'), 'error');
+
             return false;
         }
+
         if (class_exists('WC_Subscriptions_Order', false) && \WC_Subscriptions_Order::order_contains_subscription($order_id)) {
             if (!$card_id && !$this->request->get('save-card')) {
                 $this->gateway_helper->tpay_logger('Nieudana próba uruchomienia subskrypcji- użytkownik nie zaznaczył chęci zapisania karty.');
                 wc_add_notice(__('In order to purchase a subscription service, you must agree to save the card', 'tpay'), 'error');
+
                 return false;
             }
         }
@@ -294,19 +314,22 @@ class TpaySF extends TpayGateways
         $this->crc = $this->createCRC($order_id);
         $order = new \WC_Order($order_id);
         $user_id = $order->get_user_id();
-        $groupID = TPAYSF;
-        $this->set_payment_data($order, $groupID);
+        $this->set_payment_data($order, TpayCC::CHANNEL_ID);
+
         if (!$this->additional_payment_data($order_id)) {
             return false;
         }
+
         $result = $this->process_transaction($order);
+
         if ($result['result'] == 'success') {
             if ($errors_list = $this->gateway_helper->tpay_has_errors($result)) {
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności kartą na stronie sklepu- zwrócone następujące błędy: ' . implode(' ', $errors_list));
                 wc_add_notice(implode(' ', $errors_list), 'error');
+
                 return false;
             } else {
-                $redirect = $result['transactionPaymentUrl'] ? $result['transactionPaymentUrl'] : $this->get_return_url($order);
+                $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
                 $md5 = md5($this->id_seller . $result['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code);
                 unset ($_SESSION['tpay_session']);
                 unset ($_SESSION['tpay_attempts']);
@@ -320,6 +343,7 @@ class TpaySF extends TpayGateways
                 }
 
                 $this->gateway_helper->tpay_logger('Udane zamówienie, płatność kartą na stronie sklepu, redirect na: ' . $redirect);
+
                 return [
                     'result' => 'success',
                     'redirect' => $redirect,
@@ -335,17 +359,20 @@ class TpaySF extends TpayGateways
     public function process_transaction($order)
     {
         try {
-            $transaction = $this->tpay_api()->Transactions->createTransaction($this->payment_data);
+            $transaction = $this->tpay_api()->Transactions->createTransactionWithInstantRedirection($this->payment_data);
         } catch (\Error $e) {
             $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia ' . $order->ID);
+
             return false;
         }
+
         $md5 = md5($this->id_seller . $transaction['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code);
         update_post_meta($order->ID, '_transaction_id', $transaction['transactionId']);
         update_post_meta($order->ID, '_md5_checksum', $md5);
         update_post_meta($order->ID, '_crc', $this->crc);
-        $result = $this->tpay_api()->Transactions->createPaymentByTransactionId($this->additional_payment_data, $transaction['transactionId']);
+        $result = $this->tpay_api()->Transactions->createInstantPaymentByTransactionId($this->additional_payment_data, $transaction['transactionId']);
         update_option('CREATE_PAYMENT' . time(), print_r($result, true));
+
         if ($result['result'] == 'success') {
             return $result;
         } else {
