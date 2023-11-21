@@ -14,7 +14,6 @@ class TpaySettings
         $this->fields = $this->tpay_fields();
         add_action('admin_menu', [$this, 'tpay_settings_add_plugin_page']);
         add_action('admin_init', [$this, 'tpay_settings_page_init']);
-
     }
 
     /**
@@ -125,7 +124,8 @@ class TpaySettings
             'desc' => __('Merchant email', 'tpay'),
             'name' => 'tpay_settings_option_name',
             'required' => true,
-            'type' => 'email'
+            'type' => 'email',
+            'step' => ''
         ];
         add_settings_field(
             $args['id'], // id
@@ -152,7 +152,9 @@ class TpaySettings
         $args = [
             'id' => 'global_amount_fee',
             'desc' => __('Amount fee', 'tpay'),
-            'name' => 'tpay_settings_option_name'
+            'name' => 'tpay_settings_option_name',
+            'type' => 'number',
+            'step' => '0.01'
         ];
         add_settings_field(
             $args['id'], // id
@@ -165,7 +167,9 @@ class TpaySettings
         $args = [
             'id' => 'global_percentage_fee',
             'desc' => __('Percentage fee', 'tpay'),
-            'name' => 'tpay_settings_option_name'
+            'name' => 'tpay_settings_option_name',
+            'type' => 'number',
+            'step' => '0.01'
         ];
         add_settings_field(
             $args['id'], // id
@@ -193,8 +197,9 @@ class TpaySettings
         $id = $args['id'];
         $required = @$args['required'] ? 'required="required"' : '';
         $type = @$args['type'] ? $type = @$args['type'] : $type = "text";
+        $step = @$args['step'] ? $step = @$args['step'] : $type = "";
         $value = isset($this->tpay_settings_options[$id]) ? esc_attr($this->tpay_settings_options[$id]) : '';
-        printf('<input type="' . $type . '" class="regular-text" value="%s" name="tpay_settings_option_name[%s]" id="%s" ' . $required . ' />',
+        printf('<input type="' . $type . '" step="' . $step . '" class="regular-text" value="%s" name="tpay_settings_option_name[%s]" id="%s" ' . $required . ' />',
             $value, $id, $id);
     }
 
