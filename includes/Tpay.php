@@ -26,12 +26,12 @@ class Tpay extends TpayGateways
      */
     public function payment_fields()
     {
-        if ($this->hide_bank_selection) {
-            return;
-        }
-
         if ($this->description) {
             echo wpautop(wp_kses_post($this->description));
+        }
+
+        if ($this->hide_bank_selection) {
+            return;
         }
 
         $agreements = '';
