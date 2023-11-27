@@ -54,10 +54,10 @@ $list = array_filter($list, function (\Tpay\Dtos\Channel $channel) {
 <div id="tpay-payment" class="tpay-pbl-container">
     <div class="tpay-pbl">
         <?php if ($renderType == 'list'): ?>
-            <select class="tpay-item" name="tpay-groupID">
+            <select class="tpay-item" name="tpay-groupID" style="width: 100%">
                 <?php foreach ($list as $item): ?>
-                    <?php if (!in_array($item['id'], $this->unset_banks)): ?>
-                        <option value="<?php echo $item['id'] ?>"><?php echo $item['name'] ?></option>
+                    <?php if (!in_array($item->id, $this->unset_banks)): ?>
+                        <option value="<?php echo $item->id ?>"><?php echo $item->name ?></option>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </select>
