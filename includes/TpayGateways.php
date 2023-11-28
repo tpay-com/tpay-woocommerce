@@ -286,7 +286,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
             $sf ? TpaySF::get_form_sf() : [],
             [
                 'notifications_url' => [
-                    'title' => __('Your address for notifications', 'tpay') . ': ',
+                    'title' => __('Your address for notifications', 'tpay'),
                     'type' => 'title',
                     'description' => add_query_arg('wc-api', 'Tpay', home_url('/')),
                 ],
