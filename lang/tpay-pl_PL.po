@@ -341,6 +341,10 @@ msgstr "Ustawienia Tpay"
 msgid "Tpay Twisto"
 msgstr "Twisto"
 
+#: includes/WC_TpayGateways.php:235
+msgid "Pekao Installments"
+msgstr "Raty Pekao"
+
 #: includes/TpaySettings.php:41 includes/TpaySettings.php:42
 msgid "Transaction title"
 msgstr "Tytuł transakcji"
