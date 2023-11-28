@@ -145,6 +145,8 @@ function generate_random_string($length = 10)
 function init_gateway_tpay()
 {
     if (!class_exists('WC_Payment_Gateway')) {
+        childPluginHasParentPlugin();
+
         return;
     }
     load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
@@ -186,8 +188,10 @@ function enqueue_tpay_gateway_assets()
 function childPluginHasParentPlugin()
 {
     if (is_admin() && current_user_can('activate_plugins')) {
+        require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
         add_action('admin_notices', 'displayChildPluginNotice');
         deactivate_plugins(plugin_basename(__FILE__));
+
         if (filter_input(INPUT_GET, 'activate')) {
             unset($_GET['activate']);
         }
@@ -196,8 +200,6 @@ function childPluginHasParentPlugin()
 
 function displayChildPluginNotice()
 {
-    echo '<div class="error"><p>';
-    echo 'Tpay requires a WooCommerce plugin, <a target="_blank" href="https://wordpress.org/plugins/woocommerce/">download it</a>';
-    echo '</p></div>';
+    echo '<div class="error"><p>Tpay requires a WooCommerce plugin, <a target="_blank" href="https://wordpress.org/plugins/woocommerce/">download it</a></p></div>';
 }
 
