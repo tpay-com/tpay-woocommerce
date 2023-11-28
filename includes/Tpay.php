@@ -53,13 +53,6 @@ class Tpay extends TpayGateways
                 'placeholder' => __('Custom order, separate payment methods with commas', 'tpay'),
                 'desc_tip' => true
             ],
-            'show_inactive_methods' => [
-                'title' => __('Show inactive methods', 'tpay'),
-                'type' => 'checkbox',
-                'description' => __('Show inactive payment methods as grayed out', 'tpay'),
-                'label' => __('Show', 'tpay'),
-                'desc_tip' => true
-            ],
             'hide_bank_selection' => [
                 'title' => __('Hide bank selection', 'tpay'),
                 'type' => 'checkbox',
@@ -95,6 +88,8 @@ class Tpay extends TpayGateways
                 wc_add_notice(implode(' ', $errors_list), 'error');
                 return false;
             } else {
+                $order->set_transaction_id($result['transactionId']);
+                $order->save();
                 $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
                 $md5 = md5($this->id_seller . $result['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code);
                 update_post_meta($order->ID, '_transaction_id', $result['transactionId']);
