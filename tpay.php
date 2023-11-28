@@ -16,9 +16,6 @@
 /*
  * Add new gateway
  */
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0);
-error_reporting(E_ALL);
 define('TPAY_PLUGIN_VERSION', '1.3');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');

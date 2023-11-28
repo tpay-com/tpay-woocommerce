@@ -4,19 +4,21 @@ namespace Tpay\Helpers;
 
 class RequestHelper
 {
-    public function get($field = null){
-        if(!isset($_POST[$field])){
+    public function get(?string $field = null, ?int $filter = null)
+    {
+        if (!isset($_POST[$field])) {
             return null;
         }
-        elseif(!$field){
+        if (!$field) {
             $result = [];
-            foreach($_POST as $key => $val){
-                $result[$key] = filter_input(INPUT_POST, $key);
+
+            foreach ($_POST as $key => $val) {
+                $result[$key] = filter_input(INPUT_POST, $key, $filter ?: FILTER_DEFAULT);
             }
+
             return $result;
         }
-        return filter_input(INPUT_POST, $field);
+
+        return filter_input(INPUT_POST, $field, $filter ?: FILTER_DEFAULT);
     }
-
-
 }

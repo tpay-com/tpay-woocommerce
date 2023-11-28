@@ -25,10 +25,10 @@ class Channel
     /** @var bool */
     public $instantRedirection;
 
-    /** @var Group[] */
+    /** @var array<Group> */
     public $groups;
 
-    /** @var Constraint[] */
+    /** @var array<Constraint> */
     public $constraints;
 
     public function __construct(

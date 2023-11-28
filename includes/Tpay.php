@@ -2,6 +2,8 @@
 
 namespace Tpay;
 
+use WC_Order;
+
 class Tpay extends TpayGateways
 {
     private $unset_banks = [];
@@ -13,7 +15,7 @@ class Tpay extends TpayGateways
     {
         parent::__construct(TPAYPBL_ID);
         $this->has_terms_checkbox = true;
-        $this->hide_bank_selection = $this->get_tpay_option(['woocommerce_tpaypbl_settings', 'hide_bank_selection']) === 'yes';
+        $this->hide_bank_selection = 'yes' === $this->get_tpay_option(['woocommerce_tpaypbl_settings', 'hide_bank_selection']);
     }
 
     public function init_form_fields()
@@ -21,9 +23,6 @@ class Tpay extends TpayGateways
         parent::tpay_init_form_fields(true);
     }
 
-    /**
-     * @return void
-     */
     public function payment_fields()
     {
         if ($this->description && !$this->hide_bank_selection) {
@@ -42,7 +41,7 @@ class Tpay extends TpayGateways
             return;
         }
 
-        include plugin_dir_path(__FILE__) . '../views/html/pbl.php';
+        include plugin_dir_path(__FILE__).'../views/html/pbl.php';
     }
 
     public static function get_form_custom_order(): array
@@ -53,30 +52,30 @@ class Tpay extends TpayGateways
                 'type' => 'text',
                 'description' => __('Custom order, separate payment methods with commas', 'tpay'),
                 'placeholder' => __('Custom order, separate payment methods with commas', 'tpay'),
-                'desc_tip' => true
+                'desc_tip' => true,
             ],
             'hide_bank_selection' => [
                 'title' => __('Hide bank selection', 'tpay'),
                 'type' => 'checkbox',
                 'description' => __('Redirect to payment panel without choosing bank in advance', 'tpay'),
                 'label' => __('Hide', 'tpay'),
-                'desc_tip' => true
-            ]
+                'desc_tip' => true,
+            ],
         ];
     }
 
     public function process_payment($order_id)
     {
         $this->crc = $this->createCRC($order_id);
-        $order = new \WC_Order($order_id);
+        $order = new WC_Order($order_id);
 
         if (!$this->hide_bank_selection) {
             $channelId = $this->request->get('tpay-channel-id');
 
-
             if (!$channelId || !is_numeric($channelId)) {
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności PBL- użytkownik nie wybrał banku');
                 wc_add_notice(__('Select a bank', 'tpay'), 'error');
+
                 return false;
             }
         }
@@ -84,31 +83,31 @@ class Tpay extends TpayGateways
         $this->set_payment_data($order, $channelId);
         $result = $this->process_transaction($order);
 
-        if ($result['result'] == 'success') {
+        if ('success' == $result['result']) {
             if ($errors_list = $this->gateway_helper->tpay_has_errors($result)) {
-                $this->gateway_helper->tpay_logger('Nieudana próba płatności- zwrócone następujące błędy: ' . implode(' ', $errors_list));
+                $this->gateway_helper->tpay_logger('Nieudana próba płatności- zwrócone następujące błędy: '.implode(' ', $errors_list));
                 wc_add_notice(implode(' ', $errors_list), 'error');
+
                 return false;
-            } else {
-                $order->set_transaction_id($result['transactionId']);
+            }
+            $order->set_transaction_id($result['transactionId']);
                 $order->save();
                 $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
-                $md5 = md5($this->id_seller . $result['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code);
-                update_post_meta($order->ID, '_transaction_id', $result['transactionId']);
-                update_post_meta($order->ID, '_md5_checksum', $md5);
-                update_post_meta($order->ID, '_crc', $this->crc);
-                update_post_meta($order->ID, '_payment_method', $this->id);
-                $this->gateway_helper->tpay_logger('Udane zamówienie, redirect na: ' . $redirect);
+            $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
+            update_post_meta($order->ID, '_transaction_id', $result['transactionId']);
+            update_post_meta($order->ID, '_md5_checksum', $md5);
+            update_post_meta($order->ID, '_crc', $this->crc);
+            update_post_meta($order->ID, '_payment_method', $this->id);
+            $this->gateway_helper->tpay_logger('Udane zamówienie, redirect na: '.$redirect);
 
-                return [
-                    'result' => 'success',
-                    'redirect' => $redirect,
-                ];
-            }
-        } else {
-            wc_add_notice(__('Payment error', 'tpay'), 'error');
-            return false;
+            return [
+                'result' => 'success',
+                'redirect' => $redirect,
+            ];
         }
+        wc_add_notice(__('Payment error', 'tpay'), 'error');
+
+        return false;
     }
 
     public function set_payment_data($order, $channelId)
@@ -119,7 +118,7 @@ class Tpay extends TpayGateways
             $merchant_email = get_option('tpay_settings_option_name')['global_merchant_email'];
         }
         $this->payment_data = [
-            'description' => __('Order', 'tpay') . ' #' . $order->ID,
+            'description' => __('Order', 'tpay').' #'.$order->ID,
             'hiddenDescription' => $this->crc,
             'amount' => $order->get_total(),
             'payer' => $payer_data,
@@ -131,14 +130,14 @@ class Tpay extends TpayGateways
                 'notification' => [
                     'url' => add_query_arg('wc-api', $this->gateway_data('api'), home_url('/')),
                     'email' => $merchant_email,
-                ]
-            ]
+                ],
+            ],
         ];
 
         if (!$this->hide_bank_selection) {
             $this->payment_data['pay'] = [
                 'channelId' => (int) $channelId,
-                'method' => 'pay_by_link'
+                'method' => 'pay_by_link',
             ];
         }
     }
