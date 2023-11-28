@@ -2,46 +2,47 @@
 
 namespace Tpay;
 
+use Error;
+use Exception;
 use Tpay\Dtos\Channel;
 use Tpay\Dtos\Constraint;
 use Tpay\Dtos\Group;
 use Tpay\Dtos\Image;
 use tpaySDK\Api\TpayApi;
+use WC_Order;
+use WC_Payment_Gateway;
 
-abstract class TpayGateways extends \WC_Payment_Gateway
+abstract class TpayGateways extends WC_Payment_Gateway
 {
     const CACHE_TTL = 1800;
     const CHANNELS_CACHE_KEY = 'channels';
 
-    protected $tpay_numeric_id = null;
-    protected $enable_for_shipping;
     public $has_terms_checkbox;
-
     public $id_seller;
     public $security_code;
     public $api_key;
     public $api_key_password;
-
     public $shipping;
     public $gateway_helper;
     public $request;
-
     public $payment_data;
     public $additional_payment_data;
     public $crc;
     public $site_domain;
     public $valid_mid = false;
+    protected $tpay_numeric_id;
+    protected $enable_for_shipping;
     protected static $banksGroupMicrocache = [true => null, false => null];
     protected static $channelsMicrocache = [];
-    protected static $banksChannels = null;
-
-    protected static $tpayConnection = null;
-
+    protected static $banksChannels;
+    protected static $tpayConnection;
     protected $cache;
 
     /**
      * Setup general properties for the gateway.
-     * @param string $id
+     *
+     * @param string     $id
+     * @param null|mixed $tpay_numeric_id
      */
     public function __construct($id, $tpay_numeric_id = null)
     {
@@ -57,42 +58,41 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         $this->init_form_fields();
         $this->init_settings();
 
-        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__) . '../views/img/tpay.svg');
+        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__).'../views/img/tpay.svg');
         $this->title = $this->get_option('title');
         $this->description = $this->get_option('description', ' ');
         $this->enable_for_shipping = $this->get_option('enable_for_shipping', []);
         $this->site_domain = rtrim(preg_replace('/\?.*/', '', str_replace('http://', 'https://', home_url('/'))), '/');
 
-
         // Saving hook
-        add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
+        add_action('woocommerce_update_options_payment_gateways_'.$this->id, [$this, 'process_admin_options']);
 
         // Payment listener/API hook
-        add_action('woocommerce_api_' . $this->id, [$this, 'gateway_ipn']);
+        add_action('woocommerce_api_'.$this->id, [$this, 'gateway_ipn']);
         add_filter('woocommerce_available_payment_gateways', [$this, 'unset_gateway']);
     }
 
     /**
-     * @param Channel[] $list
+     * @param array<Channel> $list
      *
-     * @return Channel[]
+     * @return array<Channel>
      */
     public function filter_out_constraints(array $list): array
     {
         return array_filter($list, function (Channel $channel) {
             foreach ($channel->constraints as $constraint) {
-                if ($constraint->field === 'amount') {
+                if ('amount' === $constraint->field) {
                     $cart_content_total = 0;
 
                     if (!is_admin() && WC()->cart) {
                         $cart_content_total = WC()->cart->cart_contents_total;
                     }
 
-                    if ($constraint->type == 'min' && $cart_content_total < $constraint->value) {
+                    if ('min' == $constraint->type && $cart_content_total < $constraint->value) {
                         return false;
                     }
 
-                    if ($constraint->type == 'max' && $cart_content_total > $constraint->value) {
+                    if ('max' == $constraint->type && $cart_content_total > $constraint->value) {
                         return false;
                     }
                 }
@@ -124,11 +124,8 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         $max = $values[$id]['max'];
 
         $cart_content_total = $this->getCartTotal();
-        if ($cart_content_total < $min || $cart_content_total > $max) {
-            return true;
-        }
 
-        return false;
+        return (bool) ($cart_content_total < $min || $cart_content_total > $max);
     }
 
     public function getCartTotal()
@@ -137,6 +134,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         if (!is_admin() && WC()->cart) {
             $cart_content_total = WC()->cart->cart_contents_total;
         }
+
         return $cart_content_total;
     }
 
@@ -155,13 +153,15 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         try {
             $isProd = (@get_option('tpay_settings_option_name')['global_tpay_environment']) != 'sandbox';
             self::$tpayConnection = new TpayApi($this->api_key, $this->api_key_password, $isProd, 'read');
+
             return self::$tpayConnection;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->gateway_helper->tpay_logger('Bramka Tpay nie została uruchomiona - brak danych lub dane niepoprawne');
-            self::$tpayConnection = false; //microcache that tpay connection is unavailable
+            self::$tpayConnection = false; // microcache that tpay connection is unavailable
             if (is_admin() && strpos($exception->getMessage(), 'Authorization error')) {
                 @add_settings_error('general', 'settings_updated', 'Tpay: Authorization error, wrong credentials.', 'error');
             }
+
             return false;
         }
     }
@@ -169,30 +169,14 @@ abstract class TpayGateways extends \WC_Payment_Gateway
     public function set_id_seller($api_key = null)
     {
         if ($api_key) {
-            if (strpos($api_key, '-') !== false) {
+            if (false !== strpos($api_key, '-')) {
                 $value = explode('-', $api_key);
                 $this->id_seller = $value[0];
             }
         }
     }
 
-    /**
-     * @param string $id
-     *
-     * @return null
-     */
-    protected function setup_properties($id)
-    {
-        $this->id = $id;
-        $this->method_title = $this->gateway_data('name');
-        $this->method_description = __('Official Tpay payment gateway for WooCommerce.', 'tpay');
-        $this->has_fields = false;
-        $this->supports = ['products', 'refunds'];
-    }
-
-    /**
-     * @return array
-     */
+    /** @return array */
     public static function gateways_list()
     {
         return [
@@ -201,7 +185,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
                 'front_name' => __('Online payment by Tpay', 'tpay'),
                 'default_description' => __('Choose payment method.', 'tpay'),
                 'api' => TPAYPBL_ID,
-                'group_id' => TPAYPBL
+                'group_id' => TPAYPBL,
             ],
             'tpayblik' => [
                 'name' => __('Tpay Blik', 'tpay'),
@@ -215,7 +199,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
                 'front_name' => __('Online payment by Google Pay', 'tpay'),
                 'default_description' => __('Google Pay', 'tpay'),
                 'api' => TPAYGPAY_ID,
-                'group_id' => TPAYGPAY
+                'group_id' => TPAYGPAY,
             ],
             'tpaytwisto' => [
                 'name' => __('Tpay Twisto', 'tpay'),
@@ -229,14 +213,14 @@ abstract class TpayGateways extends \WC_Payment_Gateway
                 'front_name' => __('Online payment by installments', 'tpay'),
                 'default_description' => __('Installments', 'tpay'),
                 'api' => TPAYINSTALLMENTS_ID,
-                'group_id' => TPAYINSTALLMENTS
+                'group_id' => TPAYINSTALLMENTS,
             ],
             'pekaoinstallments' => [
                 'name' => __('Pekao Installments', 'tpay'),
                 'front_name' => __('Online payment by installments', 'tpay'),
                 'default_description' => __('Installments', 'tpay'),
                 'api' => TPAYPEKAOINSTALLMENTS_ID,
-                'group_id' => TPAYPEKAOINSTALLMENTS
+                'group_id' => TPAYPEKAOINSTALLMENTS,
             ],
             'tpaycc' => [
                 'name' => __('Tpay Credit Card standard', 'tpay'),
@@ -263,6 +247,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
     public function gateway_data($field)
     {
         $names = self::gateways_list();
+
         return $names[$this->id][$field];
     }
 
@@ -273,7 +258,6 @@ abstract class TpayGateways extends \WC_Payment_Gateway
 
     /**
      * @param bool $custom_order
-     * @return void
      */
     public function tpay_init_form_fields($custom_order = false, $blik0 = false, $sf = false)
     {
@@ -295,68 +279,9 @@ abstract class TpayGateways extends \WC_Payment_Gateway
     }
 
     /**
-     * @return array
-     */
-    private function get_form_fields_basic()
-    {
-        return [
-            'enabled' => [
-                'title' => __('Enable/Disable', 'woocommerce'),
-                'label' => __('Enable Tpay payment method', 'tpay'),
-                'type' => 'checkbox',
-                'description' => __(
-                    'If you do not already have Tpay account, <a href="https://register.tpay.com/" target="_blank">please register</a>.',
-                    'tpay'
-                ),
-                'default' => 'no',
-            ],
-            'title' => [
-                'title' => __('Title', 'tpay'),
-                'type' => 'text',
-                'description' => __('Title of Tpay Payment Gateway that users sees on Checkout page.', 'tpay'),
-                'default' => self::gateways_list()[$this->id]['front_name'],
-                'desc_tip' => true
-            ],
-            'use_global' => [
-                'title' => __('Use global values', 'tpay'),
-                'type' => 'checkbox',
-                'label' => __('Use global values.', 'tpay'),
-                'default' => 'yes',
-                'custom_attributes' => ['data-toggle-global' => '1']
-            ]
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    private function get_form_field_config()
-    {
-        $config = [];
-
-        $fields = TpaySettings::tpay_fields();
-        $settings = [];
-        foreach ($fields as $field => $desc) {
-            $settings[$field] = [
-                'title' => $desc['label'],
-                'type' => 'text',
-                'description' => $desc['description'],
-                'desc_tip' => true,
-                'custom_attributes' => [
-                    'data-global' => 'can-be-global',
-                    'global-value' => $this->get_tpay_option(['tpay_settings_option_name', 'global_' . $field]),
-                    'local-value' => $this->get_tpay_option(['woocommerce_' . $this->id . '_settings', $field])
-                ],
-            ];
-        }
-        $config += $settings;
-        return $config;
-    }
-
-    /**
      * @param array $key
      *
-     * @return string|false
+     * @return false|string
      */
     public function get_tpay_option($key)
     {
@@ -366,40 +291,8 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         if (@get_option($key[0])[$key[1]]) {
             return get_option($key[0])[$key[1]];
         }
+
         return false;
-    }
-
-    /**
-     * @return array
-     */
-    private function get_form_field_info()
-    {
-        return [
-            'description' => [
-                'title' => __('Description', 'tpay'),
-                'type' => 'text',
-                'description' => __('Description of Tpay Payment Gateway that users sees on Checkout page.', 'tpay'),
-                'default' => self::gateways_list()[$this->id]['default_description'],
-                'desc_tip' => true
-            ],
-
-            'enable_for_shipping' => [
-                'title' => __('Enable for shipping methods', 'tpay'),
-                'type' => 'multiselect',
-                'class' => 'wc-enhanced-select',
-                'css' => 'width: 400px;',
-                'default' => '',
-                'description' => __(
-                    'If Tpay is only available for certain methods, set it up here. Leave blank to enable for all methods.',
-                    'tpay'
-                ),
-                'options' => $this->shipping->shipping_methods(),
-                'desc_tip' => true,
-                'custom_attributes' => [
-                    'data-placeholder' => __('Select shipping methods', 'tpay'),
-                ],
-            ],
-        ];
     }
 
     /**
@@ -453,12 +346,12 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         }
 
         $this->payment_data = [
-            'description' => __('Order', 'tpay') . ' #' . $order->ID,
+            'description' => __('Order', 'tpay').' #'.$order->ID,
             'hiddenDescription' => $this->crc,
             'amount' => $order->get_total(),
             'pay' => [
-                'channelId' => (int)$channelId,
-                'method' => 'pay_by_link'
+                'channelId' => (int) $channelId,
+                'method' => 'pay_by_link',
             ],
             'payer' => $payer_data,
             'callbacks' => [
@@ -469,8 +362,8 @@ abstract class TpayGateways extends \WC_Payment_Gateway
                 'notification' => [
                     'url' => add_query_arg('wc-api', $this->gateway_data('api'), home_url('/')),
                     'email' => $merchant_email,
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -482,29 +375,28 @@ abstract class TpayGateways extends \WC_Payment_Gateway
             } else {
                 $transaction = $this->tpay_api()->Transactions->createTransactionWithInstantRedirection($this->payment_data);
             }
-        } catch (\Error $e) {
+        } catch (Error $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
+
             return false;
         }
 
         if (isset($transaction['transactionPaymentUrl'])) {
             return $transaction;
-        } else {
+        }
+
             return [
                 'result' => 'error',
                 'message' => __('Unable to create transaction', 'tpay'),
             ];
-        }
     }
 
     public function createCRC($order_id): string
     {
-        return md5(time() . $order_id);
+        return md5(time().$order_id);
     }
 
-    /**
-     * @return Channel[]
-     */
+    /** @return array<Channel> */
     public function channels(): array
     {
         if (!empty(self::$channelsMicrocache)) {
@@ -527,7 +419,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
 
         $result = $api->Transactions->getChannels();
 
-        if (!isset($result['result']) || $result['result'] !== 'success') {
+        if (!isset($result['result']) || 'success' !== $result['result']) {
             $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
             wc_add_notice('Unable to get channels list', 'error');
         }
@@ -561,10 +453,11 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         if (null !== self::$banksGroupMicrocache[$onlineOnly]) {
             return self::$banksGroupMicrocache[$onlineOnly];
         }
-        $cacheKey = 'getBanksList-' . ($onlineOnly ? 'online' : 'all');
+        $cacheKey = 'getBanksList-'.($onlineOnly ? 'online' : 'all');
         $cached = $this->cache->get($cacheKey);
         if ($cached) {
             self::$banksGroupMicrocache[$onlineOnly] = $cached;
+
             return $cached;
         }
         $api = $this->tpay_api();
@@ -573,57 +466,53 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         }
 
         $result = $api->Transactions->getBankGroups($onlineOnly);
-        if (!isset($result['result']) || $result['result'] !== 'success') {
+        if (!isset($result['result']) || 'success' !== $result['result']) {
             $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
             wc_add_notice('Unable to get banks list', 'error');
         }
 
         self::$banksGroupMicrocache[$onlineOnly] = $result['groups'];
         $this->cache->set($cacheKey, $result['groups'], 600);
+
         return $result['groups'];
     }
 
-
     /**
-     * @param int $order_id
+     * @param int        $order_id
      * @param null|float $amount
-     * @param string $reason
+     * @param string     $reason
      *
      * @throws
-     *
      */
     public function process_refund($order_id, $amount = null, $reason = '')
     {
-        $order = new \WC_Order($order_id);
+        $order = new WC_Order($order_id);
         try {
             $result = $this->tpay_api()->Transactions->createRefundByTransactionId(['amount' => $amount], $order->get_transaction_id());
-            if ($result['result'] == 'success' && $result['status'] == 'correct') {
+            if ('success' == $result['result'] && 'correct' == $result['status']) {
                 return true;
-            } else {
-                $this->gateway_helper->tpay_logger("Nieudana próba zwrotu, odpowiedź z Tpay: \r\n" . print_r($result, 1));
-                return false;
             }
-        } catch (\Exception $exception) {
+            $this->gateway_helper->tpay_logger("Nieudana próba zwrotu, odpowiedź z Tpay: \r\n".print_r($result, 1));
+
+            return false;
+        } catch (Exception $exception) {
             $this->gateway_helper->tpay_logger('Nie udało się utworzyć zwrotu');
             error_log("Can't process refund");
+
             return false;
         }
     }
 
-
     /**
-     * @return null
      * @throws
-     *
      */
     public function gateway_ipn()
     {
         $body = $_POST;
-        update_option('tpay_IPN' . time(), print_r($body, true));
+        update_option('tpay_IPN'.time(), print_r($body, true));
         Ipn\IpnContext::chooseStrategy($body);
         wp_die();
     }
-
 
     public function unset_gateway(array $gateways): array
     {
@@ -640,11 +529,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
 
     public function payment_gateway_is_enabled(): bool
     {
-        if ($this->get_tpay_option(['woocommerce_' . $this->id . '_settings', 'enabled']) === 'yes') {
-            return true;
-        }
-
-        return false;
+        return (bool) ('yes' === $this->get_tpay_option(['woocommerce_'.$this->id.'_settings', 'enabled']));
     }
 
     public function getChannels()
@@ -656,6 +541,7 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         $cached = $this->cache->get($cacheKey);
         if ($cached) {
             self::$banksChannels = $cached;
+
             return $cached;
         }
         $api = $this->tpay_api();
@@ -664,15 +550,116 @@ abstract class TpayGateways extends \WC_Payment_Gateway
         }
 
         $result = $api->Transactions->getChannels();
-        if (!isset($result['result']) || $result['result'] !== 'success') {
+        if (!isset($result['result']) || 'success' !== $result['result']) {
             $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
             wc_add_notice('Unable to get channels list', 'error');
+
             return [];
         }
 
         self::$banksChannels = $result['channels'];
         $this->cache->set($cacheKey, self::$banksChannels, 600);
+
         return self::$banksChannels;
+    }
+
+    /**
+     * @param string $id
+     */
+    protected function setup_properties($id)
+    {
+        $this->id = $id;
+        $this->method_title = $this->gateway_data('name');
+        $this->method_description = __('Official Tpay payment gateway for WooCommerce.', 'tpay');
+        $this->has_fields = false;
+        $this->supports = ['products', 'refunds'];
+    }
+
+    /** @return array */
+    private function get_form_fields_basic()
+    {
+        return [
+            'enabled' => [
+                'title' => __('Enable/Disable', 'woocommerce'),
+                'label' => __('Enable Tpay payment method', 'tpay'),
+                'type' => 'checkbox',
+                'description' => __(
+                    'If you do not already have Tpay account, <a href="https://register.tpay.com/" target="_blank">please register</a>.',
+                    'tpay'
+                ),
+                'default' => 'no',
+            ],
+            'title' => [
+                'title' => __('Title', 'tpay'),
+                'type' => 'text',
+                'description' => __('Title of Tpay Payment Gateway that users sees on Checkout page.', 'tpay'),
+                'default' => self::gateways_list()[$this->id]['front_name'],
+                'desc_tip' => true,
+            ],
+            'use_global' => [
+                'title' => __('Use global values', 'tpay'),
+                'type' => 'checkbox',
+                'label' => __('Use global values.', 'tpay'),
+                'default' => 'yes',
+                'custom_attributes' => ['data-toggle-global' => '1'],
+            ],
+        ];
+    }
+
+    /** @return array */
+    private function get_form_field_config()
+    {
+        $config = [];
+
+        $fields = TpaySettings::tpay_fields();
+        $settings = [];
+        foreach ($fields as $field => $desc) {
+            $settings[$field] = [
+                'title' => $desc['label'],
+                'type' => 'text',
+                'description' => $desc['description'],
+                'desc_tip' => true,
+                'custom_attributes' => [
+                    'data-global' => 'can-be-global',
+                    'global-value' => $this->get_tpay_option(['tpay_settings_option_name', 'global_'.$field]),
+                    'local-value' => $this->get_tpay_option(['woocommerce_'.$this->id.'_settings', $field]),
+                ],
+            ];
+        }
+        $config += $settings;
+
+        return $config;
+    }
+
+    /** @return array */
+    private function get_form_field_info()
+    {
+        return [
+            'description' => [
+                'title' => __('Description', 'tpay'),
+                'type' => 'text',
+                'description' => __('Description of Tpay Payment Gateway that users sees on Checkout page.', 'tpay'),
+                'default' => self::gateways_list()[$this->id]['default_description'],
+                'desc_tip' => true,
+            ],
+
+            'enable_for_shipping' => [
+                'title' => __('Enable for shipping methods', 'tpay'),
+                'type' => 'multiselect',
+                'class' => 'wc-enhanced-select',
+                'css' => 'width: 400px;',
+                'default' => '',
+                'description' => __(
+                    'If Tpay is only available for certain methods, set it up here. Leave blank to enable for all methods.',
+                    'tpay'
+                ),
+                'options' => $this->shipping->shipping_methods(),
+                'desc_tip' => true,
+                'custom_attributes' => [
+                    'data-placeholder' => __('Select shipping methods', 'tpay'),
+                ],
+            ],
+        ];
     }
 
     private function is_on_banks_list(): bool
@@ -714,11 +701,12 @@ abstract class TpayGateways extends \WC_Payment_Gateway
 
             if ($groupId === $lookedId && isset($channel->constraints[1]->value)) {
                 $values[$valuesNames[$groupId]] = [
-                    'min' => (float)$channel->constraints[0]->value,
-                    'max' => (float)$channel->constraints[1]->value
+                    'min' => (float) $channel->constraints[0]->value,
+                    'max' => (float) $channel->constraints[1]->value,
                 ];
             }
         }
+
         return $values;
     }
 }

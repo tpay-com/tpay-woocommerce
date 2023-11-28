@@ -4,7 +4,6 @@ namespace Tpay\Ipn;
 
 class IpnContext
 {
-
     public static function chooseStrategy($response)
     {
         if ($response['tr_status']) {

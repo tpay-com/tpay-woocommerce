@@ -57,33 +57,28 @@ $list = array_filter($list, function (\Tpay\Dtos\Channel $channel) {
             <select class="tpay-item" name="tpay-groupID" style="width: 100%">
                 <?php foreach ($list as $item): ?>
                     <?php if (!in_array($item->id, $this->unset_banks)): ?>
-                        <option value="<?php echo $item->id ?>"><?php echo $item->name ?></option>
+                        <option value="<?php echo esc_attr($item->id) ?>"><?php echo esc_html($item->name) ?></option>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </select>
         <?php else: ?>
             <?php
         foreach ($list as $item): ?>
-            <label class="tpay-item" data-groupID="<?php
-            echo $item->id ?>">
-                <input name="tpay-channel-id" type="radio" value="<?php
-                echo $item->id ?>"/>
+            <label class="tpay-item" data-groupID="<?php echo esc_attr($item->id) ?>">
+                <input name="tpay-channel-id" type="radio" value="<?php echo esc_attr($item->id) ?>"/>
                 <div>
                     <div>
                         <div class="tpay-group-logo-holder">
-                            <img src="<?php
-                            echo $item->image->url ?>" class="tpay-group-logo"
-                                 alt="<?php
-                                 echo $item->name ?>">
+                            <img src="<?php echo esc_url($item->image->url) ?>"
+                                 class="tpay-group-logo"
+                                 alt="<?php echo esc_attr($item->name) ?>">
                         </div>
-                        <span class="name"><?php
-                            echo $item->fullName ?></span>
+                        <span class="name"><?php echo esc_html($item->fullName) ?></span>
                     </div>
                 </div>
             </label>
         <?php
             endforeach; ?><?php endif; ?>
     </div>
-    <?php
-    echo $agreements ?>
+    <?php echo esc_html($agreements) ?>
 </div>

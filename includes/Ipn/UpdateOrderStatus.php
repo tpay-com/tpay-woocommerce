@@ -2,8 +2,10 @@
 
 namespace Tpay\Ipn;
 
+use Exception;
 use Tpay\Helpers;
 use tpaySDK\Webhook\JWSVerifiedPaymentNotification;
+use WC_Order;
 
 class UpdateOrderStatus implements IpnInterface
 {
@@ -21,7 +23,7 @@ class UpdateOrderStatus implements IpnInterface
         $order_id = $this->gateway_helper->get_order_by_transaction_crc($response['tr_crc']);
         if (!$order_id) {
             echo 'FALSE';
-            die();
+            exit();
         }
 
         $order_method = get_post_meta($order_id, '_payment_method', true);
@@ -37,63 +39,62 @@ class UpdateOrderStatus implements IpnInterface
             );
             $notification = $NotificationWebhook->getNotification();
             $notificationData = $notification->getNotificationAssociative();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
             echo 'FALSE';
-            die();
+            exit();
         }
         switch ($notificationData['tr_status']) {
-            case 'TRUE';
-            case 'PAID';
+            case 'TRUE':
+            case 'PAID':
                 $this->orderIsComplete($order_id, $notificationData);
                 break;
-            case 'CHARGEBACK';
-                $order = new \WC_Order($order_id);
+            case 'CHARGEBACK':
+                $order = new WC_Order($order_id);
                 $order->update_status('refunded');
                 $this->orderIsRefunded($notificationData);
                 break;
-
-            case 'FALSE';
+            case 'FALSE':
                 $this->orderIsNotComplete($notificationData);
                 break;
         }
     }
 
-    function orderIsRefunded($response)
+    public function orderIsRefunded($response)
     {
-        header("HTTP/1.1 200 OK");
+        header('HTTP/1.1 200 OK');
         echo 'TRUE';
-        die();
+        exit();
     }
 
-    function orderIsComplete($order_id, $response)
+    public function orderIsComplete($order_id, $response)
     {
         $status = (@get_option('tpay_settings_option_name')['global_default_on_hold_status']) == 'completed' ? 'completed' : 'processing';
-        $order = new \WC_Order($order_id);
+        $order = new WC_Order($order_id);
         $order->update_status($status);
         $order->payment_complete($order->get_transaction_id());
-        $this->gateway_helper->tpay_logger('Przyjęcie płatności dla zamówienia: ' . $order_id . ', zrzut odpowiedzi:');
+        $this->gateway_helper->tpay_logger('Przyjęcie płatności dla zamówienia: '.$order_id.', zrzut odpowiedzi:');
         $this->gateway_helper->tpay_logger(print_r($response, 1));
         if (isset($response['card_token'])) {
-            $this->gateway_helper->tpay_logger('Komunikat z bramki z tokenem karty, dotyczy zamówienia: ' . $order_id . ', zrzut odpowiedzi:');
+            $this->gateway_helper->tpay_logger('Komunikat z bramki z tokenem karty, dotyczy zamówienia: '.$order_id.', zrzut odpowiedzi:');
             $this->gateway_helper->tpay_logger(print_r($response, 1));
             $this->saveUserCard($response);
         }
-        header("HTTP/1.1 200 OK");
+        header('HTTP/1.1 200 OK');
         echo 'TRUE';
-        die();
+        exit();
     }
 
-    function orderIsNotComplete($response)
+    public function orderIsNotComplete($response)
     {
         $this->gateway_helper->tpay_logger('Przyjęto zgłoszenie z bramki Tpay, że płatność za zamówienie nie powiodło się. Zrzut odpowiedzi:');
         $this->gateway_helper->tpay_logger(print_r($response, 1));
-        header("HTTP/1.1 200 OK");
+        header('HTTP/1.1 200 OK');
         echo 'FALSE';
-        die();
+        exit();
     }
 
-    function saveUserCard($response)
+    public function saveUserCard($response)
     {
         $crc = $response['tr_crc'];
         if ($order_exists = $this->gateway_helper->get_order_by_transaction_crc($crc)) {

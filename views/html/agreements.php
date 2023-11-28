@@ -1,1 +1,1 @@
-<?php echo $agreements ?>
+<?php echo esc_html($agreements);
