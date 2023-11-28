@@ -26,18 +26,20 @@ class Tpay extends TpayGateways
      */
     public function payment_fields()
     {
-        if ($this->description) {
+        if ($this->description && !$this->hide_bank_selection) {
             echo wpautop(wp_kses_post($this->description));
-        }
-
-        if ($this->hide_bank_selection) {
-            return;
         }
 
         $agreements = '';
 
         if ($this->has_terms_checkbox) {
             $agreements = $this->gateway_helper->agreements_field();
+        }
+
+        if ($this->hide_bank_selection) {
+            include plugin_dir_path(__FILE__) . '../views/html/agreements.php';
+
+            return;
         }
 
         include plugin_dir_path(__FILE__) . '../views/html/pbl.php';
