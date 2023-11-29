@@ -34,7 +34,6 @@ abstract class TpayGateways extends WC_Payment_Gateway
     protected $enable_for_shipping;
     protected static $banksGroupMicrocache = [true => null, false => null];
     protected static $channelsMicrocache = [];
-    protected static $banksChannels;
     protected static $tpayConnection;
     protected $cache;
 
@@ -530,37 +529,6 @@ abstract class TpayGateways extends WC_Payment_Gateway
     public function payment_gateway_is_enabled(): bool
     {
         return (bool) ('yes' === $this->get_tpay_option(['woocommerce_'.$this->id.'_settings', 'enabled']));
-    }
-
-    public function getChannels()
-    {
-        if (null !== self::$banksChannels) {
-            return self::$banksChannels;
-        }
-        $cacheKey = 'get_channels';
-        $cached = $this->cache->get($cacheKey);
-        if ($cached) {
-            self::$banksChannels = $cached;
-
-            return $cached;
-        }
-        $api = $this->tpay_api();
-        if (!$api) {
-            return [];
-        }
-
-        $result = $api->Transactions->getChannels();
-        if (!isset($result['result']) || 'success' !== $result['result']) {
-            $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
-            wc_add_notice('Unable to get channels list', 'error');
-
-            return [];
-        }
-
-        self::$banksChannels = $result['channels'];
-        $this->cache->set($cacheKey, self::$banksChannels, 600);
-
-        return self::$banksChannels;
     }
 
     /**

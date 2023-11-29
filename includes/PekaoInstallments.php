@@ -2,6 +2,7 @@
 
 namespace Tpay;
 
+use Tpay\Dtos\Channel;
 use WC_Order;
 
 class PekaoInstallments extends TpayGateways
@@ -23,25 +24,36 @@ class PekaoInstallments extends TpayGateways
         if ($this->description) {
             echo wpautop(wp_kses_post($this->description));
         }
-        $agreements = '';
-        if ($this->has_terms_checkbox) {
-            $agreements = $this->gateway_helper->agreements_field();
-        }
-        $channels = $this->getChannels();
-        $cartTotal = $this->getCartTotal();
-        $list = [];
-        foreach ($channels as $channel) {
-            if (TPAYPEKAOINSTALLMENTS == $channel['groups'][0]['id']) {
-                if ($channel['constraints'] && $channel['constraints'][0]['value'] <= $cartTotal && $channel['constraints'][1]['value'] >= $cartTotal) {
-                    $list[] = $channel;
-                }
-            }
-        }
+
         $agreements = '';
 
         if ($this->has_terms_checkbox) {
             $agreements = $this->gateway_helper->agreements_field();
         }
+
+        $channels = $this->channels();
+        $cartTotal = $this->getCartTotal();
+
+        $list = $this->filter_out_constraints(array_filter($channels, function (Channel $channel) use ($cartTotal) {
+            foreach ($channel->groups as $group) {
+                if ($group->id !== TPAYPEKAOINSTALLMENTS) {
+                    return false;
+                }
+            }
+
+            if (empty($channel->groups)) {
+                return false;
+            }
+
+            return true;
+        }));
+
+        $agreements = '';
+
+        if ($this->has_terms_checkbox) {
+            $agreements = $this->gateway_helper->agreements_field();
+        }
+
         include plugin_dir_path(__FILE__).'../views/html/pekao.php';
     }
 
