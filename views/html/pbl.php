@@ -84,5 +84,5 @@ $list = array_filter($list, function (\Tpay\Dtos\Channel $channel) {
         <?php
             endforeach; ?><?php endif; ?>
     </div>
-    <?php echo esc_html($agreements) ?>
+    <?php echo wp_kses_post($agreements) ?>
 </div>

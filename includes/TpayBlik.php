@@ -34,7 +34,7 @@ class TpayBlik extends TpayGateways
         $this->init_blik_user_info();
 
         if ($this->description) {
-            echo esc_html(wpautop(wp_kses_post($this->description)));
+            echo wpautop(wp_kses_post($this->description));
         }
 
         $agreements = '';
