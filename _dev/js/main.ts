@@ -1,5 +1,7 @@
 (function ($) {
     $(document).ready(function () {
+        var $form = $('form.checkout');
+
         $(document.body).on('change', 'input[name="payment_method"]', function () {
             $('body').trigger('update_checkout');
         });
@@ -11,6 +13,37 @@
                 }, 400);
             }, 600);
         });
+
+        $('form').on('submit', function (e) {
+            var paymentMethod = $(this).find('input[name="payment_method"]:checked').val();
+            var validateResult = true;
+
+            if (paymentMethod === 'tpaypbl') {
+                validateResult = validateTpayPbl();
+            }
+
+            if (!validateResult) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
+        });
+
+        function validateTpayPbl() {
+            if (!$('input.tpay-item:checked, select.tpay-item').length) {
+                $('html, body').animate({
+                    scrollTop: $('.tpay-pbl-container').offset().top - 180
+                }, 300);
+                $('.pbl-error').slideDown(250);
+
+                return false;
+            } else {
+                $('.pbl-error').slideUp(250);
+
+                return true;
+            }
+        }
+
+
         $('body').on('click', 'li.wc_payment_method > label:not([for="payment_method_tpaysf"])', function(){
             $("#carddata").val('');
             $("#card_vendor").val($.payment.cardType(''));
