@@ -3,7 +3,11 @@ msgstr ""
 "Project-Id-Version: Tpay Payment Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-02 01:33+0000\n"
+<<<<<<< Updated upstream
 "PO-Revision-Date: 2023-11-06 16:22+0100\n"
+=======
+"PO-Revision-Date: 2023-11-29 19:25+0100\n"
+>>>>>>> Stashed changes
 "Last-Translator: dqw dqw\n"
 "Language-Team: Polski\n"
 "Language: pl_PL\n"
@@ -436,3 +440,6 @@ msgstr "Sposób wyświetlania płatności"
 
 msgid "Merchant email"
 msgstr "E-mail sprzedawcy"
+
+msgid "Transaction fee"
+msgstr "Opłata za transakcje"
