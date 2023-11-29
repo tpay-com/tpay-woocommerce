@@ -10,6 +10,18 @@
     }
   }
 }
+[class^="wc_payment_method payment_method_pekao"]{
+  label:not(.tpay-item){
+    display: flex !important;
+    align-items: center;
+    img{
+      margin-left: auto;
+      padding-left: 8px;
+      width: 50px;
+    }
+  }
+}
+
 .tpay-blik0{
   padding: 20px 0;
   input:not([type="checkbox"]):not([type="radio"]){
