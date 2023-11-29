@@ -14,6 +14,6 @@
                 </div>
             </label>
         <?php endforeach; ?>
-        <?php echo esc_html($agreements) ?>
+        <?php echo wp_kses_post($agreements) ?>
     </div>
 </div>

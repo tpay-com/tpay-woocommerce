@@ -32,7 +32,7 @@
             <input type="text" name="blik0" required minlength="7" maxlength="7" />
         </div>
     </div>
-    <?php echo esc_html($agreements) ?>
+    <?php echo wp_kses_post($agreements) ?>
 </div>
 <div class="modal-tpay-blik-container">
     <div class="modal-tpay-blik">
