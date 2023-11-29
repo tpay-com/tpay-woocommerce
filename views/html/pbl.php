@@ -23,6 +23,10 @@ if ($available_gateways) {
         if (($available_gateway === TPAYINSTALLMENTS_ID) && $data->enabled === 'yes') {
             $this->unset_banks[] = TPAYINSTALLMENTS;
         }
+
+        if (($available_gateway === TPAYPEKAOINSTALLMENTS_ID) && $data->enabled === 'yes') {
+            $this->unset_banks[] = TPAYPEKAOINSTALLMENTS;
+        }
     }
 
     $list = $this->filter_out_constraints($list);
