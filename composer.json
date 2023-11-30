@@ -1,40 +1,37 @@
 {
-  "name": "tpay/woocommerce",
-  "description": "Woocommerce payment module",
-  "type": "woocommerce-module",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "tpay.com"
-    }
-  ],
-  "minimum-stability": "stable",
-  "autoload": {
-    "psr-4": {
-      "Tpay\\": "includes/"
+    "name": "tpay/woocommerce",
+    "description": "Woocommerce payment module",
+    "license": "MIT",
+    "type": "woocommerce-module",
+    "authors": [
+        {
+            "name": "tpay.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-json": "*",
+        "tpay-com/tpay-openapi-php": "^1.3"
     },
-    "classmap": [
-      "tpay.php"
-    ]
-  },
-  "config": {
-    "preferred-install": "dist",
-    "prepend-autoloader": false,
-    "optimize-autoloader": true,
-    "platform": {
-      "php": "7.3"
+    "require-dev": {
+        "mockery/mockery": "^1.2",
+        "phpunit/phpunit": "^8"
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Tpay\\": "includes/"
+        },
+        "classmap": [
+            "tpay.php"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "7.1"
+        },
+        "preferred-install": "dist",
+        "prepend-autoloader": false
     }
-  },
-  "require": {
-    "php": ">=7.1",
-    "tpay-com/tpay-openapi-php": "^1.3",
-    "ext-json": "*"
-  },
-  "require-dev": {
-    "phpstan/phpstan": "^1.8",
-    "squizlabs/php_codesniffer": "^3.7.1",
-    "phpmd/phpmd": "@stable",
-    "phpunit/phpunit": "^8",
-    "mockery/mockery": "^1.2"
-  }
 }
