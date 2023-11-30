@@ -3,11 +3,7 @@ msgstr ""
 "Project-Id-Version: Tpay Payment Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-02 01:33+0000\n"
-<<<<<<< Updated upstream
-"PO-Revision-Date: 2023-11-06 16:22+0100\n"
-=======
 "PO-Revision-Date: 2023-11-29 19:25+0100\n"
->>>>>>> Stashed changes
 "Last-Translator: dqw dqw\n"
 "Language-Team: Polski\n"
 "Language: pl_PL\n"
@@ -242,8 +238,9 @@ msgstr "Zapłać zapisaną kartą"
 msgid "Payment declined by user"
 msgstr "Płatność anulowana przez użytkownika"
 
-#: includes/TpayBlik.php:99 includes/TpayBlik.php:134 includes/TpayCC.php:49 includes/TpayInstallments.php:55 includes/TpayGPay.php:56 includes/TpaySF.php:198
-#: includes/TpayTwisto.php:55 includes/Tpay.php:85
+#: includes/TpayBlik.php:99 includes/TpayBlik.php:134 includes/TpayCC.php:49
+#: includes/TpayInstallments.php:55 includes/TpayGPay.php:56
+#: includes/TpaySF.php:198 includes/TpayTwisto.php:55 includes/Tpay.php:85
 msgid "Payment error"
 msgstr "Błąd płatności"
 
@@ -337,7 +334,8 @@ msgid "Tpay payment gateway for WooCommerce"
 msgstr "Bramka płatności Tpay dla Woocommerce"
 
 #. page_title
-#: includes/TpaySettings.php:54 includes/TpaySettings.php:55 includes/TpaySettings.php:71
+#: includes/TpaySettings.php:54 includes/TpaySettings.php:55
+#: includes/TpaySettings.php:71
 msgid "Tpay settings"
 msgstr "Ustawienia Tpay"
 
@@ -357,7 +355,8 @@ msgstr "Tytuł transakcji"
 msgid "Twisto"
 msgstr "Twisto"
 
-#: includes/TpayBlik.php:180 includes/TpaySF.php:221 includes/WC_TpayGateways.php:369
+#: includes/TpayBlik.php:180 includes/TpaySF.php:221
+#: includes/WC_TpayGateways.php:369
 msgid "Unable to create transaction"
 msgstr "Nie udało się utworzyć transakcji"
 
@@ -395,7 +394,7 @@ msgstr "Ukryj listę wyboru banku"
 
 #: includes/Tpay.php:66
 msgid "Redirect to payment panel without choosing bank in advance"
-msgstr "Przekieruj na panel płatnosci tpay bez wybrania banku"
+msgstr "Przekieruj na panel płatnosci Tpay bez wybrania banku"
 
 #: includes/Tpay.php:67
 msgid "Hide"
