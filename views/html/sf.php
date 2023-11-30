@@ -48,5 +48,5 @@ if ($this->valid_mid) {
         <input type="hidden" name="card_vendor" id="card_vendor" value=""/>
         <input type="hidden" name="card_short_code" id="card_short_code" value=""/>
     </div>
-    <?php echo wp_kses_post($agreements) ?>
+    <?php echo $agreements ?>
 </div>

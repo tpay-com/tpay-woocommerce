@@ -25,7 +25,7 @@ class Tpay extends TpayGateways
 
     public function payment_fields()
     {
-        if ($this->description && !$this->hide_bank_selection) {
+        if ($this->description) {
             echo wpautop(wp_kses_post($this->description));
         }
 
