@@ -322,3 +322,14 @@
     }
   }
 }
+
+.pbl-error {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  display: none;
+  &:before {
+    top: 0.5em
+  }
+}

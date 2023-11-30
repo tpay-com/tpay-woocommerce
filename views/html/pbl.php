@@ -56,12 +56,15 @@ $list = array_filter($list, function (\Tpay\Dtos\Channel $channel) {
 });
 ?>
 <div id="tpay-payment" class="tpay-pbl-container">
+    <ul class="pbl-error woocommerce-error" role="alert">
+        <li><?php esc_html_e('Choose payment method.', 'tpay') ?></li>
+    </ul>
     <div class="tpay-pbl">
         <?php if ($renderType == 'list'): ?>
             <select class="tpay-item" name="tpay-channel-id" style="width: 100%">
-                <?php foreach ($list as $item): ?>
+                <?php foreach ($list as $key => $item): ?>
                     <?php if (!in_array($item->id, $this->unset_banks)): ?>
-                        <option value="<?php echo esc_attr($item->id) ?>"><?php echo esc_html($item->name) ?></option>
+                        <option <?php if ($key === 0) echo 'selected'; ?> value="<?php echo esc_attr($item->id) ?>"><?php echo esc_html($item->name) ?></option>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </select>
@@ -69,7 +72,7 @@ $list = array_filter($list, function (\Tpay\Dtos\Channel $channel) {
             <?php
         foreach ($list as $item): ?>
             <label class="tpay-item" data-groupID="<?php echo esc_attr($item->id) ?>">
-                <input name="tpay-channel-id" type="radio" value="<?php echo esc_attr($item->id) ?>"/>
+                <input class="tpay-item" name="tpay-channel-id" type="radio" value="<?php echo esc_attr($item->id) ?>"/>
                 <div>
                     <div>
                         <div class="tpay-group-logo-holder">
