@@ -197,6 +197,10 @@ function childPluginHasParentPlugin()
 
 function displayChildPluginNotice()
 {
-    echo '<div class="error"><p>Tpay requires a WooCommerce plugin, <a target="_blank" href="https://wordpress.org/plugins/woocommerce/">download it</a></p></div>';
+    echo sprintf(
+        '<div class="error"><p>%s <a target="_blank" href="https://wordpress.org/plugins/woocommerce/">%s</a></p></div>',
+        __('Tpay requires a WooCommerce plugin,', 'tpay'),
+        __('download it', 'tpay')
+    );
 }
 

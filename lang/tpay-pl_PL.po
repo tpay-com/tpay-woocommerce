@@ -428,9 +428,6 @@ msgstr "Czytaj więcej"
 msgid "Read less"
 msgstr "Czytaj mniej"
 
-msgid "Tpay requires a WooCommerce plugin, <a target=\"_blank\" href=\"https://wordpress.org/plugins/woocommerce/\">download it</a>"
-msgstr "Tpay wymaga pluginu WooCommerce, <a target=\"_blank\" href=\"https://wordpress.org/plugins/woocommerce/\">pobierz go tutaj</a>"
-
 msgid "Tpay environment"
 msgstr "Środowisko Tpay"
 
@@ -442,3 +439,9 @@ msgstr "E-mail sprzedawcy"
 
 msgid "Transaction fee"
 msgstr "Opłata za transakcje"
+
+msgid "Tpay requires a WooCommerce plugin,"
+msgstr "Tpay wymaga wtyczki WooCommerce,"
+
+msgid "download it"
+msgstr "pobierz ją"
