@@ -13,10 +13,6 @@
         "ext-json": "*",
         "tpay-com/tpay-openapi-php": "^1.3"
     },
-    "require-dev": {
-        "mockery/mockery": "^1.2",
-        "phpunit/phpunit": "^8"
-    },
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
