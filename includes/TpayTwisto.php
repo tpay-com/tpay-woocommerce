@@ -23,7 +23,7 @@ class TpayTwisto extends TpayGateways
     public function payment_fields()
     {
         if ($this->description) {
-            echo esc_html(wpautop(wp_kses_post($this->description)));
+            echo wpautop(wp_kses_post($this->description));
         }
 
         $agreements = '';

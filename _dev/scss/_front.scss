@@ -60,6 +60,12 @@
     padding: 15px !important;
   }
 }
+[class*="payment_method_pekao"]{
+  .payment_box{
+    background: #fff !important;
+    padding: 15px !important;
+  }
+}
 .tpay-sf{
   background: #fff;
   max-width: 750px;
@@ -323,7 +329,7 @@
   }
 }
 
-.pbl-error {
+.pbl-error, .blik0-error {
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   margin-top: 0.5em;

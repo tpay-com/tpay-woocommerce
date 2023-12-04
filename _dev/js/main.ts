@@ -18,8 +18,19 @@
             var paymentMethod = $(this).find('input[name="payment_method"]:checked').val();
             var validateResult = true;
 
-            if (paymentMethod === 'tpaypbl') {
-                validateResult = validateTpayPbl();
+            switch (paymentMethod) {
+                case 'tpaypbl': {
+                    validateResult = validateTpayPbl();
+                    break;
+                }
+                case 'tpayblik': {
+                    validateResult = validateTpayBlik();
+                    break;
+                }
+                default: {
+                    validateResult = true;
+                    break;
+                }
             }
 
             if (!validateResult) {
@@ -29,7 +40,7 @@
         });
 
         function validateTpayPbl() {
-            if (!$('input.tpay-item:checked, select.tpay-item').length) {
+            if (!$('input.tpay-item:checked, select.tpay-item').length && $('input.tpay-item, select.tpay-item').length !== 0) {
                 $('html, body').animate({
                     scrollTop: $('.tpay-pbl-container').offset().top - 180
                 }, 300);
@@ -41,6 +52,26 @@
 
                 return true;
             }
+        }
+
+        function validateTpayBlik() {
+            const blikInput = $('input[name=blik0]');
+
+            if (blikInput.length) {
+                let x = blikInput[0].value;
+                let match = /[0-9]{3}-[0-9]{3}/.exec(x);
+
+                if (match === null) {
+                    $('html, body').animate({
+                        scrollTop: $('.tpay_blik-payment-form').offset().top - 180
+                    }, 300);
+                    $('.blik0-error').slideDown(250);
+                }
+
+                return match !== null;
+            }
+
+            return true;
         }
 
 
