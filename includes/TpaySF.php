@@ -3,6 +3,7 @@
 namespace Tpay;
 
 use Error;
+use Tpay\Dtos\Group;
 use WC_Order;
 use WC_Subscriptions_Manager;
 use WC_Subscriptions_Order;
@@ -18,11 +19,15 @@ class TpaySF extends TpayGateways
         $this->has_terms_checkbox = true;
         $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__).'../views/img/card-visa-mc.svg');
         $this->setSubscriptionsSupport();
-        $list = $this->getBanksList(false);
+        $channels = $this->channels();
         $has_sf = false;
 
-        foreach ($list as $item) {
-            if (TPAYSF == $item['id']) {
+        foreach ($channels as $channel) {
+            $groupIds = array_map(function (Group $group) {
+                return $group->id;
+            }, $channel->groups);
+
+            if (in_array(TPAYSF, $groupIds)) {
                 $has_sf = true;
             }
         }
