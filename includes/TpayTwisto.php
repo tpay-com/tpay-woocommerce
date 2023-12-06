@@ -23,7 +23,7 @@ class TpayTwisto extends TpayGateways
     public function payment_fields()
     {
         if ($this->description) {
-            echo esc_html(wpautop(wp_kses_post($this->description)));
+            echo wpautop(wp_kses_post($this->description));
         }
 
         $agreements = '';
@@ -50,6 +50,8 @@ class TpayTwisto extends TpayGateways
                 return false;
             }
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
+            $order->set_transaction_id($result['transactionId']);
+            $order->save();
             $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
             update_post_meta($order->ID, '_transaction_id', $result['transactionId']);
             update_post_meta($order->ID, '_md5_checksum', $md5);

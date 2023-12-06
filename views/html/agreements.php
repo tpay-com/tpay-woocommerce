@@ -1,1 +1,1 @@
-<?php echo wp_kses_post($agreements);
+<?php echo $agreements;

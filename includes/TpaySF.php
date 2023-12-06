@@ -3,6 +3,7 @@
 namespace Tpay;
 
 use Error;
+use Tpay\Dtos\Group;
 use WC_Order;
 use WC_Subscriptions_Manager;
 use WC_Subscriptions_Order;
@@ -18,11 +19,15 @@ class TpaySF extends TpayGateways
         $this->has_terms_checkbox = true;
         $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__).'../views/img/card-visa-mc.svg');
         $this->setSubscriptionsSupport();
-        $list = $this->getBanksList(false);
+        $channels = $this->channels();
         $has_sf = false;
 
-        foreach ($list as $item) {
-            if (TPAYSF == $item['id']) {
+        foreach ($channels as $channel) {
+            $groupIds = array_map(function (Group $group) {
+                return $group->id;
+            }, $channel->groups);
+
+            if (in_array(TPAYSF, $groupIds)) {
                 $has_sf = true;
             }
         }
@@ -130,7 +135,7 @@ class TpaySF extends TpayGateways
     public function payment_fields()
     {
         if ($this->description) {
-            echo esc_html(wpautop(wp_kses_post($this->description)));
+            echo wpautop(wp_kses_post($this->description));
         }
 
         if ($this->has_terms_checkbox) {
@@ -229,6 +234,8 @@ class TpaySF extends TpayGateways
                 return false;
             }
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
+            $order->set_transaction_id($result['transactionId']);
+            $order->save();
             $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
             unset($_SESSION['tpay_session']);
             unset($_SESSION['tpay_attempts']);

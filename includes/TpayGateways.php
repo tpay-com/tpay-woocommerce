@@ -152,6 +152,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         try {
             $isProd = (@get_option('tpay_settings_option_name')['global_tpay_environment']) != 'sandbox';
             self::$tpayConnection = new TpayApi($this->api_key, $this->api_key_password, $isProd, 'read');
+            self::$tpayConnection->authorization();
 
             return self::$tpayConnection;
         } catch (Exception $exception) {

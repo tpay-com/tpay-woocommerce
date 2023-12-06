@@ -20,6 +20,9 @@
         $blikform_checked = true;
         ?>
     <?php endif ?>
+    <ul class="blik0-error woocommerce-error" role="alert">
+        <li><?php esc_html_e('Enter Blik code', 'tpay') ?></li>
+    </ul>
     <div class="tpay_blik-payment-form <?php echo esc_attr($blikform) ?>">
         <div class="top">
             <label>
@@ -32,7 +35,7 @@
             <input type="text" name="blik0" required minlength="7" maxlength="7" />
         </div>
     </div>
-    <?php echo wp_kses_post($agreements) ?>
+    <?php echo $agreements ?>
 </div>
 <div class="modal-tpay-blik-container">
     <div class="modal-tpay-blik">
