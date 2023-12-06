@@ -135,7 +135,7 @@ class TpaySF extends TpayGateways
     public function payment_fields()
     {
         if ($this->description) {
-            echo esc_html(wpautop(wp_kses_post($this->description)));
+            echo wpautop(wp_kses_post($this->description));
         }
 
         if ($this->has_terms_checkbox) {
@@ -234,6 +234,8 @@ class TpaySF extends TpayGateways
                 return false;
             }
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
+            $order->set_transaction_id($result['transactionId']);
+            $order->save();
             $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
             unset($_SESSION['tpay_session']);
             unset($_SESSION['tpay_attempts']);
