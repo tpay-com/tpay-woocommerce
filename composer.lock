@@ -125,16 +125,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "3.0.34",
+            "version": "3.0.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "56c79f16a6ae17e42089c06a2144467acc35348a"
+                "reference": "4b1827beabce71953ca479485c0ae9c51287f2fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/56c79f16a6ae17e42089c06a2144467acc35348a",
-                "reference": "56c79f16a6ae17e42089c06a2144467acc35348a",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/4b1827beabce71953ca479485c0ae9c51287f2fe",
+                "reference": "4b1827beabce71953ca479485c0ae9c51287f2fe",
                 "shasum": ""
             },
             "require": {
@@ -215,7 +215,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.34"
+                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.35"
             },
             "funding": [
                 {
@@ -231,7 +231,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-11-27T11:13:31+00:00"
+            "time": "2023-12-29T01:59:53+00:00"
         },
         {
             "name": "psr/log",
@@ -285,16 +285,16 @@
         },
         {
             "name": "tpay-com/tpay-openapi-php",
-            "version": "1.6.3",
+            "version": "1.6.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tpay-com/tpay-openapi-php.git",
-                "reference": "fb94cc75c76a2d30c67de1dbc667d1f08ab6fc8c"
+                "reference": "01d6382b427639de7d01ec40c5002bf6d7ce136f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tpay-com/tpay-openapi-php/zipball/fb94cc75c76a2d30c67de1dbc667d1f08ab6fc8c",
-                "reference": "fb94cc75c76a2d30c67de1dbc667d1f08ab6fc8c",
+                "url": "https://api.github.com/repos/tpay-com/tpay-openapi-php/zipball/01d6382b427639de7d01ec40c5002bf6d7ce136f",
+                "reference": "01d6382b427639de7d01ec40c5002bf6d7ce136f",
                 "shasum": ""
             },
             "require": {
@@ -337,9 +337,9 @@
                 "docs": "https://openapi.tpay.com",
                 "email": "support@tpay.com",
                 "issues": "https://github.com/tpay-com/tpay-openapi-php/issues",
-                "source": "https://github.com/tpay-com/tpay-openapi-php/tree/1.6.3"
+                "source": "https://github.com/tpay-com/tpay-openapi-php/tree/1.6.7"
             },
-            "time": "2023-12-01T08:27:19+00:00"
+            "time": "2024-02-15T09:56:55+00:00"
         }
     ],
     "packages-dev": [],

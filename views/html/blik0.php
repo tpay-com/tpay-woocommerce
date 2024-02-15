@@ -32,7 +32,7 @@
             <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
         </div>
         <div class="bottom">
-            <input type="text" name="blik0" required minlength="7" maxlength="7" />
+            <input type="text" inputmode="numeric" pattern="[0-9]{6}" name="blik0" required minlength="6" maxlength="6" />
         </div>
     </div>
     <?php echo $agreements ?>

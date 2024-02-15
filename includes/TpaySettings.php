@@ -185,15 +185,18 @@ class TpaySettings
     public function global_callback($args)
     {
         $id = $args['id'];
-        $required = @$args['required'] ? 'required="required"' : '';
-        $type = @$args['type'] ? $type = @$args['type'] : $type = 'text';
-        $step = @$args['step'] ? $step = @$args['step'] : $type = '';
+        $required = (isset($args['required']) && $args['required']) ? 'required="required"' : '';
+        $type = (isset($args['type']) && $args['type']) ?: 'text';
+        $step = (isset($args['step']) && $args['step']) ?: $type = '';
         $value = isset($this->tpay_settings_options[$id]) ? esc_attr($this->tpay_settings_options[$id]) : '';
         printf(
-            '<input type="'.$type.'" step="'.$step.'" class="regular-text" value="%s" name="tpay_settings_option_name[%s]" id="%s" '.$required.' />',
+            '<input type="%s" step="%s" class="regular-text" value="%s" name="tpay_settings_option_name[%s]" id="%s" %s />',
+            $type,
+            $step,
             $value,
             $id,
-            $id
+            $id,
+            $required
         );
     }
 
@@ -283,8 +286,7 @@ class TpaySettings
             'percentage' => esc_html__('Percentage', 'tpay'),
         ];
         ?>
-        <select class="regular-text" type="text" name="tpay_settings_option_name[global_enable_fee]"
-                id="global_enable_fee">
+        <select class="regular-text" type="text" name="tpay_settings_option_name[global_enable_fee]" id="global_enable_fee">
             <?php foreach ($options as $key => $value) { ?>
                 <option <?php if (@$this->tpay_settings_options['global_enable_fee'] === $key) {
                     echo 'selected="selected"';
@@ -314,16 +316,17 @@ class TpaySettings
         <?php
     }
 
-    /** @return array */
-    public function before_payment_statuses()
+    public function before_payment_statuses(): array
     {
         $statuses = wc_get_order_statuses();
         $available = [];
+
         foreach ($statuses as $key => $value) {
             if (in_array($key, ['wc-completed', 'wc-processing'])) {
                 $available[str_replace('wc-', '', $key)] = $value;
             }
         }
+
         ksort($available);
 
         return $available;
