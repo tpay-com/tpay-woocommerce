@@ -20,7 +20,6 @@ class GatewayHelper
 
     public function set_additional_payment_data($gateway_id, $payment_data, $crc, $post_data = null)
     {
-        $result = [];
         $this->crc = $crc;
         $result = [
             'groupId' => $payment_data['pay']['groupId'],
@@ -86,53 +85,27 @@ class GatewayHelper
         );
     }
 
-    /**
-     * @return int
-     */
-    public function get_order_by_transaction_md5($md5)
+    public function get_order_by_transaction_crc($crc): ?\WC_Order
     {
-        global $wpdb;
-        $sql = $wpdb->prepare('select post_id from '.$wpdb->postmeta.' where meta_value = %s', $md5);
-        $order_id = $wpdb->get_var($sql);
+        $order = wc_get_orders(['meta_query' => [['key' => '_crc', 'value' => $crc]]]);
 
-        return $order_id;
+        return $order[0] ?? null;
     }
 
-    /**
-     * @return int
-     */
-    public function get_order_by_transaction_id($id)
-    {
-        global $wpdb;
-        $sql = $wpdb->prepare('select post_id from '.$wpdb->postmeta.' where meta_value = %s and meta_key = "_transaction_id"', $id);
-        $order_id = $wpdb->get_var($sql);
-
-        return $order_id;
-    }
-
-    public function get_order_by_transaction_crc($crc)
-    {
-        global $wpdb;
-        $sql = $wpdb->prepare('select post_id from '.$wpdb->postmeta.' where meta_value = %s and meta_key = "_crc"', $crc);
-        $order_id = $wpdb->get_var($sql);
-
-        return $order_id;
-    }
-
-    public function user_blik_status()
+    public function user_blik_status(): array
     {
         if (!get_current_user_id()) {
             $user_blik_alias = false;
             $user_has_saved_blik_alias = false;
         } else {
             $user_blik_alias = WP_TPAY_BLIK_PREFIX.'_'.get_current_user_id();
-            $user_has_saved_blik_alias = get_user_meta(get_current_user_id(), 'tpay_alias_blik', true) ? true : false;
+            $user_has_saved_blik_alias = (bool) get_user_meta(get_current_user_id(), 'tpay_alias_blik', true);
         }
 
         return [$user_blik_alias, $user_has_saved_blik_alias];
     }
 
-    public function payer_data($order)
+    public function payer_data($order): array
     {
         $paymentData = [
             'email' => $order->get_billing_email(),
@@ -147,34 +120,7 @@ class GatewayHelper
             $paymentData['phone'] = $order->get_billing_phone();
         }
 
-        return $paymentData;
-    }
-
-    public function update_blik_alias()
-    {
-        if ($_POST['event'] && false !== strpos($_POST['msg_value']['value'], WP_TPAY_BLIK_PREFIX)) {
-            $event = sanitize_text_field($_POST['event']);
-            $uid = $this->user_id_by_blik_alias($_POST['msg_value']['value']);
-
-            if ('ALIAS_UNREGISTER' == $event) {
-                delete_user_meta($uid, 'tpay_alias_blik');
-                header('HTTP/1.1 200 OK');
-                echo 'TRUE';
-            } elseif ('ALIAS_REGISTER' == $event) {
-                update_user_meta($uid, 'tpay_alias_blik', $_POST['msg_value']['value']);
-                header('HTTP/1.1 200 OK');
-                echo 'TRUE';
-            }
-        }
-    }
-
-    public function user_id_by_blik_alias($alias)
-    {
-        global $wpdb;
-        $sql = $wpdb->prepare('select user_id from '.$wpdb->usermeta.' where meta_value = %s and meta_key = "tpay_alias_blik"', $alias);
-        $user_id = $wpdb->get_var($sql);
-
-        return $user_id;
+        return array_filter($paymentData);
     }
 
     public function tpay_has_errors($response)
@@ -182,29 +128,13 @@ class GatewayHelper
         if ($errors = @$response['payments']['errors']) {
             $errors_list = [];
             foreach ($errors as $error) {
-                array_push($errors_list, $error['errorMessage']);
+                $errors_list[] = $error['errorMessage'];
             }
 
             return $errors_list;
         }
 
         return false;
-    }
-
-    public function blik_error($error_code)
-    {
-        $errors = [
-            100 => __('Other error', 'tpay'),
-            101 => __('Payment declined by user', 'tpay'),
-            102 => __('BLIK system general error', 'tpay'),
-            103 => __('User insufficient funds / user authorization error', 'tpay'),
-            104 => __('BLIK system or user timeout', 'tpay'),
-        ];
-        if ($errors[$error_code]) {
-            return $errors[$error_code];
-        }
-
-        return $errors[100];
     }
 
     private function sf_payment_data($post_data)
@@ -236,7 +166,7 @@ class GatewayHelper
         return $this->additional_payment_data;
     }
 
-    private function blik_payment_data($post_data)
+    private function blik_payment_data($post_data): bool
     {
         if ($post_data['blik0']) {
             $blik0 = str_replace('-', '', $post_data['blik0']);

@@ -15,7 +15,7 @@ class Tpay extends TpayGateways
     {
         parent::__construct(TPAYPBL_ID);
         $this->has_terms_checkbox = true;
-        $this->hide_bank_selection = 'yes' === $this->get_tpay_option(['woocommerce_tpaypbl_settings', 'hide_bank_selection']);
+        $this->hide_bank_selection = 'yes' === $this->tpay_get_option(['woocommerce_tpaypbl_settings', 'hide_bank_selection']);
     }
 
     public function init_form_fields()
@@ -90,14 +90,17 @@ class Tpay extends TpayGateways
 
                 return false;
             }
+
             $order->set_transaction_id($result['transactionId']);
-                $order->save();
-                $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
+            $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
             $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
-            update_post_meta($order->ID, '_transaction_id', $result['transactionId']);
-            update_post_meta($order->ID, '_md5_checksum', $md5);
-            update_post_meta($order->ID, '_crc', $this->crc);
-            update_post_meta($order->ID, '_payment_method', $this->id);
+
+            $order->update_meta_data('_transaction_id', $result['transactionId']);
+            $order->update_meta_data('_md5_checksum', $md5);
+            $order->update_meta_data('_crc', $this->crc);
+            $order->update_meta_data('_payment_method', $this->id);
+
+            $order->save();
             $this->gateway_helper->tpay_logger('Udane zamówienie, redirect na: '.$redirect);
 
             return [

@@ -279,20 +279,21 @@ abstract class TpayGateways extends WC_Payment_Gateway
     }
 
     /**
-     * @param array $key
-     *
      * @return false|string
      */
-    public function get_tpay_option($key)
+    public function tpay_get_option(array $key)
     {
-        if (!is_array($key)) {
+        if (count($key) < 2) {
             return false;
         }
-        if (@get_option($key[0])[$key[1]]) {
-            return get_option($key[0])[$key[1]];
+
+        $option = get_option($key[0]);
+
+        if (false === is_array($option)) {
+            return false;
         }
 
-        return false;
+        return $option[$key[1]] ?? false;
     }
 
     /**
@@ -310,7 +311,6 @@ abstract class TpayGateways extends WC_Payment_Gateway
             $is_order_processing = true;
         } elseif (is_page(wc_get_page_id('checkout')) && get_query_var('order-pay') > 0) {
             $order = wc_get_order(absint(get_query_var('order-pay')));
-            add_post_meta($order->get_id(), '_test_key', 'randomvalue');
             $is_order_processing = true;
         }
 
@@ -367,13 +367,13 @@ abstract class TpayGateways extends WC_Payment_Gateway
         ];
     }
 
-    public function process_transaction($order)
+    public function process_transaction(\WC_Order $order)
     {
         try {
             if (isset($this->payment_data['pay']['channelId'])) {
-                $transaction = $this->tpay_api()->Transactions->createTransactionWithInstantRedirection($this->payment_data);
+                $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
             } else {
-                $transaction = $this->tpay_api()->Transactions->createTransactionWithInstantRedirection($this->payment_data);
+                $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
             }
         } catch (Error $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
@@ -417,7 +417,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             return [];
         }
 
-        $result = $api->Transactions->getChannels();
+        $result = $api->transactions()->getChannels();
 
         if (!isset($result['result']) || 'success' !== $result['result']) {
             $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
@@ -455,17 +455,21 @@ abstract class TpayGateways extends WC_Payment_Gateway
         }
         $cacheKey = 'getBanksList-'.($onlineOnly ? 'online' : 'all');
         $cached = $this->cache->get($cacheKey);
+
         if ($cached) {
             self::$banksGroupMicrocache[$onlineOnly] = $cached;
 
             return $cached;
         }
+
         $api = $this->tpay_api();
+
         if (!$api) {
             return [];
         }
 
-        $result = $api->Transactions->getBankGroups($onlineOnly);
+        $result = $api->transactions()->getBankGroups($onlineOnly);
+
         if (!isset($result['result']) || 'success' !== $result['result']) {
             $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
             wc_add_notice('Unable to get banks list', 'error');
@@ -481,17 +485,18 @@ abstract class TpayGateways extends WC_Payment_Gateway
      * @param int        $order_id
      * @param null|float $amount
      * @param string     $reason
-     *
-     * @throws
      */
-    public function process_refund($order_id, $amount = null, $reason = '')
+    public function process_refund($order_id, $amount = null, $reason = ''): bool
     {
-        $order = new WC_Order($order_id);
+        $order = wc_get_order($order_id);
+
         try {
-            $result = $this->tpay_api()->Transactions->createRefundByTransactionId(['amount' => $amount], $order->get_transaction_id());
+            $result = $this->tpay_api()->transactions()->createRefundByTransactionId(['amount' => $amount], $order->get_transaction_id());
+
             if ('success' == $result['result'] && 'correct' == $result['status']) {
                 return true;
             }
+
             $this->gateway_helper->tpay_logger("Nieudana próba zwrotu, odpowiedź z Tpay: \r\n".print_r($result, 1));
 
             return false;
@@ -529,7 +534,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
 
     public function payment_gateway_is_enabled(): bool
     {
-        return (bool) ('yes' === $this->get_tpay_option(['woocommerce_'.$this->id.'_settings', 'enabled']));
+        return 'yes' === $this->tpay_get_option(['woocommerce_'.$this->id.'_settings', 'enabled']);
     }
 
     /**
@@ -590,8 +595,8 @@ abstract class TpayGateways extends WC_Payment_Gateway
                 'desc_tip' => true,
                 'custom_attributes' => [
                     'data-global' => 'can-be-global',
-                    'global-value' => $this->get_tpay_option(['tpay_settings_option_name', 'global_'.$field]),
-                    'local-value' => $this->get_tpay_option(['woocommerce_'.$this->id.'_settings', $field]),
+                    'global-value' => $this->tpay_get_option(['tpay_settings_option_name', 'global_'.$field]),
+                    'local-value' => $this->tpay_get_option(['woocommerce_'.$this->id.'_settings', $field]),
                 ],
             ];
         }
@@ -666,7 +671,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $lookedId = array_flip($valuesNames)[$id];
 
         foreach ($this->channels() as $channel) {
-            $groupId = $channel->groups[0]->id;
+            $groupId = !empty($channel->groups) ? $channel->groups[0]->id : null;
 
             if ($groupId === $lookedId && isset($channel->constraints[1]->value)) {
                 $values[$valuesNames[$groupId]] = [

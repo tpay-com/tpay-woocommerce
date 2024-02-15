@@ -16,14 +16,26 @@
 /*
  * Add new gateway
  */
+
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Tpay\PekaoInstallments;
+use Tpay\Tpay;
+use Tpay\TpayBlik;
+use Tpay\TpayCC;
+use Tpay\TpayGateways;
+use Tpay\TpayGPay;
+use Tpay\TpayInstallments;
+use Tpay\TpaySettings;
+use Tpay\TpaySF;
+use Tpay\TpayTwisto;
+
 define('TPAY_PLUGIN_VERSION', '1.4');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
 
 
-
-const TPAYPBL = NULL;
+const TPAYPBL = null;
 const TPAYPBL_ID = 'tpaypbl';
 const TPAYGPAY = 166;
 const TPAYGPAY_ID = 'tpaygpay';
@@ -41,14 +53,14 @@ const TPAYPEKAOINSTALLMENTS = 169;
 const TPAYPEKAOINSTALLMENTS_ID = 'pekaoinstallments';
 
 const TPAY_CLASSMAP = [
-    TPAYPBL_ID => \Tpay\Tpay::class,
-    TPAYBLIK_ID => \Tpay\TpayBlik::class,
-    TPAYCC_ID => \Tpay\TpayCC::class,
-    TPAYSF_ID => \Tpay\TpaySF::class,
-    TPAYGPAY_ID => \Tpay\TpayGPay::class,
-    TPAYTWISTO_ID => \Tpay\TpayTwisto::class,
-    TPAYINSTALLMENTS_ID => \Tpay\TpayInstallments::class,
-    TPAYPEKAOINSTALLMENTS_ID => \Tpay\PekaoInstallments::class
+    TPAYPBL_ID => Tpay::class,
+    TPAYBLIK_ID => TpayBlik::class,
+    TPAYCC_ID => TpayCC::class,
+    TPAYSF_ID => TpaySF::class,
+    TPAYGPAY_ID => TpayGPay::class,
+    TPAYTWISTO_ID => TpayTwisto::class,
+    TPAYINSTALLMENTS_ID => TpayInstallments::class,
+    TPAYPEKAOINSTALLMENTS_ID => PekaoInstallments::class
 ];
 
 
@@ -57,6 +69,11 @@ if (get_option('tpay_settings_option_name')['global_enable_fee'] != 'disabled') 
     add_action('woocommerce_after_checkout_form', 'tpay_refresh_checkout_on_payment_methods_change');
 }
 
+add_action('before_woocommerce_init', function () {
+    if (class_exists(FeaturesUtil::class)) {
+        FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__);
+    }
+});
 
 
 function tpay_add_checkout_fee_for_gateway()
@@ -71,7 +88,7 @@ function tpay_add_checkout_fee_for_gateway()
         $fee = $percentage / 100 * $amonut;
     }
     $fee = round($fee, 2);
-    if (array_key_exists($chosen_gateway, \Tpay\TpayGateways::gateways_list())) {
+    if (array_key_exists($chosen_gateway, TpayGateways::gateways_list())) {
         WC()->cart->add_fee(__('Transaction fee', 'tpay'), $fee);
     }
 }
@@ -79,11 +96,13 @@ function tpay_add_checkout_fee_for_gateway()
 
 function tpay_refresh_checkout_on_payment_methods_change()
 {
-    wc_enqueue_js("
+    wc_enqueue_js(
+        "
        $( 'form.checkout' ).on( 'change', 'input[name^=\'payment_method\']', function() {
            $('body').trigger('update_checkout');
         });
-   ");
+   "
+    );
 }
 
 
@@ -103,12 +122,21 @@ function tpay_on_activate()
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
     $wpdb->get_results($sql);
+
     if (file_exists(ABSPATH . "wp-config.php") && is_writable(ABSPATH . "wp-config.php")) {
         wp_config_put();
-    } else if (file_exists(dirname(ABSPATH) . "/wp-config.php") && is_writable(dirname(ABSPATH) . "/wp-config.php")) {
-        wp_config_put('/');
     } else {
-        wc_add_notice(__('Cannot modify wp-config.php, you have to do it manually and add WP_TPAY_HASH and WP_TPAY_BLIK_PREFIX', 'tpay'), 'error');
+        if (file_exists(dirname(ABSPATH) . "/wp-config.php") && is_writable(dirname(ABSPATH) . "/wp-config.php")) {
+            wp_config_put('/');
+        } else {
+            wc_add_notice(
+                __(
+                    'Cannot modify wp-config.php, you have to do it manually and add WP_TPAY_HASH and WP_TPAY_BLIK_PREFIX',
+                    'tpay'
+                ),
+                'error'
+            );
+        }
     }
 }
 
@@ -148,7 +176,7 @@ function init_gateway_tpay()
     }
     load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
     require_once('vendor/autoload.php');
-    new \Tpay\TpaySettings();
+    new TpaySettings();
     add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
 }
 
@@ -174,9 +202,27 @@ function enqueue_tpay_admin_assets()
 
 function enqueue_tpay_gateway_assets()
 {
-    wp_enqueue_script('tpay_payment_js', plugin_dir_url(__FILE__) . 'views/js/jquery.payment.js', [], TPAY_PLUGIN_VERSION, true);
-    wp_enqueue_script('tpay_jsencrypt_js', plugin_dir_url(__FILE__) . 'views/js/jsencrypt.min.js', [], TPAY_PLUGIN_VERSION, true);
-    wp_enqueue_script('tpay_sr_js', plugin_dir_url(__FILE__) . 'views/js/string_routines.js', [], TPAY_PLUGIN_VERSION, true);
+    wp_enqueue_script(
+        'tpay_payment_js',
+        plugin_dir_url(__FILE__) . 'views/js/jquery.payment.js',
+        [],
+        TPAY_PLUGIN_VERSION,
+        true
+    );
+    wp_enqueue_script(
+        'tpay_jsencrypt_js',
+        plugin_dir_url(__FILE__) . 'views/js/jsencrypt.min.js',
+        [],
+        TPAY_PLUGIN_VERSION,
+        true
+    );
+    wp_enqueue_script(
+        'tpay_sr_js',
+        plugin_dir_url(__FILE__) . 'views/js/string_routines.js',
+        [],
+        TPAY_PLUGIN_VERSION,
+        true
+    );
     wp_enqueue_script('tpay_gateway_js', plugin_dir_url(__FILE__) . 'views/js/main.min.js', [], time(), true);
     wp_enqueue_style('tpay_gateway_css', plugin_dir_url(__FILE__) . 'views/css/main.css', [], time());
 }
@@ -185,7 +231,7 @@ function enqueue_tpay_gateway_assets()
 function childPluginHasParentPlugin()
 {
     if (is_admin() && current_user_can('activate_plugins')) {
-        require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        require_once(ABSPATH . 'wp-admin/includes/plugin.php');
         add_action('admin_notices', 'displayChildPluginNotice');
         deactivate_plugins(plugin_basename(__FILE__));
 

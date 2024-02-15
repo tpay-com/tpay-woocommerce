@@ -5,9 +5,9 @@
         $(document.body).on('change', 'input[name="payment_method"]', function () {
             $('body').trigger('update_checkout');
         });
-        $('body').on('click', 'li.wc_payment_method > label', function(){
+        $('body').on('click', 'li.wc_payment_method > label', function () {
             var th = $(this);
-            setTimeout(function(){
+            setTimeout(function () {
                 $('html, body').animate({
                     scrollTop: th.offset().top - 180
                 }, 400);
@@ -59,7 +59,7 @@
 
             if (blikInput.length) {
                 let x = blikInput[0].value;
-                let match = /[0-9]{3}-[0-9]{3}/.exec(x);
+                let match = /[0-9]{6}/.exec(x);
 
                 if (match === null) {
                     $('html, body').animate({
@@ -75,7 +75,7 @@
         }
 
 
-        $('body').on('click', 'li.wc_payment_method > label:not([for="payment_method_tpaysf"])', function(){
+        $('body').on('click', 'li.wc_payment_method > label:not([for="payment_method_tpaysf"])', function () {
             $("#carddata").val('');
             $("#card_vendor").val($.payment.cardType(''));
             $("#card_short_code").val('');
@@ -85,22 +85,21 @@
             $('#place_order').removeClass('stop_propagation');
             $('.card-container .wrong').removeClass('wrong');
         });
-        $('body').on('click', '.saved-cards input', function(){
-            if($(this).prop('checked') === true){
+        $('body').on('click', '.saved-cards input', function () {
+            if ($(this).prop('checked') === true) {
                 $('.saved-cards input').not($(this)).prop('checked', false);
                 $('.saved-cards input').not($(this)).attr('name', 'saved-card-unchecked');
                 $(this).attr('name', 'saved-card');
                 clear_card_fields();
                 $('.card-container').find('input').attr('readonly', true);
-            }
-            else{
+            } else {
                 $(this).attr('name', 'saved-card-unchecked');
                 $('.card-container').find('input').attr('readonly', false);
             }
 
         });
 
-        function clear_card_fields(){
+        function clear_card_fields() {
             $("#carddata").val('');
             $("#card_vendor").val($.payment.cardType(''));
             $("#card_short_code").val('');
@@ -109,6 +108,7 @@
             $('#cvc').val('');
             $('.card-container .wrong').removeClass('wrong');
         }
+
         // $('body').on('click', '.saved-cards > label', function(){
         //     if($(this).find('input').hasClass('active-sc')){
         //         $(this).find('input').prop('checked', false);
@@ -137,18 +137,13 @@
             $(this).addClass('active');
             $(this).find('[name="blik-type"]').prop('checked', 'checked');
         });
-        $('body').on('keyup', '.tpay-blik0 [name="blik0"]', function () {
-            var bval = $(this).val().replace('-', '').replace(/\D/g,'');
-
-            $(this).val(chunk(bval, 3).join('-'));
-        });
-        $('body').on('click', '.modal-tpay-blik .close', function(e){
+        $('body').on('click', '.modal-tpay-blik .close', function (e) {
             e.preventDefault();
             $('.modal-tpay-blik-container').hide();
             $('.tpay-blik-alias').click();
             $('.tpay-blik-alias').addClass('active');
         })
-        $('body').on('click', '.show-blik-info', function(e){
+        $('body').on('click', '.show-blik-info', function (e) {
             e.preventDefault();
             $('.modal-tpay-blik-container').css('display', 'flex');
         })
@@ -157,7 +152,7 @@
             new CardPayment($('.tpay-sf').attr('data-pubkey'));
         });
         $('body').on('click', '#place_order', function (e) {
-            if($('.tpay-sf').attr('data-pubkey') != '' && $('.tpay-sf').length > 0 && $('#place_order').hasClass('stop_propagation')) {
+            if ($('.tpay-sf').attr('data-pubkey') != '' && $('.tpay-sf').length > 0 && $('#place_order').hasClass('stop_propagation')) {
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 console.log('sf');
@@ -369,6 +364,7 @@
 
             return isValidForm;
         }
+
         $('#place_order').addClass('stop_propagation');
         // $('body').on('click', '#place_order', function (e) {
         //     e.stopImmediatePropagation();

@@ -8,29 +8,33 @@ class Cache
     {
         $key .= ':';
         $key .= @get_option('tpay_settings_option_name')['global_tpay_environment'];
-        $file = $this->getCacheDir().md5($key).'.php';
+        $file = $this->getCacheDir().md5($key);
+
         if (file_exists($file)) {
-            $data = require $file;
+            $data = unserialize(base64_decode(file_get_contents($file)));
+
             if ($data['ttl'] > time()) {
-                return unserialize(base64_decode($data['data']));
+                return $data['data'];
             }
+
             unlink($file);
         }
+
+        return null;
     }
 
     public function set($key, $value, $ttl = 3600)
     {
         $key .= ':';
         $key .= @get_option('tpay_settings_option_name')['global_tpay_environment'];
-        $file = $this->getCacheDir().md5($key).'.php';
+        $file = $this->getCacheDir().md5($key);
         $ttl += time();
-        $data = base64_encode(serialize($value));
-        $fileContent = "return ['ttl' => {$ttl}, 'data' => '{$data}'];";
+        $data = base64_encode(serialize(['ttl' => $ttl, 'data' => $value]));
 
-        file_put_contents($file, "<?php {$fileContent}");
+        file_put_contents($file, $data);
     }
 
-    public function erase()
+    public function erase(): void
     {
         foreach (glob($this->getCacheDir().'*') as $file) {
             if ($file === $this->getCacheDir()) {
@@ -40,7 +44,7 @@ class Cache
         }
     }
 
-    private function getCacheDir()
+    private function getCacheDir(): string
     {
         return __DIR__.'/../../cache/';
     }

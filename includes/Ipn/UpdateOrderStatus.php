@@ -5,7 +5,6 @@ namespace Tpay\Ipn;
 use Exception;
 use Tpay\Helpers;
 use tpaySDK\Webhook\JWSVerifiedPaymentNotification;
-use WC_Order;
 
 class UpdateOrderStatus implements IpnInterface
 {
@@ -20,15 +19,15 @@ class UpdateOrderStatus implements IpnInterface
 
     public function parseNotification($response)
     {
-        $order_id = $this->gateway_helper->get_order_by_transaction_crc($response['tr_crc']);
-        if (!$order_id) {
+        $order = $this->gateway_helper->get_order_by_transaction_crc($response['tr_crc']);
+
+        if (!$order) {
             echo 'FALSE';
             exit();
         }
 
-        $order_method = get_post_meta($order_id, '_payment_method', true);
-        $class = TPAY_CLASSMAP[$order_method];
-        $gateway = new $class();
+        $order_method = $order->get_meta('_payment_method');
+        $gateway = new (TPAY_CLASSMAP[$order_method])();
         $config = (new Helpers\ConfigProvider())->get_config($gateway);
 
         $isProd = (@get_option('tpay_settings_option_name')['global_tpay_environment']) != 'sandbox';
@@ -44,15 +43,15 @@ class UpdateOrderStatus implements IpnInterface
             echo 'FALSE';
             exit();
         }
+
         switch ($notificationData['tr_status']) {
             case 'TRUE':
             case 'PAID':
-                $this->orderIsComplete($order_id, $notificationData);
+                $this->orderIsComplete($order, $notificationData);
                 break;
             case 'CHARGEBACK':
-                $order = new WC_Order($order_id);
                 $order->update_status('refunded');
-                $this->orderIsRefunded($notificationData);
+                $this->orderIsRefunded();
                 break;
             case 'FALSE':
                 $this->orderIsNotComplete($notificationData);
@@ -60,26 +59,33 @@ class UpdateOrderStatus implements IpnInterface
         }
     }
 
-    public function orderIsRefunded($response)
+    public function orderIsRefunded()
     {
         header('HTTP/1.1 200 OK');
         echo 'TRUE';
         exit();
     }
 
-    public function orderIsComplete($order_id, $response)
+    public function orderIsComplete(\WC_Order $order, array $response): void
     {
-        $status = (@get_option('tpay_settings_option_name')['global_default_on_hold_status']) == 'completed' ? 'completed' : 'processing';
-        $order = new WC_Order($order_id);
+        $status = (@get_option(
+            'tpay_settings_option_name'
+        )['global_default_on_hold_status']) == 'completed' ? 'completed' : 'processing';
         $order->update_status($status);
         $order->payment_complete($order->get_transaction_id());
-        $this->gateway_helper->tpay_logger('Przyjęcie płatności dla zamówienia: '.$order_id.', zrzut odpowiedzi:');
+        $this->gateway_helper->tpay_logger(
+            'Przyjęcie płatności dla zamówienia: ' . $order->get_id() . ', zrzut odpowiedzi:'
+        );
         $this->gateway_helper->tpay_logger(print_r($response, 1));
+
         if (isset($response['card_token'])) {
-            $this->gateway_helper->tpay_logger('Komunikat z bramki z tokenem karty, dotyczy zamówienia: '.$order_id.', zrzut odpowiedzi:');
+            $this->gateway_helper->tpay_logger(
+                'Komunikat z bramki z tokenem karty, dotyczy zamówienia: ' . $order->get_id() . ', zrzut odpowiedzi:'
+            );
             $this->gateway_helper->tpay_logger(print_r($response, 1));
             $this->saveUserCard($response);
         }
+
         header('HTTP/1.1 200 OK');
         echo 'TRUE';
         exit();
@@ -87,7 +93,9 @@ class UpdateOrderStatus implements IpnInterface
 
     public function orderIsNotComplete($response)
     {
-        $this->gateway_helper->tpay_logger('Przyjęto zgłoszenie z bramki Tpay, że płatność za zamówienie nie powiodło się. Zrzut odpowiedzi:');
+        $this->gateway_helper->tpay_logger(
+            'Przyjęto zgłoszenie z bramki Tpay, że płatność za zamówienie nie powiodło się. Zrzut odpowiedzi:'
+        );
         $this->gateway_helper->tpay_logger(print_r($response, 1));
         header('HTTP/1.1 200 OK');
         echo 'FALSE';
@@ -97,10 +105,15 @@ class UpdateOrderStatus implements IpnInterface
     public function saveUserCard($response)
     {
         $crc = $response['tr_crc'];
-        if ($order_exists = $this->gateway_helper->get_order_by_transaction_crc($crc)) {
-            $customer = get_post_meta($order_exists, '_customer_user', true);
+
+        if ($order = $this->gateway_helper->get_order_by_transaction_crc($crc)) {
             $this->gateway_helper->tpay_logger('Zapisanie tokenu karty');
-            $this->card_helper->update_card_token($customer, $crc, $response['card_token'], $order_exists);
+            $this->card_helper->update_card_token(
+                $order->get_customer_id(),
+                $crc,
+                $response['card_token'],
+                $order->get_id()
+            );
         }
     }
 }

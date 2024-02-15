@@ -45,12 +45,13 @@ class TpayCC extends TpayGateways
             }
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
             $order->set_transaction_id($result['transactionId']);
-            $order->save();
             $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
-            update_post_meta($order->ID, '_transaction_id', $result['transactionId']);
-            update_post_meta($order->ID, '_md5_checksum', $md5);
-            update_post_meta($order->ID, '_crc', $this->crc);
-            update_post_meta($order->ID, '_payment_method', $this->id);
+            $order->update_meta_data('_transaction_id', $result['transactionId']);
+            $order->update_meta_data('_md5_checksum', $md5);
+            $order->update_meta_data('_crc', $this->crc);
+            $order->update_meta_data('_payment_method', $this->id);
+
+            $order->save();
             $this->gateway_helper->tpay_logger('Udane zamówienie, płatność kartą na stronie Tpay, redirect na: '.$redirect);
 
             return [
