@@ -29,4 +29,4 @@ jobs:
 
       - uses: softprops/action-gh-release@v1
         with:
-          files: tpay-openapi-php.zip
+          files: tpay-woocommerce.zip
