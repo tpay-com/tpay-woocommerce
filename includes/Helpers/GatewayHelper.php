@@ -2,6 +2,8 @@
 
 namespace Tpay\Helpers;
 
+use WC_Order;
+
 class GatewayHelper
 {
     const CONDITION_PL = 'https://secure.tpay.com/regulamin.pdf';
@@ -85,7 +87,7 @@ class GatewayHelper
         );
     }
 
-    public function get_order_by_transaction_crc($crc): ?\WC_Order
+    public function get_order_by_transaction_crc($crc): ?WC_Order
     {
         $order = wc_get_orders(['meta_query' => [['key' => '_crc', 'value' => $crc]]]);
 

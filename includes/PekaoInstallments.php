@@ -34,18 +34,14 @@ class PekaoInstallments extends TpayGateways
         $channels = $this->channels();
         $cartTotal = $this->getCartTotal();
 
-        $list = $this->filter_out_constraints(array_filter($channels, function (Channel $channel) use ($cartTotal) {
+        $list = $this->filter_out_constraints(array_filter($channels, function (Channel $channel) {
             foreach ($channel->groups as $group) {
-                if ($group->id !== TPAYPEKAOINSTALLMENTS) {
+                if (TPAYPEKAOINSTALLMENTS !== $group->id) {
                     return false;
                 }
             }
 
-            if (empty($channel->groups)) {
-                return false;
-            }
-
-            return true;
+            return !(empty($channel->groups));
         }));
 
         $agreements = '';

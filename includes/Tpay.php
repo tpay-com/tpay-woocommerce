@@ -36,7 +36,7 @@ class Tpay extends TpayGateways
         }
 
         if ($this->hide_bank_selection) {
-            include plugin_dir_path(__FILE__) . '../views/html/agreements.php';
+            include plugin_dir_path(__FILE__).'../views/html/agreements.php';
 
             return;
         }

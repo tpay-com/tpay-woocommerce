@@ -5,6 +5,7 @@ namespace Tpay;
 use Error;
 use Tpay\Dtos\Group;
 use Tpay\Helpers\DatabaseConnection;
+use WC_Order;
 
 class TpaySF extends TpayGateways
 {
@@ -255,7 +256,7 @@ class TpaySF extends TpayGateways
         return false;
     }
 
-    public function process_transaction(\WC_Order $order)
+    public function process_transaction(WC_Order $order)
     {
         try {
             $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
@@ -269,7 +270,6 @@ class TpaySF extends TpayGateways
         $order->update_meta_data('_transaction_id', $transaction['transactionId']);
         $order->update_meta_data('_md5_checksum', $md5);
         $order->update_meta_data('_crc', $this->crc);
-
 
         $result = $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($this->additional_payment_data, $transaction['transactionId']);
         update_option('CREATE_PAYMENT'.time(), print_r($result, true));

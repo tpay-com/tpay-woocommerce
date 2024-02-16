@@ -11,9 +11,7 @@ class TpayBlik extends TpayGateways
 
     private $agreements;
     private $blik0_enabled;
-
     private $user_blik_alias;
-
     private $user_has_saved_blik_alias;
 
     public function __construct()
@@ -117,7 +115,7 @@ class TpayBlik extends TpayGateways
         return false;
     }
 
-    public function process_transaction(\WC_Order $order)
+    public function process_transaction(WC_Order $order)
     {
         try {
             if (!$_SESSION['tpay_session']) {
@@ -201,7 +199,8 @@ class TpayBlik extends TpayGateways
                 'result' => 'error',
                 'message' => $result['errors'][0]['errorMessage'],
             ];
-        } elseif (isset($transaction['transactionPaymentUrl'])) {
+        }
+        if (isset($transaction['transactionPaymentUrl'])) {
             $this->gateway_helper->tpay_logger('Udane utworzenie transakcji BLIK z wyjściem do Tpay. Link do bramki: '.$transaction['transactionPaymentUrl']);
 
             return $transaction;

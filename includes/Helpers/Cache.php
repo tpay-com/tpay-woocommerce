@@ -19,8 +19,6 @@ class Cache
 
             unlink($file);
         }
-
-        return null;
     }
 
     public function set($key, $value, $ttl = 3600)

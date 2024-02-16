@@ -278,9 +278,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         );
     }
 
-    /**
-     * @return false|string
-     */
+    /** @return false|string */
     public function tpay_get_option(array $key)
     {
         if (count($key) < 2) {
@@ -367,7 +365,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         ];
     }
 
-    public function process_transaction(\WC_Order $order)
+    public function process_transaction(WC_Order $order)
     {
         try {
             if (isset($this->payment_data['pay']['channelId'])) {
@@ -508,9 +506,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         }
     }
 
-    /**
-     * @throws
-     */
+    /** @throws */
     public function gateway_ipn()
     {
         $body = $_POST;
@@ -537,9 +533,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         return 'yes' === $this->tpay_get_option(['woocommerce_'.$this->id.'_settings', 'enabled']);
     }
 
-    /**
-     * @param string $id
-     */
+    /** @param string $id */
     protected function setup_properties($id)
     {
         $this->id = $id;

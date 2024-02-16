@@ -179,9 +179,7 @@ class TpaySettings
         );
     }
 
-    /**
-     * @param array $args
-     */
+    /** @param array $args */
     public function global_callback($args)
     {
         $id = $args['id'];

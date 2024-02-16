@@ -2,6 +2,9 @@
 
 namespace Tpay\Helpers;
 
+use mysqli_result;
+use stdClass;
+
 class DatabaseConnection
 {
     public static function delete(string $table, array $where, ?array $whereFormat = null)
@@ -14,7 +17,7 @@ class DatabaseConnection
     /**
      * Query should be in format acceptable by sprintf function
      *
-     * @return array|object|null
+     * @return null|array|object
      */
     public static function query(string $query, ...$args)
     {
@@ -25,9 +28,7 @@ class DatabaseConnection
         return $wpdb->get_results($wpdb->prepare($query, ...$args), ARRAY_A);
     }
 
-    /**
-     * @return array|object|\stdClass|null
-     */
+    /** @return null|array|object|stdClass */
     public static function queryOne(string $query, ...$args)
     {
         global $wpdb;
@@ -46,9 +47,7 @@ class DatabaseConnection
         return $wpdb->get_var($wpdb->prepare($query, ...$args));
     }
 
-    /**
-     * @return bool|int|\mysqli_result|null
-     */
+    /** @return null|bool|int|mysqli_result */
     public static function insert(string $table, array $data)
     {
         global $wpdb;

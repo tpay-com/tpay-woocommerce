@@ -8,7 +8,7 @@ class CardHelper
 
     public function save_card(array $card): bool
     {
-        $hash = sha1($card['card_hash'] . WP_TPAY_HASH);
+        $hash = sha1($card['card_hash'].WP_TPAY_HASH);
         DatabaseConnection::delete(self::TABLE, ['hash' => $hash, 'source_order' => null]);
         $card_id = DatabaseConnection::queryVar('SELECT id FROM %i WHERE hash = %s', self::TABLE, $hash);
 

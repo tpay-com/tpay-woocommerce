@@ -5,6 +5,7 @@ namespace Tpay\Ipn;
 use Exception;
 use Tpay\Helpers;
 use tpaySDK\Webhook\JWSVerifiedPaymentNotification;
+use WC_Order;
 
 class UpdateOrderStatus implements IpnInterface
 {
@@ -66,7 +67,7 @@ class UpdateOrderStatus implements IpnInterface
         exit();
     }
 
-    public function orderIsComplete(\WC_Order $order, array $response): void
+    public function orderIsComplete(WC_Order $order, array $response): void
     {
         $status = (@get_option(
             'tpay_settings_option_name'
@@ -74,13 +75,13 @@ class UpdateOrderStatus implements IpnInterface
         $order->update_status($status);
         $order->payment_complete($order->get_transaction_id());
         $this->gateway_helper->tpay_logger(
-            'Przyjęcie płatności dla zamówienia: ' . $order->get_id() . ', zrzut odpowiedzi:'
+            'Przyjęcie płatności dla zamówienia: '.$order->get_id().', zrzut odpowiedzi:'
         );
         $this->gateway_helper->tpay_logger(print_r($response, 1));
 
         if (isset($response['card_token'])) {
             $this->gateway_helper->tpay_logger(
-                'Komunikat z bramki z tokenem karty, dotyczy zamówienia: ' . $order->get_id() . ', zrzut odpowiedzi:'
+                'Komunikat z bramki z tokenem karty, dotyczy zamówienia: '.$order->get_id().', zrzut odpowiedzi:'
             );
             $this->gateway_helper->tpay_logger(print_r($response, 1));
             $this->saveUserCard($response);
