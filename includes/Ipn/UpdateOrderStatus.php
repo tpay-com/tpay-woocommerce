@@ -28,7 +28,8 @@ class UpdateOrderStatus implements IpnInterface
         }
 
         $order_method = $order->get_meta('_payment_method');
-        $gateway = new (TPAY_CLASSMAP[$order_method])();
+        $class = TPAY_CLASSMAP[$order_method];
+        $gateway = new $class();
         $config = (new Helpers\ConfigProvider())->get_config($gateway);
 
         $isProd = (@get_option('tpay_settings_option_name')['global_tpay_environment']) != 'sandbox';
