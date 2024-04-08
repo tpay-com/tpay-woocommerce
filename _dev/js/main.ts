@@ -5,14 +5,6 @@
         $(document.body).on('change', 'input[name="payment_method"]', function () {
             $('body').trigger('update_checkout');
         });
-        $('body').on('click', 'li.wc_payment_method > label', function () {
-            var th = $(this);
-            setTimeout(function () {
-                $('html, body').animate({
-                    scrollTop: th.offset().top - 180
-                }, 400);
-            }, 600);
-        });
 
         $('form').on('submit', function (e) {
             var paymentMethod = $(this).find('input[name="payment_method"]:checked').val();

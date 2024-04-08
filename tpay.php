@@ -29,7 +29,7 @@ use Tpay\TpaySettings;
 use Tpay\TpaySF;
 use Tpay\TpayTwisto;
 
-define('TPAY_PLUGIN_VERSION', '1.4.2');
+define('TPAY_PLUGIN_VERSION', '1.4.3');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
