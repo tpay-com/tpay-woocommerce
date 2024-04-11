@@ -20,7 +20,6 @@ class ConfigProvider
                 $result['api_key'] = $gateway->get_option('api_key');
                 $result['api_key_password'] = $gateway->get_option('api_key_password');
                 $result['tax_id_meta_field_name'] = $gateway->get_option('tax_id_meta_field_name');
-
             } else {
                 $sf_settings = get_option('woocommerce_tpaysf_settings');
                 for ($i = 1; $i <= 10; $i++) {

@@ -544,6 +544,15 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $this->supports = ['products', 'refunds'];
     }
 
+    protected function get_config()
+    {
+        if (!$this->config) {
+            $this->config = (new Helpers\ConfigProvider())->get_config($this);
+        }
+
+        return $this->config;
+    }
+
     /** @return array */
     private function get_form_fields_basic()
     {
@@ -677,13 +686,5 @@ abstract class TpayGateways extends WC_Payment_Gateway
         }
 
         return $values;
-    }
-
-    protected function get_config()
-    {
-        if(!$this->config) {
-            $this->config = (new Helpers\ConfigProvider())->get_config($this);
-        }
-        return $this->config;
     }
 }

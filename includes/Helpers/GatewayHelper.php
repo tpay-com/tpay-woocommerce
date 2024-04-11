@@ -121,12 +121,12 @@ class GatewayHelper
             $paymentData['country'] = $order->get_billing_country();
             $paymentData['phone'] = $order->get_billing_phone();
         }
-        if($taxIdField){
+        if ($taxIdField) {
             $taxId = $order->get_meta($taxIdField);
-            if(!$taxId && function_exists('wpdesk_get_order_meta')){
-                $taxId = wpdesk_get_order_meta( $order, '_' . $taxIdField, true );
+            if (!$taxId && function_exists('wpdesk_get_order_meta')) {
+                $taxId = wpdesk_get_order_meta($order, '_'.$taxIdField, true);
             }
-            if($taxId) {
+            if ($taxId) {
                 $paymentData['taxId'] = $taxId;
             }
         }
