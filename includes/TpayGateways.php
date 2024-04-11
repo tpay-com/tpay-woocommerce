@@ -36,6 +36,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
     protected static $channelsMicrocache = [];
     protected static $tpayConnection;
     protected $cache;
+    protected $config;
 
     /**
      * Setup general properties for the gateway.
@@ -143,7 +144,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             return self::$tpayConnection;
         }
 
-        $config = (new Helpers\ConfigProvider())->get_config($this);
+        $config = $this->get_config();
         $this->api_key = $config['api_key'];
         $this->api_key_password = $config['api_key_password'];
         $this->security_code = $config['security_code'];
@@ -336,7 +337,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
 
     public function set_payment_data($order, $channelId)
     {
-        $payer_data = $this->gateway_helper->payer_data($order);
+        $payer_data = $this->gateway_helper->payer_data($order, $this->get_config()['tax_id_meta_field_name']);
         $merchant_email = get_option('admin_email');
 
         if (get_option('tpay_settings_option_name')['global_merchant_email']) {
@@ -676,5 +677,13 @@ abstract class TpayGateways extends WC_Payment_Gateway
         }
 
         return $values;
+    }
+
+    protected function get_config()
+    {
+        if(!$this->config) {
+            $this->config = (new Helpers\ConfigProvider())->get_config($this);
+        }
+        return $this->config;
     }
 }

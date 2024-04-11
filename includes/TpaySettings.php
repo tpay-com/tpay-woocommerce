@@ -35,6 +35,13 @@ class TpaySettings
                 'label' => esc_html__('API key password', 'tpay'),
                 'description' => esc_html__('API key password', 'tpay'),
             ],
+            'tax_id_meta_field_name' => [
+                'label' => esc_html__('Tax identifier field name', 'tpay'),
+                'description' => esc_html__(
+                    'If you\'re added extra meta data including tax id to order - place here meta field name',
+                    'tpay'
+                ),
+            ],
         ];
     }
 

@@ -107,7 +107,7 @@ class GatewayHelper
         return [$user_blik_alias, $user_has_saved_blik_alias];
     }
 
-    public function payer_data($order): array
+    public function payer_data($order, $taxIdField = null): array
     {
         $paymentData = [
             'email' => $order->get_billing_email(),
@@ -120,6 +120,15 @@ class GatewayHelper
             $paymentData['city'] = $order->get_billing_city();
             $paymentData['country'] = $order->get_billing_country();
             $paymentData['phone'] = $order->get_billing_phone();
+        }
+        if($taxIdField){
+            $taxId = $order->get_meta($taxIdField);
+            if(!$taxId && function_exists('wpdesk_get_order_meta')){
+                $taxId = wpdesk_get_order_meta( $order, '_' . $taxIdField, true );
+            }
+            if($taxId) {
+                $paymentData['taxId'] = $taxId;
+            }
         }
 
         return array_filter($paymentData);

@@ -63,8 +63,8 @@ const TPAY_CLASSMAP = [
     TPAYPEKAOINSTALLMENTS_ID => PekaoInstallments::class
 ];
 
-
-if (get_option('tpay_settings_option_name')['global_enable_fee'] != 'disabled') {
+$tpaySettings = get_option('tpay_settings_option_name');
+if ($tpaySettings && $tpaySettings['global_enable_fee'] != 'disabled') {
     add_action('woocommerce_cart_calculate_fees', 'tpay_add_checkout_fee_for_gateway');
     add_action('woocommerce_after_checkout_form', 'tpay_refresh_checkout_on_payment_methods_change');
 }
