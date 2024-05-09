@@ -6,19 +6,20 @@ class RequestHelper
 {
     public function get(?string $field = null, ?int $filter = null)
     {
-        if (!isset($_POST[$field])) {
-            return null;
-        }
         if (!$field) {
             $result = [];
 
             foreach ($_POST as $key => $val) {
-                $result[$key] = filter_input(INPUT_POST, $key, $filter ?: FILTER_DEFAULT);
+                $result[$key] = filter_var($val, $filter ?: FILTER_DEFAULT);
             }
 
             return $result;
         }
 
-        return filter_input(INPUT_POST, $field, $filter ?: FILTER_DEFAULT);
+        if (!isset($_POST[$field])) {
+            return null;
+        }
+
+        return filter_var($_POST[$field], $filter ?: FILTER_DEFAULT);
     }
 }

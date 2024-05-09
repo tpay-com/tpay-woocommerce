@@ -302,6 +302,8 @@ abstract class TpayGateways extends WC_Payment_Gateway
      */
     public function is_available()
     {
+        return true;
+
         $order = null;
         $is_order_processing = false;
 
@@ -522,7 +524,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             || true === $this->try_disable_gateway_by_cart_total()
             || false === $this->is_on_banks_list()
         ) {
-            unset($gateways[$this->id]);
+//            unset($gateways[$this->id]);
         }
 
         return $gateways;
