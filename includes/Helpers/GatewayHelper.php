@@ -89,7 +89,7 @@ class GatewayHelper
 
     public function get_order_by_transaction_crc($crc): ?WC_Order
     {
-        $order = wc_get_orders(['meta_query' => [['key' => '_crc', 'value' => $crc]]]);
+        $order = wc_get_orders(['crc' => $crc]);
 
         return $order[0] ?? null;
     }
