@@ -150,7 +150,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
 
         $this->set_id_seller($this->api_key);
         try {
-            $isProd = (@get_option('tpay_settings_option_name')['global_tpay_environment']) != 'sandbox';
+            $isProd = 'sandbox' != tpayOption('global_tpay_environment');
             self::$tpayConnection = new TpayApi($this->api_key, $this->api_key_password, $isProd, 'read');
             self::$tpayConnection->authorization();
 
@@ -339,8 +339,8 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $payer_data = $this->gateway_helper->payer_data($order);
         $merchant_email = get_option('admin_email');
 
-        if (get_option('tpay_settings_option_name')['global_merchant_email']) {
-            $merchant_email = get_option('tpay_settings_option_name')['global_merchant_email'];
+        if (tpayOption('global_merchant_email')) {
+            $merchant_email = tpayOption('global_merchant_email');
         }
 
         $this->payment_data = [

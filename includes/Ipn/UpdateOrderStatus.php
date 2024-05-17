@@ -32,7 +32,7 @@ class UpdateOrderStatus implements IpnInterface
         $gateway = new $class();
         $config = (new Helpers\ConfigProvider())->get_config($gateway);
 
-        $isProd = (@get_option('tpay_settings_option_name')['global_tpay_environment']) != 'sandbox';
+        $isProd = 'sandbox' != tpayOption('global_tpay_environment');
         try {
             $NotificationWebhook = new JWSVerifiedPaymentNotification(
                 $config['security_code'],

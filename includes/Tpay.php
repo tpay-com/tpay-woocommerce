@@ -117,8 +117,8 @@ class Tpay extends TpayGateways
     {
         $payer_data = $this->gateway_helper->payer_data($order);
         $merchant_email = get_option('admin_email');
-        if (get_option('tpay_settings_option_name')['global_merchant_email']) {
-            $merchant_email = get_option('tpay_settings_option_name')['global_merchant_email'];
+        if (tpayOption('global_merchant_email')) {
+            $merchant_email = tpayOption('global_merchant_email');
         }
         $this->payment_data = [
             'description' => __('Order', 'tpay').' #'.$order->ID,

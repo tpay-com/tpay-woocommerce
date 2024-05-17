@@ -1,6 +1,7 @@
 name: Release
 
 on:
+  pull_request:
   push:
     tags:
       - '*'
@@ -28,5 +29,28 @@ jobs:
       - run: zip -ur tpay-woocommerce.zip vendor/
 
       - uses: softprops/action-gh-release@v1
+        if: github.event_name != 'pull_request'
         with:
           files: tpay-woocommerce.zip
+
+
+      - run: mkdir plugin && unzip tpay-woocommerce.zip -d plugin
+
+      - uses: actions/upload-artifact@v4
+        id: plugin-upload
+        if: github.event_name == 'pull_request'
+        with:
+          name: 'tpay-woocommerce'
+          path: 'plugin/'
+
+      - uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Tpay Woocommerce plugin - ${{ steps.plugin-upload.outputs.artifact-url }}'
+            })
