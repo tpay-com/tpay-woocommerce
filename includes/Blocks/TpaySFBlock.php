@@ -3,17 +3,15 @@
 namespace Tpay\Blocks;
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
-use Tpay\Tpay;
 use Tpay\TpaySF;
 
 final class TpaySFBlock extends AbstractPaymentMethodType
 {
     protected $name = 'tpaysf';
+    protected $settings;
 
     /** @var TpaySF */
     private $gateway;
-
-    protected $settings;
 
     public function initialize()
     {
@@ -28,13 +26,13 @@ final class TpaySFBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_script_handles(): array
     {
-        wp_register_script('tpaysf', plugin_dir_url(__DIR__) . '../views/js/checkout.min.js', [
+        wp_register_script('tpaysf', plugin_dir_url(__DIR__).'../views/js/checkout.min.js', [
             'wc-blocks-registry',
             'wc-settings',
             'wp-element',
             'wp-html-entities',
             'wp-i18n',
-            'react'
+            'react',
         ], null, true);
 
         if (function_exists('wp_set_script_translations')) {
@@ -55,7 +53,7 @@ final class TpaySFBlock extends AbstractPaymentMethodType
             'description' => $this->gateway->description,
             'fields' => $fields,
             'icon' => $this->gateway->icon,
-//            'supports' => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] ),
+            //            'supports' => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] ),
         ];
     }
 }

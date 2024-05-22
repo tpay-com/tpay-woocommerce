@@ -8,11 +8,10 @@ use Tpay\TpayTwisto;
 final class TpayTwistoBlock extends AbstractPaymentMethodType
 {
     protected $name = 'tpaytwisto';
+    protected $settings;
 
     /** @var TpayTwisto */
     private $gateway;
-
-    protected $settings;
 
     public function initialize()
     {
@@ -27,13 +26,13 @@ final class TpayTwistoBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_script_handles(): array
     {
-        wp_register_script('tpaytwisto', plugin_dir_url(__DIR__) . '../views/js/checkout.min.js', [
+        wp_register_script('tpaytwisto', plugin_dir_url(__DIR__).'../views/js/checkout.min.js', [
             'wc-blocks-registry',
             'wc-settings',
             'wp-element',
             'wp-html-entities',
             'wp-i18n',
-            'react'
+            'react',
         ], null, true);
 
         if (function_exists('wp_set_script_translations')) {
@@ -53,9 +52,9 @@ final class TpayTwistoBlock extends AbstractPaymentMethodType
             'title' => $this->gateway->get_title(),
             'description' => $this->gateway->get_description(),
             'icon' => $this->gateway->icon,
-            'cartTotal' => WC()->cart ? WC()->cart->get_cart_contents_total(): null,
+            'cartTotal' => WC()->cart ? WC()->cart->get_cart_contents_total() : null,
             'fields' => $fields,
-            'supports' => array_filter($this->gateway->supports, [ $this->gateway, 'supports' ]),
+            'supports' => array_filter($this->gateway->supports, [$this->gateway, 'supports']),
         ];
     }
 }

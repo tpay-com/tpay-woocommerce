@@ -8,11 +8,10 @@ use Tpay\TpayGPay;
 final class TpayGPayBlock extends AbstractPaymentMethodType
 {
     protected $name = 'tpaygpay';
+    protected $settings;
 
     /** @var TpayGPay */
     private $gateway;
-
-    protected $settings;
 
     public function initialize()
     {
@@ -27,13 +26,13 @@ final class TpayGPayBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_script_handles(): array
     {
-        wp_register_script('tpaygpay', plugin_dir_url(__DIR__) . '../views/js/checkout.min.js', [
+        wp_register_script('tpaygpay', plugin_dir_url(__DIR__).'../views/js/checkout.min.js', [
             'wc-blocks-registry',
             'wc-settings',
             'wp-element',
             'wp-html-entities',
             'wp-i18n',
-            'react'
+            'react',
         ], null, true);
 
         if (function_exists('wp_set_script_translations')) {
@@ -53,9 +52,9 @@ final class TpayGPayBlock extends AbstractPaymentMethodType
             'title' => $this->gateway->title,
             'description' => $this->gateway->description,
             'icon' => $this->gateway->icon,
-            'cartTotal' => WC()->cart ? WC()->cart->get_cart_contents_total(): null,
+            'cartTotal' => WC()->cart ? WC()->cart->get_cart_contents_total() : null,
             'fields' => $fields,
-//            'supports' => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] ),
+            //            'supports' => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] ),
         ];
     }
 }
