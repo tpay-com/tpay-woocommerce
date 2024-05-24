@@ -59,7 +59,7 @@ class PekaoInstallments extends TpayGateways
         $order = new WC_Order($order_id);
         $groupID = TPAYPEKAOINSTALLMENTS;
         $this->set_payment_data($order, $groupID);
-        $channelId = $this->request->get('tpay-channelID');
+        $channelId = $this->request->get('tpay-channel-id');
         if ($channelId) {
             $this->payment_data['pay'] = ['channelId' => (int) $channelId];
         }
