@@ -23,6 +23,11 @@ class Tpay extends TpayGateways
         parent::tpay_init_form_fields(true);
     }
 
+    public function isBankSelectionHidden(): bool
+    {
+        return $this->hide_bank_selection;
+    }
+
     public function payment_fields()
     {
         if ($this->description) {

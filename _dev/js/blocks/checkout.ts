@@ -9,23 +9,27 @@ const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
     const {onPaymentSetup} = eventRegistration;
     useEffect(() => {
         const unsubscribe = onPaymentSetup(async () => {
+            const data = {};
             const paymentMethodIdInput: HTMLInputElement = document.querySelector('input[name="tpay-channel-id"]:checked');
-            const paymentMethodId= paymentMethodIdInput ? paymentMethodIdInput.value : false;
+            const paymentMethodId = paymentMethodIdInput ? paymentMethodIdInput.value : false;
 
-            if (paymentMethodId) {
+            if (paymentMethodId === null && settings.tpayDirect === false) {
                 return {
-                    type: emitResponse.responseTypes.SUCCESS,
-                    meta: {
-                        paymentMethodData: {
-                            'tpay-channel-id': paymentMethodId,
-                        },
-                    },
+                    type: emitResponse.responseTypes.ERROR,
+                    message: 'Payment method ID does not exists',
                 };
             }
 
+            if (paymentMethodId) {
+                data['tpay-channel-id'] = paymentMethodId;
+
+            }
+
             return {
-                type: emitResponse.responseTypes.ERROR,
-                message: 'Payment method ID does not exists',
+                type: emitResponse.responseTypes.SUCCESS,
+                meta: {
+                    paymentMethodData: data
+                },
             };
         });
         return () => {

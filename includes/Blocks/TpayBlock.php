@@ -53,9 +53,10 @@ final class TpayBlock extends AbstractPaymentMethodType
             'description' => $this->gateway->description,
             'channels' => $this->gateway->channels(),
             'icon' => $this->gateway->icon,
+            'tpayDirect' => $this->gateway->isBankSelectionHidden(),
             'cartTotal' => WC()->cart ? WC()->cart->get_cart_contents_total() : null,
             'fields' => $fields,
-            //            'supports' => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] ),
+            'supports' => array_filter($this->gateway->supports, [$this->gateway, 'supports']),
         ];
     }
 }
