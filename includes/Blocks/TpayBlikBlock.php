@@ -26,7 +26,7 @@ final class TpayBlikBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_script_handles(): array
     {
-        wp_register_script('tpayblik', plugin_dir_url(__DIR__).'../views/js/checkout.min.js', [
+        wp_register_script('tpayblik', plugin_dir_url(__DIR__) . '../views/js/checkout.min.js', [
             'wc-blocks-registry',
             'wc-settings',
             'wp-element',
@@ -52,9 +52,10 @@ final class TpayBlikBlock extends AbstractPaymentMethodType
         return [
             'title' => $this->gateway->title,
             'description' => $this->gateway->description,
-            //            'supports' => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] ),
+            'supports' => array_filter($this->gateway->supports, [$this->gateway, 'supports']),
             'fields' => $fields,
             'icon' => $this->gateway->icon,
+            'blikZero' => $this->gateway->isBlikZeroEnabled(),
         ];
     }
 }

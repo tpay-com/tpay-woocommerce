@@ -18,13 +18,18 @@ class TpayBlik extends TpayGateways
     {
         parent::__construct(TPAYBLIK_ID, TPAYBLIK);
         $this->has_terms_checkbox = true;
-        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__).'../views/img/blik.png');
+        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__) . '../views/img/blik.png');
         $this->blik0_enabled = $this->blik0_is_active();
     }
 
     public function init_form_fields()
     {
         parent::tpay_init_form_fields(false, true);
+    }
+
+    public function isBlikZeroEnabled(): bool
+    {
+        return $this->blik0_enabled;
     }
 
     public function payment_fields()
@@ -47,9 +52,9 @@ class TpayBlik extends TpayGateways
         }
 
         if ($this->blik0_enabled) {
-            include plugin_dir_path(__FILE__).'../views/html/blik0.php';
+            include plugin_dir_path(__FILE__) . '../views/html/blik0.php';
         } else {
-            include plugin_dir_path(__FILE__).'../views/html/agreements.php';
+            include plugin_dir_path(__FILE__) . '../views/html/agreements.php';
         }
     }
 
@@ -89,7 +94,9 @@ class TpayBlik extends TpayGateways
             unset($_SESSION['tpay_attempts']);
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
             $order->set_transaction_id($result['transactionId']);
-            $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
+            $md5 = md5(
+                $this->id_seller . $result['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code
+            );
             $order->update_meta_data('_transaction_id', $result['transactionId']);
             $order->update_meta_data('_md5_checksum', $md5);
             $order->update_meta_data('_crc', $this->crc);
@@ -104,35 +111,52 @@ class TpayBlik extends TpayGateways
         }
         if ($result['message']) {
             $message = $result['message'];
-            $this->gateway_helper->tpay_logger('Nie udało się utworzyć transakcji dla zamówienia: '.$order->ID.'. Tpay zwrócił błąd: '.$message);
-            $this->gateway_helper->tpay_logger('Zrzut odpowiedzi: '.print_r($result, true));
+            $this->gateway_helper->tpay_logger(
+                'Nie udało się utworzyć transakcji dla zamówienia: ' . $order->ID . '. Tpay zwrócił błąd: ' . $message
+            );
+            $this->gateway_helper->tpay_logger('Zrzut odpowiedzi: ' . print_r($result, true));
         } else {
             $message = __('Payment error', 'tpay');
-            $this->gateway_helper->tpay_logger('Nie udało się utworzyć transakcji dla zamówienia: '.$order->ID.'. Tpay zwrócił nie zwrócił błędu');
+            $this->gateway_helper->tpay_logger(
+                'Nie udało się utworzyć transakcji dla zamówienia: ' . $order->ID . '. Tpay zwrócił nie zwrócił błędu'
+            );
         }
+
         wc_add_notice($message, 'error');
 
-        return false;
+        return ['result' => 'failure'];
     }
 
     public function process_transaction(WC_Order $order)
     {
         try {
             if (!$_SESSION['tpay_session']) {
-                $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
+                $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection(
+                    $this->payment_data
+                );
                 $_SESSION['tpay_session'] = $transaction;
                 $_SESSION['tpay_attempts'] = 0;
-                $this->gateway_helper->tpay_logger('Tworzenie nowej transakcji BLIK dla zamówienia (podejście pierwsze) zamówienie: '.$order->get_id());
+                $this->gateway_helper->tpay_logger(
+                    'Tworzenie nowej transakcji BLIK dla zamówienia (podejście pierwsze) zamówienie: ' . $order->get_id(
+                    )
+                );
             } else {
                 $transaction = $_SESSION['tpay_session'];
                 $tpay_status = $this->tpay_api()->transactions()->getTransactionById($transaction['transactionId']);
-                $this->gateway_helper->tpay_logger('Pobranie transakcji BLIK z Tpay na podstawie trid, odpowiedź Tpay:');
+                $this->gateway_helper->tpay_logger(
+                    'Pobranie transakcji BLIK z Tpay na podstawie trid, odpowiedź Tpay:'
+                );
                 $this->gateway_helper->tpay_logger(print_r($transaction, 1));
                 if ($tpay_status['payments']['attempts']) {
                     $_SESSION['tpay_attempts'] = count($tpay_status['payments']['attempts']);
-                    if (count($tpay_status['payments']['attempts']) >= 4 || in_array(end($tpay_status['payments']['attempts'])['paymentErrorCode'], [101, 104])) {
+                    if (count($tpay_status['payments']['attempts']) >= 4 || in_array(
+                            end($tpay_status['payments']['attempts'])['paymentErrorCode'],
+                            [101, 104]
+                        )) {
                         $transaction = $this->tpay_api()->transactions()->createTransaction($this->payment_data);
-                        $this->gateway_helper->tpay_logger('Transakcja "używana", wykorzystany limit nowych transakcji lub błędy 101/104 w BLIK, zrzut $transaction: ');
+                        $this->gateway_helper->tpay_logger(
+                            'Transakcja "używana", wykorzystany limit nowych transakcji lub błędy 101/104 w BLIK, zrzut $transaction: '
+                        );
                         $this->gateway_helper->tpay_logger(print_r($transaction, true));
                         $_SESSION['tpay_session'] = $transaction;
                         $_SESSION['tpay_attempts'] = 0;
@@ -140,17 +164,24 @@ class TpayBlik extends TpayGateways
                 }
             }
         } catch (Error $e) {
-            $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji BLIK dla zamówienia '.$order->get_id());
+            $this->gateway_helper->tpay_logger(
+                'Nieudana próba utworzenia transakcji BLIK dla zamówienia ' . $order->get_id()
+            );
             wc_add_notice($e->getMessage(), 'error');
 
             return false;
         }
         if ($this->blik0_enabled) {
-            $md5 = md5($this->id_seller.$transaction['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
+            $md5 = md5(
+                $this->id_seller . $transaction['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code
+            );
             $order->update_meta_data('_md5_checksum', $md5);
             $order->update_meta_data('_crc', $this->crc);
             $order->update_meta_data('_payment_method', $this->id);
-            $result = $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($this->additional_payment_data, $transaction['transactionId']);
+            $result = $this->tpay_api()->transactions()->createInstantPaymentByTransactionId(
+                $this->additional_payment_data,
+                $transaction['transactionId']
+            );
 
             if ('success' == $result['result']) {
                 $stop = false;
@@ -167,7 +198,7 @@ class TpayBlik extends TpayGateways
                         }
                     }
 
-                    update_option('tpay_status_'.time().'___'.$i, print_r($tpay_status, true));
+                    update_option('tpay_status_' . time() . '___' . $i, print_r($tpay_status, true));
 
                     if ('correct' == $tpay_status['status']) {
                         $correct = true;
@@ -183,7 +214,9 @@ class TpayBlik extends TpayGateways
                         $stop = true;
                         $result = [
                             'result' => 'error',
-                            'message' => $this->get_blik_error(end($tpay_status['payments']['attempts'])['paymentErrorCode']),
+                            'message' => $this->get_blik_error(
+                                end($tpay_status['payments']['attempts'])['paymentErrorCode']
+                            ),
                         ];
                         $_SESSION['tpay_attempts'] = count($tpay_status['payments']['attempts']);
                     }
@@ -201,11 +234,15 @@ class TpayBlik extends TpayGateways
             ];
         }
         if (isset($transaction['transactionPaymentUrl'])) {
-            $this->gateway_helper->tpay_logger('Udane utworzenie transakcji BLIK z wyjściem do Tpay. Link do bramki: '.$transaction['transactionPaymentUrl']);
+            $this->gateway_helper->tpay_logger(
+                'Udane utworzenie transakcji BLIK z wyjściem do Tpay. Link do bramki: ' . $transaction['transactionPaymentUrl']
+            );
 
             return $transaction;
         }
-            $this->gateway_helper->tpay_logger('Nieudane utworzenie transakcji BLIK, wiadomość Tpay: '.$transaction['message']);
+        $this->gateway_helper->tpay_logger(
+            'Nieudane utworzenie transakcji BLIK, wiadomość Tpay: ' . $transaction['message']
+        );
 
         return [
             'result' => 'error',
@@ -237,7 +274,7 @@ class TpayBlik extends TpayGateways
 
     private function blik0_is_active()
     {
-        return (bool) ('yes' == @get_option('woocommerce_tpayblik_settings')['enable_blik0']);
+        return (bool)('yes' == @get_option('woocommerce_tpayblik_settings')['enable_blik0']);
     }
 
     private function additional_payment_data()
@@ -258,14 +295,18 @@ class TpayBlik extends TpayGateways
                     $blik0 = str_replace('-', '', $blik0);
 
                     if (strlen($blik0) < 6) {
-                        $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: '.__('Blik code is too short', 'tpay'));
+                        $this->gateway_helper->tpay_logger(
+                            'Nieudana płatność BLIK, błąd: ' . __('Blik code is too short', 'tpay')
+                        );
                         wc_add_notice(__('Blik code is too short', 'tpay'), 'error');
 
                         return false;
                     }
 
                     if (!is_numeric($blik0)) {
-                        $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: '.__('invalid BLIK six-digit code', 'tpay'));
+                        $this->gateway_helper->tpay_logger(
+                            'Nieudana płatność BLIK, błąd: ' . __('invalid BLIK six-digit code', 'tpay')
+                        );
                         wc_add_notice(__('invalid BLIK six-digit code', 'tpay'), 'error');
 
                         return false;
@@ -281,7 +322,9 @@ class TpayBlik extends TpayGateways
                         ];
                     }
                 } else {
-                    $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: '.__('Enter Blik code', 'tpay'));
+                    $this->gateway_helper->tpay_logger(
+                        'Nieudana płatność BLIK, błąd: ' . __('Enter Blik code', 'tpay')
+                    );
                     wc_add_notice(__('Enter Blik code', 'tpay'), 'error');
 
                     return false;
@@ -293,7 +336,7 @@ class TpayBlik extends TpayGateways
                     'label' => get_bloginfo('name'),
                 ];
             } else {
-                $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: '.__('Payment error', 'tpay'));
+                $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: ' . __('Payment error', 'tpay'));
                 wc_add_notice(__('Payment error', 'tpay'), 'error');
 
                 return false;
