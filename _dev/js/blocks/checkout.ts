@@ -10,7 +10,7 @@ const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
     useEffect(() => {
         const unsubscribe = onPaymentSetup(async () => {
             const data = {};
-            const paymentMethodIdInput: HTMLInputElement = document.querySelector('input[name="tpay-channel-id"]:checked');
+            const paymentMethodIdInput: HTMLInputElement = document.querySelector('input[name="tpay-channel-id"]:checked') ?? document.querySelector('select[name="tpay-channel-id"] option:checked');
             const paymentMethodId = paymentMethodIdInput ? paymentMethodIdInput.value : false;
 
             if (paymentMethodId === null && settings.tpayDirect === false) {
