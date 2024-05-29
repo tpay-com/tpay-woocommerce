@@ -21,7 +21,7 @@ final class TpayGPayBlock extends AbstractPaymentMethodType
 
     public function is_active(): bool
     {
-        return true;
+        return $this->gateway->is_available();
     }
 
     public function get_payment_method_script_handles(): array

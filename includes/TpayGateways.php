@@ -297,12 +297,9 @@ abstract class TpayGateways extends WC_Payment_Gateway
     /**
      * Check If The Gateway Is Available For Use.
      * Copy from COD module
-     *
-     * @return bool
      */
-    public function is_available()
+    public function is_available(): bool
     {
-        return true;
         $order = null;
         $is_order_processing = false;
 

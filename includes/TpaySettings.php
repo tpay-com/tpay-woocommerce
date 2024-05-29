@@ -57,15 +57,17 @@ class TpaySettings
         $this->tpay_settings_options = tpayOption(); ?>
 
         <div class="wrap">
-            <h2><?php echo esc_html__('Tpay settings', 'tpay'); ?></h2>
+            <h2><?php
+                echo esc_html__('Tpay settings', 'tpay'); ?></h2>
             <p></p>
-            <?php settings_errors(); ?>
+            <?php
+            settings_errors(); ?>
             <form method="post" action="options.php">
                 <?php
                 settings_fields('tpay_settings_option_group');
-        do_settings_sections('tpay-settings-admin');
-        submit_button();
-        ?>
+                do_settings_sections('tpay-settings-admin');
+                submit_button();
+                ?>
             </form>
         </div>
         <?php
@@ -88,7 +90,7 @@ class TpaySettings
         );
         foreach ($this->fields as $field => $desc) {
             $args = [
-                'id' => 'global_'.$field,
+                'id' => 'global_' . $field,
                 'desc' => $desc['label'],
                 'name' => 'tpay_settings_option_name',
             ];
@@ -133,43 +135,48 @@ class TpaySettings
             'tpay-settings-admin', // page
             'tpay_settings_setting_section' // section
         );
-        add_settings_field(
-            'enable_fee', // id
-            esc_html__('Enable fee', 'tpay'), // title
-            [$this, 'global_enable_fee_callback_callback'], // callback
-            'tpay-settings-admin', // page
-            'tpay_settings_setting_section' // section
-        );
-        $args = [
-            'id' => 'global_amount_fee',
-            'desc' => esc_html__('Amount fee', 'tpay'),
-            'name' => 'tpay_settings_option_name',
-            'type' => 'number',
-            'step' => '0.01',
-        ];
-        add_settings_field(
-            $args['id'], // id
-            $args['desc'], // title
-            [$this, 'global_callback'], // callback
-            'tpay-settings-admin', // page
-            'tpay_settings_setting_section', // section
-            $args
-        );
-        $args = [
-            'id' => 'global_percentage_fee',
-            'desc' => esc_html__('Percentage fee', 'tpay'),
-            'name' => 'tpay_settings_option_name',
-            'type' => 'number',
-            'step' => '0.01',
-        ];
-        add_settings_field(
-            $args['id'], // id
-            $args['desc'], // title
-            [$this, 'global_callback'], // callback
-            'tpay-settings-admin', // page
-            'tpay_settings_setting_section', // section
-            $args
-        );
+
+        if (\WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout') === false) {
+            add_settings_field(
+                'enable_fee', // id
+                esc_html__('Enable fee', 'tpay'), // title
+                [$this, 'global_enable_fee_callback_callback'], // callback
+                'tpay-settings-admin', // page
+                'tpay_settings_setting_section' // section
+            );
+            $args = [
+                'id' => 'global_amount_fee',
+                'desc' => esc_html__('Amount fee', 'tpay'),
+                'name' => 'tpay_settings_option_name',
+                'type' => 'number',
+                'step' => '0.01',
+            ];
+            add_settings_field(
+                $args['id'], // id
+                $args['desc'], // title
+                [$this, 'global_callback'], // callback
+                'tpay-settings-admin', // page
+                'tpay_settings_setting_section', // section
+                $args
+            );
+
+            $args = [
+                'id' => 'global_percentage_fee',
+                'desc' => esc_html__('Percentage fee', 'tpay'),
+                'name' => 'tpay_settings_option_name',
+                'type' => 'number',
+                'step' => '0.01',
+            ];
+            add_settings_field(
+                $args['id'], // id
+                $args['desc'], // title
+                [$this, 'global_callback'], // callback
+                'tpay-settings-admin', // page
+                'tpay_settings_setting_section', // section
+                $args
+            );
+        }
+
         add_settings_field(
             'global_render_payment_type', // id
             esc_html__('Displaying the list of payments', 'tpay'), // title
@@ -206,8 +213,8 @@ class TpaySettings
     public function tpay_settings_sanitize($input)
     {
         foreach ($this->fields as $field => $desc) {
-            if (isset($input['global_'.$field])) {
-                $sanitary_values['global_'.$field] = sanitize_text_field($input['global_'.$field]);
+            if (isset($input['global_' . $field])) {
+                $sanitary_values['global_' . $field] = sanitize_text_field($input['global_' . $field]);
             }
         }
 
@@ -216,7 +223,9 @@ class TpaySettings
         }
 
         if (isset($input['global_default_on_hold_status'])) {
-            $sanitary_values['global_default_on_hold_status'] = sanitize_text_field($input['global_default_on_hold_status']);
+            $sanitary_values['global_default_on_hold_status'] = sanitize_text_field(
+                $input['global_default_on_hold_status']
+            );
         }
 
         if (isset($input['global_enable_fee'])) {
@@ -224,11 +233,15 @@ class TpaySettings
         }
 
         if (isset($input['global_amount_fee'])) {
-            $sanitary_values['global_amount_fee'] = sanitize_text_field(str_replace(',', '.', $input['global_amount_fee']));
+            $sanitary_values['global_amount_fee'] = sanitize_text_field(
+                str_replace(',', '.', $input['global_amount_fee'])
+            );
         }
 
         if (isset($input['global_percentage_fee'])) {
-            $sanitary_values['global_percentage_fee'] = sanitize_text_field(str_replace(',', '.', $input['global_percentage_fee']));
+            $sanitary_values['global_percentage_fee'] = sanitize_text_field(
+                str_replace(',', '.', $input['global_percentage_fee'])
+            );
         }
 
         if (isset($input['global_tpay_environment'])) {
@@ -247,12 +260,17 @@ class TpaySettings
         ?>
         <select class="regular-text" type="text" name="tpay_settings_option_name[global_default_on_hold_status]"
                 id="global_default_on_hold_status">
-            <?php foreach ($this->before_payment_statuses() as $key => $value) { ?>
-                <option <?php if (@$this->tpay_settings_options['global_default_on_hold_status'] === $key) {
+            <?php
+            foreach ($this->before_payment_statuses() as $key => $value) { ?>
+                <option <?php
+                if (@$this->tpay_settings_options['global_default_on_hold_status'] === $key) {
                     echo 'selected="selected"';
                 } ?>
-                        value="<?php echo esc_attr($key); ?>"><?php echo $value; ?></option>
-            <?php } ?>
+                        value="<?php
+                        echo esc_attr($key); ?>"><?php
+                    echo $value; ?></option>
+                <?php
+            } ?>
         </select>
         <?php
     }
@@ -266,12 +284,17 @@ class TpaySettings
         ?>
         <select class="regular-text" type="text" name="tpay_settings_option_name[global_tpay_environment]"
                 id="global_tpay_environment">
-            <?php foreach ($options as $key => $value) { ?>
-                <option <?php if (@$this->tpay_settings_options['global_tpay_environment'] === $key) {
+            <?php
+            foreach ($options as $key => $value) { ?>
+                <option <?php
+                if (@$this->tpay_settings_options['global_tpay_environment'] === $key) {
                     echo 'selected="selected"';
                 } ?>
-                        value="<?php echo $key; ?>"><?php echo $value; ?></option>
-            <?php } ?>
+                        value="<?php
+                        echo $key; ?>"><?php
+                    echo $value; ?></option>
+                <?php
+            } ?>
         </select>
         <?php
     }
@@ -284,13 +307,19 @@ class TpaySettings
             'percentage' => esc_html__('Percentage', 'tpay'),
         ];
         ?>
-        <select class="regular-text" type="text" name="tpay_settings_option_name[global_enable_fee]" id="global_enable_fee">
-            <?php foreach ($options as $key => $value) { ?>
-                <option <?php if (@$this->tpay_settings_options['global_enable_fee'] === $key) {
+        <select class="regular-text" type="text" name="tpay_settings_option_name[global_enable_fee]"
+                id="global_enable_fee">
+            <?php
+            foreach ($options as $key => $value) { ?>
+                <option <?php
+                if (@$this->tpay_settings_options['global_enable_fee'] === $key) {
                     echo 'selected="selected"';
                 } ?>
-                        value="<?php echo $key; ?>"><?php echo $value; ?></option>
-            <?php } ?>
+                        value="<?php
+                        echo $key; ?>"><?php
+                    echo $value; ?></option>
+                <?php
+            } ?>
         </select>
         <?php
     }
@@ -304,12 +333,17 @@ class TpaySettings
         ?>
         <select class="regular-text" type="text" name="tpay_settings_option_name[global_render_payment_type]"
                 id="global_render_payment_type">
-            <?php foreach ($options as $key => $value) { ?>
-                <option <?php if (@$this->tpay_settings_options['global_render_payment_type'] === $key) {
+            <?php
+            foreach ($options as $key => $value) { ?>
+                <option <?php
+                if (@$this->tpay_settings_options['global_render_payment_type'] === $key) {
                     echo 'selected="selected"';
                 } ?>
-                        value="<?php echo $key; ?>"><?php echo $value; ?></option>
-            <?php } ?>
+                        value="<?php
+                        echo $key; ?>"><?php
+                    echo $value; ?></option>
+                <?php
+            } ?>
         </select>
         <?php
     }

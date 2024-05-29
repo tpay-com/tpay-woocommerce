@@ -1,5 +1,5 @@
 let settings = window.wc.wcSettings.getPaymentMethodData('tpayblik', {});
-let label = window.wp.htmlEntities.decodeEntities(settings.title || 'tpayblik') || window.wp.i18n.__('Tpay12', 'tpay');
+let label = window.wp.htmlEntities.decodeEntities(settings.title || 'tpayblik') || window.wp.i18n.__('Tpay', 'tpay');
 const react = window.React;
 
 const {decodeEntities} = wp.htmlEntities;
@@ -15,7 +15,7 @@ function validateBlikZero(code: string): boolean {
 
 const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
     const {eventRegistration, emitResponse} = props;
-    const {onPaymentSetup, onCheckoutFail} = eventRegistration;
+    const {onPaymentSetup} = eventRegistration;
 
     function blikError(): { type: string, message: string } {
         return {
@@ -25,7 +25,7 @@ const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
     }
 
     useEffect(() => {
-        const unsubscribe = onPaymentSetup(async () => {
+        return onPaymentSetup(() => {
             let data = {};
             const blikInput: HTMLInputElement = document.querySelector('input[name="blik0"]');
             const blikCode = blikInput ? blikInput.value : false;
@@ -52,11 +52,7 @@ const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
                     paymentMethodData: data
                 },
             }
-        });
-
-        return () => {
-            unsubscribe()
-        };
+        })
     }, [onPaymentSetup]);
 
     return react.createElement('div', {dangerouslySetInnerHTML: {__html: settings.fields}});
