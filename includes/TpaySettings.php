@@ -130,7 +130,7 @@ class TpaySettings
         );
         add_settings_field(
             'global_default_on_hold_status', // id
-            esc_html__('Default on-hold status', 'tpay'), // title
+            esc_html__('Successful payment status', 'tpay'), // title
             [$this, 'global_default_on_hold_status_callback'], // callback
             'tpay-settings-admin', // page
             'tpay_settings_setting_section' // section

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Tpay Payment Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-02 01:33+0000\n"
-"PO-Revision-Date: 2023-11-29 19:25+0100\n"
+"PO-Revision-Date: 2024-05-29 10:27+0200\n"
 "Last-Translator: dqw dqw\n"
 "Language-Team: Polski\n"
 "Language: pl_PL\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.4.3\n"
 "X-Loco-Version: 2.6.2; wp-6.1.1\n"
 "X-Domain: tpay\n"
 
@@ -110,8 +110,8 @@ msgstr "CVC"
 
 #. id
 #: includes/TpaySettings.php:121
-msgid "Default on-hold status"
-msgstr "Domyślny status po utworzeniu zamówienia"
+msgid "Successful payment status"
+msgstr "Domyślny status po opłaceniu"
 
 #: includes/WC_TpayGateways.php:273
 msgid "Description of Tpay Payment Gateway that users sees on Checkout page."
