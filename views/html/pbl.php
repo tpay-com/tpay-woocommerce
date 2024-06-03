@@ -1,9 +1,8 @@
 <?php
-
+$renderType = tpayOption('global_render_payment_type');
 /** @var \Tpay\Dtos\Channel[] $list */
-$renderType = @get_option('tpay_settings_option_name')['global_render_payment_type'];
 $list = $this->channels();
-$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
 $tpay_gateways_list = \Tpay\TpayGateways::gateways_list();
 
 if ($available_gateways) {
@@ -28,9 +27,9 @@ if ($available_gateways) {
             $this->unset_banks[] = TPAYPEKAOINSTALLMENTS;
         }
     }
-
-    $list = $this->filter_out_constraints($list);
 }
+
+$list = $this->filter_out_constraints($list);
 
 if ($cr = get_option('woocommerce_tpaypbl_settings')['custom_order']) {
     $new_list = [];

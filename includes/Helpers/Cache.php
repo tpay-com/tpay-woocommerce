@@ -7,7 +7,7 @@ class Cache
     public function get($key)
     {
         $key .= ':';
-        $key .= @get_option('tpay_settings_option_name')['global_tpay_environment'];
+        $key .= tpayOption('global_tpay_environment');
         $file = $this->getCacheDir().md5($key);
 
         if (file_exists($file)) {
@@ -24,7 +24,7 @@ class Cache
     public function set($key, $value, $ttl = 3600)
     {
         $key .= ':';
-        $key .= @get_option('tpay_settings_option_name')['global_tpay_environment'];
+        $key .= tpayOption('global_tpay_environment');
         $file = $this->getCacheDir().md5($key);
         $ttl += time();
         $data = base64_encode(serialize(['ttl' => $ttl, 'data' => $value]));

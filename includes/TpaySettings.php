@@ -54,7 +54,7 @@ class TpaySettings
     public function tpay_settings_create_admin_page()
     {
         (new Cache())->erase();
-        $this->tpay_settings_options = get_option('tpay_settings_option_name'); ?>
+        $this->tpay_settings_options = tpayOption(); ?>
 
         <div class="wrap">
             <h2><?php echo esc_html__('Tpay settings', 'tpay'); ?></h2>
