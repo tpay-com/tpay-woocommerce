@@ -81,7 +81,7 @@ class Tpay extends TpayGateways
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności PBL- użytkownik nie wybrał banku');
                 wc_add_notice(__('Select a bank', 'tpay'), 'error');
 
-                return false;
+                return [];
             }
         }
 
@@ -93,7 +93,7 @@ class Tpay extends TpayGateways
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności- zwrócone następujące błędy: '.implode(' ', $errors_list));
                 wc_add_notice(implode(' ', $errors_list), 'error');
 
-                return false;
+                return [];
             }
 
             $order->set_transaction_id($result['transactionId']);
@@ -115,7 +115,7 @@ class Tpay extends TpayGateways
         }
         wc_add_notice(__('Payment error', 'tpay'), 'error');
 
-        return false;
+        return [];
     }
 
     public function set_payment_data($order, $channelId)

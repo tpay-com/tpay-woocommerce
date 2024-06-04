@@ -13,10 +13,10 @@ const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
             const paymentMethodIdInput: HTMLInputElement = document.querySelector('input[name="tpay-channel-id"]:checked') ?? document.querySelector('select[name="tpay-channel-id"] option:checked');
             const paymentMethodId = paymentMethodIdInput ? paymentMethodIdInput.value : false;
 
-            if (paymentMethodId === null && settings.tpayDirect === false) {
+            if (paymentMethodId === false && settings.tpayDirect === false) {
                 return {
                     type: emitResponse.responseTypes.ERROR,
-                    message: 'Payment method ID does not exists',
+                    message: settings.channelNotSelectedMessage ?? 'Select a bank',
                 };
             }
 
