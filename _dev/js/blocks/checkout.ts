@@ -49,7 +49,7 @@ let Block_Gateway = {
     content: react.createElement(Content),
     edit: null,
     canMakePayment: () => true,
-    ariaLabel: settings.title,
+    ariaLabel: settings.title ?? '',
     supports: {
         features: settings.supports,
     },

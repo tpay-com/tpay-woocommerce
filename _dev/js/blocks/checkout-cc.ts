@@ -10,7 +10,7 @@ let Block_Gateway = {
     content: react.createElement('div', {dangerouslySetInnerHTML: {__html: settings.fields}}),
     edit: null,
     canMakePayment: () => true,
-    ariaLabel: settings.title,
+    ariaLabel: settings.title ?? '',
     supports: {
         features: settings.supports,
     },

@@ -64,7 +64,7 @@ const TpayBlikOptions = {
     content: react.createElement(Content),
     edit: null,
     canMakePayment: () => true,
-    ariaLabel: settings.title
+    ariaLabel: settings.title ?? ''
 };
 
 registerPaymentMethod(TpayBlikOptions);
