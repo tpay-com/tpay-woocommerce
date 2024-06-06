@@ -55,14 +55,14 @@ class Tpay extends TpayGateways
             'custom_order' => [
                 'title' => __('Custom order', 'tpay'),
                 'type' => 'text',
-                'description' => __('Custom order, separate payment methods with commas', 'tpay'),
-                'placeholder' => __('Custom order, separate payment methods with commas', 'tpay'),
+                'description' => __('Custom order of displayed banks. Separate the values with a comma', 'tpay'),
+                'placeholder' => __('Custom order of displayed banks. Separate the values with a comma', 'tpay'),
                 'desc_tip' => true,
             ],
             'hide_bank_selection' => [
                 'title' => __('Hide bank selection', 'tpay'),
                 'type' => 'checkbox',
-                'description' => __('Redirect to payment panel without choosing bank in advance', 'tpay'),
+                'description' => __('Redirection to the Tpay Transaction Panel, without the option of selecting a bank on the order page', 'tpay'),
                 'label' => __('Hide', 'tpay'),
                 'desc_tip' => true,
             ],

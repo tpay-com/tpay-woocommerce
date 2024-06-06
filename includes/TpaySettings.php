@@ -21,19 +21,19 @@ class TpaySettings
     {
         return [
             'security_code' => [
-                'label' => esc_html__('Secret key (in notifications)', 'tpay'),
-                'description' => esc_html__('The security code for your tpay.com account.', 'tpay'),
+                'label' => esc_html__('Security code', 'tpay'),
+                'description' => esc_html__('You find in Merchant\'s Panel: Settings -> Notifications', 'tpay'),
             ],
             'api_key' => [
                 'label' => esc_html__('Client ID', 'tpay'),
                 'description' => esc_html__(
-                    'API key generated in tpay.com payment recipient\'s panel.',
+                    'You find in Merchant\'s Panel: Integration -> API -> Open Api Keys section',
                     'tpay'
                 ),
             ],
             'api_key_password' => [
-                'label' => esc_html__('API key password', 'tpay'),
-                'description' => esc_html__('API key password', 'tpay'),
+                'label' => esc_html__('Secret', 'tpay'),
+                'description' => esc_html__('You find in Merchant\'s Panel: Integration -> API -> Open Api Keys section', 'tpay'),
             ],
         ];
     }
@@ -93,6 +93,7 @@ class TpaySettings
                 'id' => 'global_'.$field,
                 'desc' => $desc['label'],
                 'name' => 'tpay_settings_option_name',
+                'description' => $desc['description'],
             ];
             add_settings_field(
                 $args['id'], // id
@@ -203,6 +204,10 @@ class TpaySettings
             $id,
             $required
         );
+
+        if (isset($args['description']) && $args['description']) {
+            echo "<span class='tpay-help-tip' aria-label='{$args['description']}'></span>";
+        }
     }
 
     /**

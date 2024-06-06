@@ -154,7 +154,7 @@ class TpaySF extends TpayGateways
             'title' => __('RSA key', 'tpay'),
             'type' => 'text',
             'class' => 'sf-rsa-global',
-            'description' => __('RSA key', 'tpay'),
+            'description' => __('You find in Merchant\'s Panel: Credit card payments -> API', 'tpay'),
             'label' => __('RSA key', 'tpay'),
             'desc_tip' => true,
         ];
