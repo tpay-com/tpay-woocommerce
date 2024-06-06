@@ -56,7 +56,7 @@ const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
                 data.card_short_code = document.querySelector('#card_short_code').value;
 
                 if (saveCard) {
-                    data.savecard = saveCard.value;
+                    data['save-card'] = saveCard.value;
                 }
             }
 
