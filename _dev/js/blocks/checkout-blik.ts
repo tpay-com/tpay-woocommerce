@@ -20,7 +20,7 @@ const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
     function blikError(): { type: string, message: string } {
         return {
             type: emitResponse.responseTypes.ERROR,
-            message: 'Enter correct Blik code',
+            message: settings.blikCodeNotTyped,
         };
     }
 

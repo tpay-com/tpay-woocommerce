@@ -55,7 +55,8 @@ final class PekaoInstallmentsBlock extends AbstractPaymentMethodType
             'icon' => $this->gateway->icon,
             'cartTotal' => WC()->cart ? WC()->cart->get_cart_contents_total() : null,
             'fields' => $fields,
-            //            'supports' => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] ),
+            'channelNotSelectedMessage' => __('Select a bank', 'tpay'),
+            'supports' => array_filter($this->gateway->supports, [$this->gateway, 'supports']),
         ];
     }
 }

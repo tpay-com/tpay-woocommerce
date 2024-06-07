@@ -12,10 +12,10 @@ const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
             const paymentMethodIdInput: HTMLInputElement = document.querySelector('input[name="tpay-channel-id"]:checked');
             const paymentMethodId = paymentMethodIdInput ? paymentMethodIdInput.value : false;
 
-            if (paymentMethodId === null) {
+            if (paymentMethodId === false) {
                 return {
                     type: emitResponse.responseTypes.ERROR,
-                    message: 'Select payment method',
+                    message: settings.channelNotSelectedMessage,
                 };
             }
 
