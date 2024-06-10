@@ -36,9 +36,6 @@
         $('input[data-toggle-global]').on('click', function () {
             test_values_type();
         });
-        $('#woocommerce_tpaysf_mid_number').on('change', function(){
-            try_set_fields_by_mid();
-        })
     });
 
 
@@ -79,11 +76,6 @@
                 $('.mid-selector').closest('tr').hide();
             }
             else{
-                $('.mid-selector').closest('tr').show();
-                var midclass = '.mid-number-' + $('#woocommerce_tpaysf_mid_number').val();
-                $(midclass).each(function () {
-                    $(this).closest('tr').show();
-                });
                 $('#woocommerce_tpaysf_security_code').closest('tr').hide();
                 $('#woocommerce_tpaysf_api_key').closest('tr').hide();
                 $('#woocommerce_tpaysf_api_key_password').closest('tr').hide();

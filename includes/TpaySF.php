@@ -147,70 +147,18 @@ class TpaySF extends TpayGateways
     }
 
     /** @return array */
-    public static function get_form_sf()
+    public static function get_form_sf(): array
     {
-        $fields = [];
-        $fields['sf_rsa'] = [
-            'title' => __('RSA key', 'tpay'),
-            'type' => 'text',
-            'class' => 'sf-rsa-global',
-            'description' => __('You find in Merchant\'s Panel: Credit card payments -> API', 'tpay'),
-            'label' => __('RSA key', 'tpay'),
-            'desc_tip' => true,
-        ];
-        $fields['mid_number'] = [
-            'title' => __('MID number', 'tpay'),
-            'description' => __('MID number', 'tpay'),
-            'type' => 'select',
-            'class' => 'mid-selector',
-            'options' => [
-                1 => 1,
-                2 => 2,
-                3 => 3,
-                4 => 4,
-                5 => 5,
-                6 => 6,
-                7 => 7,
-                8 => 8,
-                9 => 9,
-                10 => 10,
+        return [
+            'sf_rsa' => [
+                'title' => __('RSA key', 'tpay'),
+                'type' => 'text',
+                'class' => 'sf-rsa-global',
+                'description' => __('You find in Merchant\'s Panel: Credit card payments -> API', 'tpay'),
+                'label' => __('RSA key', 'tpay'),
+                'desc_tip' => true,
             ],
         ];
-        for ($i = 1; $i <= 10; $i++) {
-            $fields['security_code_'.$i] = [
-                'title' => __('Secret key (in notifications)', 'tpay'),
-                'description' => __('The security code for your tpay.com account.', 'tpay'),
-                'class' => 'mid-field mid-number-'.$i,
-            ];
-            $fields['api_key'.$i] = [
-                'title' => __('Client ID', 'tpay'),
-                'description' => __('API key generated in tpay.com payment recipient\'s panel.', 'tpay'),
-                'class' => 'mid-field mid-number-'.$i,
-            ];
-            $fields['api_key_password'.$i] = [
-                'title' => __('API key password', 'tpay'),
-                'description' => __('API key password', 'tpay'),
-                'class' => 'mid-field mid-number-'.$i,
-            ];
-            $fields['sf_rsa'.$i] = [
-                'title' => __('RSA key', 'tpay'),
-                'description' => __('RSA key', 'tpay'),
-                'class' => 'mid-field mid-number-'.$i,
-            ];
-            $fields['sf_rsa'.$i] = [
-                'title' => __('RSA key', 'tpay'),
-                'description' => __('RSA key', 'tpay'),
-                'class' => 'mid-field mid-number-'.$i,
-            ];
-            $fields['middomain'.$i] = [
-                'title' => __('MID domain', 'tpay'),
-                'description' => __('MID domain', 'tpay'),
-                'type' => 'url',
-                'class' => 'mid-field mid-number-'.$i,
-            ];
-        }
-
-        return $fields;
     }
 
     public function process_payment($order_id)
