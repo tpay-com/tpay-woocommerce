@@ -3,6 +3,7 @@ const react = window.React;
 
 const {registerPaymentMethod} = wc.wcBlocksRegistry;
 const {useEffect} = wp.element;
+const creditCardType = require("credit-card-type");
 
 
 type CardData = {
@@ -28,7 +29,7 @@ function tokenize_card(pubkey: string) {
     encrypt.setPublicKey(decoded);
     encrypted = encrypt.encrypt(cd);
     document.querySelector('#carddata').value = encrypted;
-    document.querySelector('#card_vendor').value = 'test';
+    document.querySelector('#card_vendor').value = creditCardType(cardNumber)[0].niceType;
     document.querySelector('#card_short_code').value = cardNumber.substr(-4);
     hashAsync("SHA-256", cardNumber).then(outputHash => document.querySelector('#card_hash').value = outputHash);
     numberInput.value = '';
@@ -87,7 +88,7 @@ const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
 
 let Block_Gateway = {
     name: 'tpaysf',
-    label: react.createElement('label', null, settings.title, react.createElement('img', {src: settings.icon})),
+    label: react.createElement('label', null, `${settings.title} `, react.createElement('img', {src: settings.icon})),
     content: react.createElement(Content),
     edit: null,
     canMakePayment: () => true,

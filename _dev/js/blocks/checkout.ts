@@ -45,7 +45,7 @@ const Content = (props: { eventRegistration: any; emitResponse: any; }) => {
 
 let Block_Gateway = {
     name: 'tpaypbl',
-    label: react.createElement('label', null, settings.title, react.createElement('img', {src: settings.icon})),
+    label: react.createElement('label', null, `${settings.title} `, react.createElement('img', {src: settings.icon})),
     content: react.createElement(Content),
     edit: null,
     canMakePayment: () => true,
