@@ -146,7 +146,6 @@ class TpaySF extends TpayGateways
         include plugin_dir_path(__FILE__).'../views/html/sf.php';
     }
 
-    /** @return array */
     public static function get_form_sf(): array
     {
         return [
