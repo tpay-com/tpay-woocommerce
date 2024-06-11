@@ -7,9 +7,9 @@ use WC_Order;
 class GatewayHelper
 {
     const CONDITION_PL = 'https://secure.tpay.com/regulamin.pdf';
-    const CONDITION_EN = 'https://secure.tpay.com/regulamin.pdf';
+    const CONDITION_EN = 'https://tpay.com/user/assets/files_for_download/payment-terms-and-conditions.pdf';
     const PRIVACY_PL = 'https://tpay.com/user/assets/files_for_download/klauzula-informacyjna-platnik.pdf';
-    const PRIVACY_EN = 'https://tpay.com/user/assets/files_for_download/klauzula-informacyjna-platnik.pdf';
+    const PRIVACY_EN = 'https://tpay.com/user/assets/files_for_download/information-clause-payer.pdf';
 
     public $additional_payment_data;
     public $crc;

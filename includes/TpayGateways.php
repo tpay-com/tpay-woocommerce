@@ -297,10 +297,8 @@ abstract class TpayGateways extends WC_Payment_Gateway
     /**
      * Check If The Gateway Is Available For Use.
      * Copy from COD module
-     *
-     * @return bool
      */
-    public function is_available()
+    public function is_available(): bool
     {
         $order = null;
         $is_order_processing = false;
@@ -548,7 +546,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
     {
         return [
             'enabled' => [
-                'title' => __('Enable/Disable', 'woocommerce'),
+                'title' => __('Launch payment', 'tpay'),
                 'label' => __('Enable Tpay payment method', 'tpay'),
                 'type' => 'checkbox',
                 'description' => __(
@@ -569,6 +567,8 @@ abstract class TpayGateways extends WC_Payment_Gateway
                 'type' => 'checkbox',
                 'label' => __('Use global values.', 'tpay'),
                 'default' => 'yes',
+                'description' => __('Function uses data from Tpay Settings', 'tpay'),
+                'desc_tip' => true,
                 'custom_attributes' => ['data-toggle-global' => '1'],
             ],
         ];

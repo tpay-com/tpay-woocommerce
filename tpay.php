@@ -3,7 +3,7 @@
  * Plugin Name: Tpay Payment Gateway
  * Plugin URI: https://tpay.com
  * Description: Tpay payment gateway for WooCommerce
- * Version: 1.4.5
+ * Version: 1.5.0
  * Author: Krajowy Integrator Płatności S.A.
  * Author URI: http://www.tpay.com
  * License: LGPL 3.0
@@ -13,6 +13,8 @@
  * WC tested up to: 5.5
  */
 
+use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
+use Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use Tpay\PekaoInstallments;
 use Tpay\Tpay;
@@ -26,7 +28,7 @@ use Tpay\TpayTwisto;
 
 require_once 'tpay-functions.php';
 
-define('TPAY_PLUGIN_VERSION', '1.4.5');
+define('TPAY_PLUGIN_VERSION', '1.5.0');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
@@ -68,7 +70,25 @@ if (tpayOption('global_enable_fee') != 'disabled') {
 add_action('before_woocommerce_init', function () {
     if (class_exists(FeaturesUtil::class)) {
         FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__);
+        FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__);
     }
+});
+
+add_action('woocommerce_blocks_loaded', function () {
+    if (!class_exists(AbstractPaymentMethodType::class)) {
+        return;
+    }
+
+    add_action('woocommerce_blocks_payment_method_type_registration', function (PaymentMethodRegistry $paymentMethodRegistry) {
+        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayBlock());
+        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayBlikBlock());
+        $paymentMethodRegistry->register(new \Tpay\Blocks\TpaySFBlock());
+        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayCCBlock());
+        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayGPayBlock());
+        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayInstallmentsBlock());
+        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayTwistoBlock());
+        $paymentMethodRegistry->register(new \Tpay\Blocks\PekaoInstallmentsBlock());
+    });
 });
 
 add_filter('woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2);

@@ -2,7 +2,7 @@
     <div class="tpay-pbl">
         <?php foreach ($list as $item): ?>
             <label class="tpay-item" data-groupID="<?php echo esc_attr($item->id) ?>">
-                <input name="tpay-channelID" type="radio" value="<?php echo esc_html($item->id) ?>"/>
+                <input name="tpay-channel-id" type="radio" value="<?php echo esc_html($item->id) ?>"/>
                 <div>
                     <div>
                         <div class="tpay-group-logo-holder">

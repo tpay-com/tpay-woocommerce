@@ -41,7 +41,7 @@ if ($cr = get_option('woocommerce_tpaypbl_settings')['custom_order']) {
         }
     }
 
-    $list = $new_list + $list;
+    $list = array_merge($new_list, $list);
 }
 
 $list = array_filter($list, function (\Tpay\Dtos\Channel $channel) {

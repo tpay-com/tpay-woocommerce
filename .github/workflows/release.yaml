@@ -24,6 +24,8 @@ jobs:
 
       - run: composer install --no-dev
 
+      - run: chmod 777 -R vendor
+
       - run: git archive --output=tpay-woocommerce.zip HEAD
 
       - run: zip -ur tpay-woocommerce.zip vendor/

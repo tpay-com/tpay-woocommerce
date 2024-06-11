@@ -23,6 +23,11 @@ class Tpay extends TpayGateways
         parent::tpay_init_form_fields(true);
     }
 
+    public function isBankSelectionHidden(): bool
+    {
+        return $this->hide_bank_selection;
+    }
+
     public function payment_fields()
     {
         if ($this->description) {
@@ -50,14 +55,14 @@ class Tpay extends TpayGateways
             'custom_order' => [
                 'title' => __('Custom order', 'tpay'),
                 'type' => 'text',
-                'description' => __('Custom order, separate payment methods with commas', 'tpay'),
-                'placeholder' => __('Custom order, separate payment methods with commas', 'tpay'),
+                'description' => __('Custom order of displayed banks. Separate the values with a comma', 'tpay'),
+                'placeholder' => __('Custom order of displayed banks. Separate the values with a comma', 'tpay'),
                 'desc_tip' => true,
             ],
             'hide_bank_selection' => [
                 'title' => __('Hide bank selection', 'tpay'),
                 'type' => 'checkbox',
-                'description' => __('Redirect to payment panel without choosing bank in advance', 'tpay'),
+                'description' => __('Redirection to the Tpay Transaction Panel, without the option of selecting a bank on the order page', 'tpay'),
                 'label' => __('Hide', 'tpay'),
                 'desc_tip' => true,
             ],
@@ -76,7 +81,7 @@ class Tpay extends TpayGateways
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności PBL- użytkownik nie wybrał banku');
                 wc_add_notice(__('Select a bank', 'tpay'), 'error');
 
-                return false;
+                return [];
             }
         }
 
@@ -88,7 +93,7 @@ class Tpay extends TpayGateways
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności- zwrócone następujące błędy: '.implode(' ', $errors_list));
                 wc_add_notice(implode(' ', $errors_list), 'error');
 
-                return false;
+                return [];
             }
 
             $order->set_transaction_id($result['transactionId']);
@@ -110,7 +115,7 @@ class Tpay extends TpayGateways
         }
         wc_add_notice(__('Payment error', 'tpay'), 'error');
 
-        return false;
+        return [];
     }
 
     public function set_payment_data($order, $channelId)

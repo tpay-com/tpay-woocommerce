@@ -7,7 +7,8 @@ let config = {
     target: ["web", "es5"],
     entry: {
         main: ['./js/main.ts', './scss/main.scss'],
-        admin: ['./js/admin.ts', './scss/admin.scss']
+        admin: ['./js/admin.ts', './scss/admin.scss'],
+        checkout: ['./js/blocks/checkout.ts', './js/blocks/checkout-blik.ts', './js/blocks/checkout-sf.ts', './js/blocks/checkout-cc.ts', './js/blocks/checkout-gpay.ts', './js/blocks/checkout-installments.ts', './js/blocks/checkout-twisto.ts', './js/blocks/checkout-pekao.ts']
     },
     output: {
         path: path.resolve(__dirname, '../views/js'),

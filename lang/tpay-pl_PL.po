@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Tpay Payment Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-02 01:33+0000\n"
-"PO-Revision-Date: 2023-11-29 19:25+0100\n"
+"PO-Revision-Date: 2024-05-29 10:27+0200\n"
 "Last-Translator: dqw dqw\n"
 "Language-Team: Polski\n"
 "Language: pl_PL\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.4.3\n"
 "X-Loco-Version: 2.6.2; wp-6.1.1\n"
 "X-Domain: tpay\n"
 
@@ -49,9 +49,6 @@ msgstr "Dodatkowa kwota"
 msgid "Client ID"
 msgstr "ID Klienta"
 
-msgid "Secret key (in notifications)"
-msgstr "Sekretny Klucz (w powiadomieniach)"
-
 msgid "BLIK insufficient funds / user authorization error"
 msgstr "Niewystarczająca ilość środków na pokrycie transakcji"
 
@@ -69,12 +66,12 @@ msgid "API key"
 msgstr "Klucz API"
 
 #: includes/TpaySettings.php:33
-msgid "API key generated in tpay.com payment recipient's panel."
-msgstr "Klucz API wygenerowany w panelu merchanta tpay.com"
+msgid "You find in Merchant's Panel: Integration -> API -> Open Api Keys section"
+msgstr "Znajdziesz w Panelu Akceptanta: Integracje -> API -> sekcja Klucze do nowego Open Api"
 
 #: includes/TpaySettings.php:37 includes/TpaySettings.php:38
-msgid "API key password"
-msgstr "Hasło API"
+msgid "Secret"
+msgstr "Sekret API"
 
 #: includes/WC_TpayGateways.php:116
 msgid "Blik payment"
@@ -97,12 +94,15 @@ msgid "Choose payment method."
 msgstr "Wybierz metodę płatności."
 
 #: includes/Tpay.php:43 includes/Tpay.php:44
-msgid "Custom order, separate payment methods with commas"
-msgstr "Własna kolejność, oddziel metody przecinkami"
+msgid "Custom order of displayed banks. Separate the values with a comma"
+msgstr "Własna kolejność wyświetlanych banków. Wartości oddziel przecinkiem"
 
 #: includes/Tpay.php:41
 msgid "Custom order"
 msgstr "Własna kolejność"
+
+msgid "Launch payment"
+msgstr "Uruchom płatność"
 
 #: views/html/sf.php:18
 msgid "CVC"
@@ -110,12 +110,12 @@ msgstr "CVC"
 
 #. id
 #: includes/TpaySettings.php:121
-msgid "Default on-hold status"
-msgstr "Domyślny status po utworzeniu zamówienia"
+msgid "Successful payment status"
+msgstr "Domyślny status po opłaceniu"
 
 #: includes/WC_TpayGateways.php:273
 msgid "Description of Tpay Payment Gateway that users sees on Checkout page."
-msgstr "Opis bramki płatności, który widzą użytkownicy na stronie zamówienia"
+msgstr "Opis bramki płatności Tpay, widoczny na stronie zamówienia"
 
 #: includes/WC_TpayGateways.php:271
 msgid "Description"
@@ -131,7 +131,13 @@ msgstr "Włącz"
 
 #: includes/TpayBlik.php:49
 msgid "Enable Blik lvl 0"
-msgstr "Włącz Blik 0"
+msgstr "BLIK LVL 0 "
+
+msgid "Allows to enter blik code on the order page"
+msgstr "Zezwala na wpisywanie kodu blik na stronie zamówienia "
+
+msgid "You find in Merchant's Panel: Credit card payments -> API"
+msgstr "Znajdziesz w Panelu Akceptanta: Płatności kartami -> API"
 
 #. id
 #: includes/TpaySettings.php:128
@@ -285,12 +291,15 @@ msgid "Show inactive payment methods as grayed out"
 msgstr "Pokaż nieaktywne metody płatności jako wyszarzone"
 
 #: includes/TpaySettings.php:29
-msgid "The security code for your tpay.com account."
-msgstr "Kod bezpieczeństwa twojego konta na tpay.com"
+msgid "You find in Merchant's Panel: Settings -> Notifications"
+msgstr "Znajdziesz w Panelu Akceptanta: Ustawienia -> Powiadomienia"
 
 #: includes/WC_TpayGateways.php:208
 msgid "Title of Tpay Payment Gateway that users sees on Checkout page."
-msgstr "Tytuł płatności Tpay widoczny na stronie zamówienia"
+msgstr "Tytuł bramki płatności Tpay, widoczny na stronie zamówienia"
+
+msgid "Function uses data from Tpay Settings"
+msgstr "Funkcja pobiera dane z Ustawień Tpay"
 
 #: includes/WC_TpayGateways.php:206
 msgid "Title"
@@ -393,8 +402,8 @@ msgid "Hide bank selection"
 msgstr "Ukryj listę wyboru banku"
 
 #: includes/Tpay.php:66
-msgid "Redirect to payment panel without choosing bank in advance"
-msgstr "Przekieruj na panel płatnosci Tpay bez wybrania banku"
+msgid "Redirection to the Tpay Transaction Panel, without the option of selecting a bank on the order page"
+msgstr "Bezpośrednie przekierowanie na Panel Transakcyjny Tpay, bez możliwości wybrania banku na stronie zamówienia"
 
 #: includes/Tpay.php:67
 msgid "Hide"
