@@ -36,6 +36,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
     protected static $channelsMicrocache = [];
     protected static $tpayConnection;
     protected $cache;
+    protected $config;
 
     /**
      * Setup general properties for the gateway.
@@ -143,7 +144,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             return self::$tpayConnection;
         }
 
-        $config = (new Helpers\ConfigProvider())->get_config($this);
+        $config = $this->get_config();
         $this->api_key = $config['api_key'];
         $this->api_key_password = $config['api_key_password'];
         $this->security_code = $config['security_code'];
@@ -529,6 +530,15 @@ abstract class TpayGateways extends WC_Payment_Gateway
     public function payment_gateway_is_enabled(): bool
     {
         return 'yes' === $this->tpay_get_option(['woocommerce_'.$this->id.'_settings', 'enabled']);
+    }
+
+    protected function get_config(): array
+    {
+        if (!$this->config) {
+            $this->config = (new Helpers\ConfigProvider())->get_config($this);
+        }
+
+        return $this->config;
     }
 
     /** @param string $id */
