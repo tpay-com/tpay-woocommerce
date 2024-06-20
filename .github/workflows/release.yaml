@@ -2,13 +2,6 @@ name: Release
 
 on:
   pull_request:
-  push:
-    tags:
-      - '*'
-  workflow_run:
-    workflows: [Create release]
-    types:
-      - completed
 
 permissions:
   contents: write
@@ -34,23 +27,15 @@ jobs:
 
       - run: zip -ur tpay-woocommerce.zip vendor/
 
-      - uses: softprops/action-gh-release@v1
-        if: github.event_name != 'pull_request'
-        with:
-          files: tpay-woocommerce.zip
-
-
       - run: mkdir plugin && unzip tpay-woocommerce.zip -d plugin
 
       - uses: actions/upload-artifact@v4
         id: plugin-upload
-        if: github.event_name == 'pull_request'
         with:
           name: 'tpay-woocommerce'
           path: 'plugin/'
 
       - uses: actions/github-script@v6
-        if: github.event_name == 'pull_request'
         with:
           github-token: ${{ secrets.TOKEN }}
           script: |
