@@ -5,6 +5,10 @@ on:
   push:
     tags:
       - '*'
+  workflow_run:
+    workflows: [Create release]
+    types:
+      - completed
 
 permissions:
   contents: write
