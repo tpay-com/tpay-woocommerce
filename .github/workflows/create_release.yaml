@@ -24,6 +24,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ github.event.inputs.version }}
-          body: "v${{ github.event.inputs.version }}"
+          name: "v${{ github.event.inputs.version }}"
           generateReleaseNotes: true
 
