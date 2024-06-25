@@ -152,7 +152,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $this->set_id_seller($this->api_key);
         try {
             $isProd = 'sandbox' != tpayOption('global_tpay_environment');
-            self::$tpayConnection = new TpayApi($this->api_key, $this->api_key_password, $isProd, 'read');
+            self::$tpayConnection = new TpayApi($this->api_key, $this->api_key_password, $isProd, 'read', null, buildInfo());
             self::$tpayConnection->authorization();
 
             return self::$tpayConnection;
@@ -335,7 +335,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
 
     public function set_payment_data($order, $channelId)
     {
-        $payer_data = $this->gateway_helper->payer_data($order);
+        $payer_data = $this->gateway_helper->payer_data($order, tpayOption('global_tax_id_meta_field_name'));
         $merchant_email = get_option('admin_email');
 
         if (tpayOption('global_merchant_email')) {
@@ -367,11 +367,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
     public function process_transaction(WC_Order $order)
     {
         try {
-            if (isset($this->payment_data['pay']['channelId'])) {
-                $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
-            } else {
-                $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
-            }
+            $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
         } catch (Error $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
 

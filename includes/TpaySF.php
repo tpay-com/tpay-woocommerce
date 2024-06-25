@@ -52,7 +52,7 @@ class TpaySF extends TpayGateways
                 $use_card = $card;
             }
 
-            $payer_data = $this->gateway_helper->payer_data($order, $this->get_config()['tax_id_meta_field_name']);
+            $payer_data = $this->gateway_helper->payer_data($order, tpayOption('global_tax_id_meta_field_name'));
             $payment_data = [
                 'description' => __('Order', 'tpay').' #'.$order->ID,
                 'amount' => $chargeAmount,

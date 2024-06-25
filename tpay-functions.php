@@ -71,6 +71,18 @@ function enqueue_tpay_admin_assets()
     wp_enqueue_style('tpay_admin_css', plugin_dir_url(__FILE__) . 'views/css/admin.css', [], TPAY_PLUGIN_VERSION);
 }
 
+function buildInfo(): string
+{
+    return sprintf(
+        'woocommerce:%s|wordpress:%s|tpay-woocommerce:%s|tpay-openapi-php:%s|PHP:%s',
+        WC()->version,
+        get_bloginfo('version'),
+        TPAY_PLUGIN_VERSION,
+        \Composer\InstalledVersions::getPrettyVersion('tpay-com/tpay-openapi-php'),
+        phpversion()
+    );
+}
+
 function enqueue_tpay_gateway_assets()
 {
     wp_enqueue_script(

@@ -12,12 +12,10 @@ class ConfigProvider
             $result['security_code'] = wp_specialchars_decode($gateway->tpay_get_option(['tpay_settings_option_name', 'global_security_code']));
             $result['api_key'] = $gateway->tpay_get_option(['tpay_settings_option_name', 'global_api_key']);
             $result['api_key_password'] = $gateway->tpay_get_option(['tpay_settings_option_name', 'global_api_key_password']);
-            $result['tax_id_meta_field_name'] = $gateway->tpay_get_option(['tpay_settings_option_name', 'global_tax_id_meta_field_name']);
         } else {
             $result['security_code'] = wp_specialchars_decode($gateway->get_option('security_code'));
             $result['api_key'] = $gateway->get_option('api_key');
             $result['api_key_password'] = $gateway->get_option('api_key_password');
-            $result['tax_id_meta_field_name'] = $gateway->get_option('tax_id_meta_field_name');
         }
 
         return $result;
