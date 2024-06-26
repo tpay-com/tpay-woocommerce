@@ -8,7 +8,7 @@ use Tpay\Dtos\Channel;
 use Tpay\Dtos\Constraint;
 use Tpay\Dtos\Group;
 use Tpay\Dtos\Image;
-use tpaySDK\Api\TpayApi;
+use Tpay\OpenApi\Api\TpayApi;
 use WC_Order;
 use WC_Payment_Gateway;
 
