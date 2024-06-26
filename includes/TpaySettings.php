@@ -68,9 +68,9 @@ class TpaySettings
             <form method="post" action="options.php">
                 <?php
                 settings_fields('tpay_settings_option_group');
-                do_settings_sections('tpay-settings-admin');
-                submit_button();
-                ?>
+        do_settings_sections('tpay-settings-admin');
+        submit_button();
+        ?>
             </form>
         </div>
         <?php
@@ -93,7 +93,7 @@ class TpaySettings
         );
         foreach ($this->fields as $field => $desc) {
             $args = [
-                'id' => 'global_' . $field,
+                'id' => 'global_'.$field,
                 'desc' => $desc['label'],
                 'name' => 'tpay_settings_option_name',
                 'description' => $desc['description'],
@@ -236,8 +236,8 @@ class TpaySettings
     public function tpay_settings_sanitize($input)
     {
         foreach ($this->fields as $field => $desc) {
-            if (isset($input['global_' . $field])) {
-                $sanitary_values['global_' . $field] = sanitize_text_field($input['global_' . $field]);
+            if (isset($input['global_'.$field])) {
+                $sanitary_values['global_'.$field] = sanitize_text_field($input['global_'.$field]);
             }
         }
 
