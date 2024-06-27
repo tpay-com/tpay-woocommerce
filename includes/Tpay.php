@@ -120,7 +120,7 @@ class Tpay extends TpayGateways
 
     public function set_payment_data($order, $channelId)
     {
-        $payer_data = $this->gateway_helper->payer_data($order);
+        $payer_data = $this->gateway_helper->payer_data($order, tpayOption('global_tax_id_meta_field_name'));
         $merchant_email = get_option('admin_email');
         if (tpayOption('global_merchant_email')) {
             $merchant_email = tpayOption('global_merchant_email');

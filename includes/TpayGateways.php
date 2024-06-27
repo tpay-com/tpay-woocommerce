@@ -8,7 +8,7 @@ use Tpay\Dtos\Channel;
 use Tpay\Dtos\Constraint;
 use Tpay\Dtos\Group;
 use Tpay\Dtos\Image;
-use tpaySDK\Api\TpayApi;
+use Tpay\OpenApi\Api\TpayApi;
 use WC_Order;
 use WC_Payment_Gateway;
 
@@ -36,6 +36,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
     protected static $channelsMicrocache = [];
     protected static $tpayConnection;
     protected $cache;
+    protected $config;
 
     /**
      * Setup general properties for the gateway.
@@ -143,7 +144,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             return self::$tpayConnection;
         }
 
-        $config = (new Helpers\ConfigProvider())->get_config($this);
+        $config = $this->get_config();
         $this->api_key = $config['api_key'];
         $this->api_key_password = $config['api_key_password'];
         $this->security_code = $config['security_code'];
@@ -151,7 +152,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $this->set_id_seller($this->api_key);
         try {
             $isProd = 'sandbox' != tpayOption('global_tpay_environment');
-            self::$tpayConnection = new TpayApi($this->api_key, $this->api_key_password, $isProd, 'read');
+            self::$tpayConnection = new TpayApi($this->api_key, $this->api_key_password, $isProd, 'read', null, buildInfo());
             self::$tpayConnection->authorization();
 
             return self::$tpayConnection;
@@ -334,7 +335,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
 
     public function set_payment_data($order, $channelId)
     {
-        $payer_data = $this->gateway_helper->payer_data($order);
+        $payer_data = $this->gateway_helper->payer_data($order, tpayOption('global_tax_id_meta_field_name'));
         $merchant_email = get_option('admin_email');
 
         if (tpayOption('global_merchant_email')) {
@@ -366,11 +367,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
     public function process_transaction(WC_Order $order)
     {
         try {
-            if (isset($this->payment_data['pay']['channelId'])) {
-                $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
-            } else {
-                $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
-            }
+            $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
         } catch (Error $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
 
@@ -529,6 +526,15 @@ abstract class TpayGateways extends WC_Payment_Gateway
     public function payment_gateway_is_enabled(): bool
     {
         return 'yes' === $this->tpay_get_option(['woocommerce_'.$this->id.'_settings', 'enabled']);
+    }
+
+    protected function get_config(): array
+    {
+        if (!$this->config) {
+            $this->config = (new Helpers\ConfigProvider())->get_config($this);
+        }
+
+        return $this->config;
     }
 
     /** @param string $id */

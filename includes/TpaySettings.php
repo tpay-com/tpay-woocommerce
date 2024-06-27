@@ -33,7 +33,10 @@ class TpaySettings
             ],
             'api_key_password' => [
                 'label' => esc_html__('Secret', 'tpay'),
-                'description' => esc_html__('You find in Merchant\'s Panel: Integration -> API -> Open Api Keys section', 'tpay'),
+                'description' => esc_html__(
+                    'You find in Merchant\'s Panel: Integration -> API -> Open Api Keys section',
+                    'tpay'
+                ),
             ],
         ];
     }
@@ -185,6 +188,21 @@ class TpaySettings
             'tpay-settings-admin', // page
             'tpay_settings_setting_section' // section
         );
+
+        add_settings_field(
+            'global_tax_id_meta_field_name',
+            esc_html__('Tax identifier field name', 'tpay'),
+            [$this, 'global_callback'],
+            'tpay-settings-admin',
+            'tpay_settings_setting_section',
+            [
+                'id' => 'global_tax_id_meta_field_name',
+                'description' => esc_html__(
+                    'If you\'re added extra meta data including tax id to order - place here meta field name',
+                    'tpay'
+                ),
+            ]
+        );
     }
 
     /** @param array $args */
@@ -255,6 +273,12 @@ class TpaySettings
 
         if (isset($input['global_render_payment_type'])) {
             $sanitary_values['global_render_payment_type'] = sanitize_text_field($input['global_render_payment_type']);
+        }
+
+        if (isset($input['global_tax_id_meta_field_name'])) {
+            $sanitary_values['global_tax_id_meta_field_name'] = sanitize_text_field(
+                $input['global_tax_id_meta_field_name']
+            );
         }
 
         return $sanitary_values;

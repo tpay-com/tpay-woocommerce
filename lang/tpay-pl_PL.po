@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Tpay Payment Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-02 01:33+0000\n"
-"PO-Revision-Date: 2024-05-29 10:27+0200\n"
+"PO-Revision-Date: 2024-06-26 00:13+0200\n"
 "Last-Translator: dqw dqw\n"
 "Language-Team: Polski\n"
 "Language: pl_PL\n"
@@ -454,3 +454,9 @@ msgstr "Tpay wymaga wtyczki WooCommerce,"
 
 msgid "download it"
 msgstr "pobierz ją"
+
+msgid "Tax identifier field name"
+msgstr "Nazwa pola NIP"
+
+msgid "If you're added extra meta data including tax id to order - place here meta field name"
+msgstr "Jeśli dodałeś dodatkowe metadane, w tym identyfikator podatkowy do zamówienia - umieść tutaj nazwę pola meta"
