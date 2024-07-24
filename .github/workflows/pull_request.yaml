@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   check:
@@ -35,13 +36,7 @@ jobs:
           name: 'tpay-woocommerce'
           path: 'plugin/'
 
-      - uses: actions/github-script@v6
+      - uses: mshick/add-pr-comment@v2
         with:
-          github-token: ${{ secrets.TOKEN }}
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'Tpay Woocommerce plugin - ${{ steps.plugin-upload.outputs.artifact-url }}'
-            })
+          message: |
+            Tpay Woocommerce plugin - ${{ steps.plugin-upload.outputs.artifact-url }}
