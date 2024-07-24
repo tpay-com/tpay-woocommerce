@@ -460,3 +460,6 @@ msgstr "Nazwa pola NIP"
 
 msgid "If you're added extra meta data including tax id to order - place here meta field name"
 msgstr "Jeśli dodałeś dodatkowe metadane, w tym identyfikator podatkowy do zamówienia - umieść tutaj nazwę pola meta"
+
+msgid "CRC number in Tpay"
+msgstr "Numer CRC w Tpay"

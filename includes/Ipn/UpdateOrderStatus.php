@@ -73,7 +73,7 @@ class UpdateOrderStatus implements IpnInterface
         $status = (@get_option(
             'tpay_settings_option_name'
         )['global_default_on_hold_status']) == 'completed' ? 'completed' : 'processing';
-        $order->update_status($status);
+        $order->update_status($status, sprintf('%s : %s. ', __('CRC number in Tpay', 'tpay'), $response['tr_crc']));
         $order->payment_complete($order->get_transaction_id());
         $this->gateway_helper->tpay_logger(
             'Przyjęcie płatności dla zamówienia: '.$order->get_id().', zrzut odpowiedzi:'
