@@ -3,7 +3,7 @@
  * Plugin Name: Tpay Payment Gateway
  * Plugin URI: https://tpay.com
  * Description: Tpay payment gateway for WooCommerce
- * Version: 1.6.1
+ * Version: 1.6.2
  * Author: Krajowy Integrator Płatności S.A.
  * Author URI: http://www.tpay.com
  * License: LGPL 3.0
@@ -28,7 +28,7 @@ use Tpay\TpayTwisto;
 
 require_once 'tpay-functions.php';
 
-define('TPAY_PLUGIN_VERSION', '1.6.1');
+define('TPAY_PLUGIN_VERSION', '1.6.2');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
@@ -92,8 +92,6 @@ add_action('woocommerce_blocks_loaded', function () {
         $paymentMethodRegistry->register(new \Tpay\Blocks\PekaoInstallmentsBlock());
     });
 });
-
-add_filter('woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2);
 
 function init_gateway_tpay()
 {

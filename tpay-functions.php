@@ -190,15 +190,3 @@ function tpay_refresh_checkout_on_payment_methods_change()
    "
     );
 }
-
-function handle_custom_query_var(array $query, array $query_vars): array
-{
-    if (!empty($query_vars['crc'])) {
-        $query['meta_query'][] = array(
-            'key' => '_crc',
-            'value' => esc_attr($query_vars['crc']),
-        );
-    }
-
-    return $query;
-}
