@@ -319,7 +319,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             $virtualCart = true;
 
             foreach ($products as $product) {
-                if ($product['data']->is_virtual() === false) {
+                if (false === $product['data']->is_virtual()) {
                     $virtualCart = false;
                     break;
                 }
