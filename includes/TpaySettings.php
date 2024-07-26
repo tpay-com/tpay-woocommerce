@@ -224,7 +224,7 @@ class TpaySettings
         );
 
         if (isset($args['description']) && $args['description']) {
-            echo "<span class='tpay-help-tip' aria-label='{$args['description']}'></span>";
+            echo "<span class='tpay-help-tip' aria-label='{$args['description']}'><strong>?</strong></span>";
         }
     }
 
