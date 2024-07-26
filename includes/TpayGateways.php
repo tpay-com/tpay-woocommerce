@@ -315,6 +315,20 @@ abstract class TpayGateways extends WC_Payment_Gateway
             $order_shipping_items = is_object($order) ? $order->get_shipping_methods() : false;
             $chosen_shipping_methods_session = WC()->session->get('chosen_shipping_methods');
 
+            $products = WC()->cart->get_cart();
+            $virtualCart = true;
+
+            foreach ($products as $product) {
+                if (false === $product['data']->is_virtual()) {
+                    $virtualCart = false;
+                    break;
+                }
+            }
+
+            if ($virtualCart) {
+                return true;
+            }
+
             if ($order_shipping_items) {
                 $canonical_rate_ids = $this->shipping->get_canonical_order_shipping_item_rate_ids($order_shipping_items);
             } else {
