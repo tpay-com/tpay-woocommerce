@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added tooltip to tpay global setting
 
+### Fixed
+
+- Fixed package version info
+
 ## [1.6.3]
 
 ### Fixed

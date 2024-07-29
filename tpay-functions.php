@@ -78,7 +78,7 @@ function buildInfo(): string
         WC()->version,
         get_bloginfo('version'),
         TPAY_PLUGIN_VERSION,
-        \Composer\InstalledVersions::getPrettyVersion('tpay-com/tpay-openapi-php'),
+        get_package_version(),
         phpversion()
     );
 }
@@ -189,4 +189,16 @@ function tpay_refresh_checkout_on_payment_methods_change()
         });
    "
     );
+}
+
+function get_package_version(): string
+{
+    $dir = __DIR__ . '/composer.json';
+    if (file_exists($dir)) {
+        $composerJson = json_decode(file_get_contents($dir), true)['require'] ?? [];
+
+        return $composerJson['tpay-com/tpay-openapi-php'];
+    }
+
+    return 'n/a';
 }
