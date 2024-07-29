@@ -22,3 +22,32 @@
   }
 }
 
+.tpay-help-tip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  margin-left: 5px;
+}
+
+.tpay-help-tip::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: 100%; /* Position above the element */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s;
+  visibility: hidden;
+  width: max-content; /* Adjust based on content */
+}
+
+.tpay-help-tip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
