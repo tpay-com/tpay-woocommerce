@@ -5,6 +5,7 @@ namespace Tpay;
 use Error;
 use Tpay\Dtos\Group;
 use Tpay\Helpers\DatabaseConnection;
+use WC_Data_Exception;
 use WC_Order;
 
 class TpaySF extends TpayGateways
@@ -42,10 +43,11 @@ class TpaySF extends TpayGateways
     }
 
     /**
-     * @param $chargeAmount
      * @param WC_Order $order
+     *
+     * @throws WC_Data_Exception
+     *
      * @return bool
-     * @throws \WC_Data_Exception
      */
     public function scheduled_subscription_payment($chargeAmount, $order)
     {

@@ -17,7 +17,7 @@ class TpayBlik extends TpayGateways
     {
         parent::__construct(TPAYBLIK_ID, TPAYBLIK);
         $this->has_terms_checkbox = true;
-        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__) . '../views/img/blik.png');
+        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__).'../views/img/blik.png');
         $this->blik0_enabled = $this->blik0_is_active();
     }
 
@@ -51,9 +51,9 @@ class TpayBlik extends TpayGateways
         }
 
         if ($this->blik0_enabled) {
-            include plugin_dir_path(__FILE__) . '../views/html/blik0.php';
+            include plugin_dir_path(__FILE__).'../views/html/blik0.php';
         } else {
-            include plugin_dir_path(__FILE__) . '../views/html/agreements.php';
+            include plugin_dir_path(__FILE__).'../views/html/agreements.php';
         }
     }
 
@@ -93,7 +93,7 @@ class TpayBlik extends TpayGateways
             $order->set_transaction_id($result['transactionId']);
             $md5 = md5(
                 sprintf(
-                    "%s%s%s%s%s",
+                    '%s%s%s%s%s',
                     $this->id_seller,
                     $result['title'],
                     $this->payment_data['amount'],
@@ -120,13 +120,13 @@ class TpayBlik extends TpayGateways
         if ($result['message']) {
             $message = $result['message'];
             $this->gateway_helper->tpay_logger(
-                'Nie udało się utworzyć transakcji dla zamówienia: ' . $order->get_id() . '. Tpay zwrócił błąd: ' . $message
+                'Nie udało się utworzyć transakcji dla zamówienia: '.$order->get_id().'. Tpay zwrócił błąd: '.$message
             );
-            $this->gateway_helper->tpay_logger('Zrzut odpowiedzi: ' . print_r($result, true));
+            $this->gateway_helper->tpay_logger('Zrzut odpowiedzi: '.print_r($result, true));
         } else {
             $message = __('Payment error', 'tpay');
             $this->gateway_helper->tpay_logger(
-                'Nie udało się utworzyć transakcji dla zamówienia: ' . $order->get_id() . '. Tpay zwrócił nie zwrócił błędu'
+                'Nie udało się utworzyć transakcji dla zamówienia: '.$order->get_id().'. Tpay zwrócił nie zwrócił błędu'
             );
         }
 
@@ -143,7 +143,7 @@ class TpayBlik extends TpayGateways
             );
         } catch (Error $e) {
             $this->gateway_helper->tpay_logger(
-                'Nieudana próba utworzenia transakcji BLIK dla zamówienia ' . $order->get_id()
+                'Nieudana próba utworzenia transakcji BLIK dla zamówienia '.$order->get_id()
             );
             wc_add_notice($e->getMessage(), 'error');
 
@@ -162,7 +162,7 @@ class TpayBlik extends TpayGateways
         }
 
         $this->gateway_helper->tpay_logger(
-            'Nieudane utworzenie transakcji BLIK, wiadomość Tpay: ' . $transaction['message']
+            'Nieudane utworzenie transakcji BLIK, wiadomość Tpay: '.$transaction['message']
         );
 
         return [
@@ -207,7 +207,7 @@ class TpayBlik extends TpayGateways
                     }
                 } else {
                     $this->gateway_helper->tpay_logger(
-                        'Nieudana płatność BLIK, błąd: ' . __('Enter Blik code', 'tpay')
+                        'Nieudana płatność BLIK, błąd: '.__('Enter Blik code', 'tpay')
                     );
                     wc_add_notice(__('Enter Blik code', 'tpay'), 'error');
 
@@ -220,7 +220,7 @@ class TpayBlik extends TpayGateways
                     'label' => get_bloginfo('name'),
                 ];
             } else {
-                $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: ' . __('Payment error', 'tpay'));
+                $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: '.__('Payment error', 'tpay'));
                 wc_add_notice(__('Payment error', 'tpay'), 'error');
 
                 return false;
