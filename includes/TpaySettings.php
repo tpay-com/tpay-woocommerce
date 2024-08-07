@@ -43,11 +43,13 @@ class TpaySettings
 
     public function tpay_settings_add_plugin_page()
     {
+        $capability = apply_filters('tpay_settings_add_plugin_page_capability', 'manage_options', []);
+
         add_submenu_page(
             'woocommerce',
             esc_html__('Tpay settings', 'tpay'), // page_title
             esc_html__('Tpay settings', 'tpay'), // menu_title
-            'manage_options', // capability
+            $capability, // capability
             'tpay-settings', // menu_slug
             [$this, 'tpay_settings_create_admin_page'], // function
             100
