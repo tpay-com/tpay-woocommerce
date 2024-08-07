@@ -34,7 +34,6 @@ class TpayCC extends TpayGateways
         $order = new WC_Order($order_id);
         $this->set_payment_data($order, self::CHANNEL_ID);
         $result = $this->process_transaction($order);
-        update_option('PROCESS_TRANSACTION'.time(), print_r($result, true));
 
         if ('success' == $result['result']) {
             if ($errors_list = $this->gateway_helper->tpay_has_errors($result)) {
@@ -43,16 +42,15 @@ class TpayCC extends TpayGateways
 
                 return false;
             }
+
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
             $order->set_transaction_id($result['transactionId']);
             $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
-            $order->update_meta_data('_transaction_id', $result['transactionId']);
-            $order->update_meta_data('_md5_checksum', $md5);
-            $order->update_meta_data('_crc', $this->crc);
-            $order->update_meta_data('_payment_method', $this->id);
+            $order->update_meta_data('md5_checksum', $md5);
+            $order->update_meta_data('crc', $this->crc);
+            $order->set_payment_method($this->id);
 
             $order->save();
-            $this->gateway_helper->tpay_logger('Udane zamówienie, płatność kartą na stronie Tpay, redirect na: '.$redirect);
 
             return [
                 'result' => 'success',

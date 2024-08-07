@@ -100,13 +100,11 @@ class Tpay extends TpayGateways
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
             $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
 
-            $order->update_meta_data('_transaction_id', $result['transactionId']);
-            $order->update_meta_data('_md5_checksum', $md5);
-            $order->update_meta_data('_crc', $this->crc);
-            $order->update_meta_data('_payment_method', $this->id);
+            $order->update_meta_data('md5_checksum', $md5);
+            $order->update_meta_data('crc', $this->crc);
+            $order->set_payment_method($this->id);
 
             $order->save();
-            $this->gateway_helper->tpay_logger('Udane zamówienie, redirect na: '.$redirect);
 
             return [
                 'result' => 'success',
@@ -122,11 +120,13 @@ class Tpay extends TpayGateways
     {
         $payer_data = $this->gateway_helper->payer_data($order, tpayOption('global_tax_id_meta_field_name'));
         $merchant_email = get_option('admin_email');
+
         if (tpayOption('global_merchant_email')) {
             $merchant_email = tpayOption('global_merchant_email');
         }
+
         $this->payment_data = [
-            'description' => __('Order', 'tpay').' #'.$order->ID,
+            'description' => __('Order', 'tpay').' #'.$order->get_id(),
             'hiddenDescription' => $this->crc,
             'amount' => $order->get_total(),
             'payer' => $payer_data,

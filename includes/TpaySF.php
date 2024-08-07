@@ -5,6 +5,7 @@ namespace Tpay;
 use Error;
 use Tpay\Dtos\Group;
 use Tpay\Helpers\DatabaseConnection;
+use WC_Data_Exception;
 use WC_Order;
 
 class TpaySF extends TpayGateways
@@ -41,6 +42,13 @@ class TpaySF extends TpayGateways
         parent::tpay_init_form_fields(false, false, true);
     }
 
+    /**
+     * @param WC_Order $order
+     *
+     * @throws WC_Data_Exception
+     *
+     * @return bool
+     */
     public function scheduled_subscription_payment($chargeAmount, $order)
     {
         $user_id = $order->get_user_id();
@@ -54,7 +62,7 @@ class TpaySF extends TpayGateways
 
             $payer_data = $this->gateway_helper->payer_data($order, tpayOption('global_tax_id_meta_field_name'));
             $payment_data = [
-                'description' => __('Order', 'tpay').' #'.$order->ID,
+                'description' => __('Order', 'tpay').' #'.$order->get_id(),
                 'amount' => $chargeAmount,
                 'pay' => [
                     'channelId' => TpayCC::CHANNEL_ID,
@@ -72,9 +80,6 @@ class TpaySF extends TpayGateways
                 ],
             ];
 
-            $log = 'Uruchomienie płatności za subskrypcję';
-            $this->gateway_helper->tpay_logger($log);
-
             $paydata = [
                 'channelId' => TpayCC::CHANNEL_ID,
                 'method' => 'sale',
@@ -91,7 +96,7 @@ class TpaySF extends TpayGateways
                 try {
                     $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($payment_data);
                 } catch (Error $e) {
-                    $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia '.$order->ID);
+                    $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia '.$order->get_id());
 
                     return false;
                 }
@@ -104,14 +109,13 @@ class TpaySF extends TpayGateways
 
                 sleep(1);
                 $i++;
-                update_option('CREATE_PAYMENT'.time().'__SUBS_TRY_'.$i, print_r($result, true));
             } while (!$stop);
             if ('success' == $result['result'] && 'correct' == $result['status']) {
                 $md5 = md5($this->id_seller.$result['title'].$payment_data['amount'].$payment_data['hiddenDescription'].$this->security_code);
-                $order->update_meta_data('_transaction_id', $result['transactionId']);
-                $order->update_meta_data('_md5_checksum', $md5);
-                $order->update_meta_data('_crc', $payment_data['hiddenDescription']);
-                $order->update_meta_data('_payment_method', $this->id);
+                $order->set_transaction_id($result['transactionId']);
+                $order->update_meta_data('md5_checksum', $md5);
+                $order->update_meta_data('crc', $payment_data['hiddenDescription']);
+                $order->set_payment_method($this->id);
                 $order->payment_complete($result['transactionId']);
                 $order->update_status('completed');
 
@@ -185,13 +189,11 @@ class TpaySF extends TpayGateways
             $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
             unset($_SESSION['tpay_session']);
             unset($_SESSION['tpay_attempts']);
-            $order->update_meta_data('_transaction_id', $result['transactionId']);
-            $order->update_meta_data('_md5_checksum', $md5);
-            $order->update_meta_data('_crc', $this->crc);
-            $order->update_meta_data('_payment_method', $this->id);
+            $order->update_meta_data('md5_checksum', $md5);
+            $order->update_meta_data('crc', $this->crc);
+            $order->set_payment_method($this->id);
 
             $order->save();
-            $this->gateway_helper->tpay_logger('Udane zamówienie, płatność kartą na stronie sklepu, redirect na: '.$redirect);
 
             return [
                 'result' => 'success',
@@ -208,18 +210,17 @@ class TpaySF extends TpayGateways
         try {
             $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
         } catch (Error $e) {
-            $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia '.$order->ID);
+            $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia '.$order->get_id());
 
             return false;
         }
 
         $md5 = md5($this->id_seller.$transaction['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
-        $order->update_meta_data('_transaction_id', $transaction['transactionId']);
-        $order->update_meta_data('_md5_checksum', $md5);
-        $order->update_meta_data('_crc', $this->crc);
+        $order->set_transaction_id($transaction['transactionId']);
+        $order->update_meta_data('md5_checksum', $md5);
+        $order->update_meta_data('crc', $this->crc);
 
         $result = $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($this->additional_payment_data, $transaction['transactionId']);
-        update_option('CREATE_PAYMENT'.time(), print_r($result, true));
 
         if ('success' == $result['result']) {
             return $result;
