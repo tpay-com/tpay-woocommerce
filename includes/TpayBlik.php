@@ -151,10 +151,12 @@ class TpayBlik extends TpayGateways
         }
 
         if ($this->blik0_is_active()) {
-            return $this->tpay_api()->transactions()->createInstantPaymentByTransactionId(
+            $this->tpay_api()->transactions()->createInstantPaymentByTransactionId(
                 $this->additional_payment_data,
                 $transaction['transactionId']
             );
+
+            return $transaction;
         }
 
         if (isset($transaction['transactionPaymentUrl'])) {

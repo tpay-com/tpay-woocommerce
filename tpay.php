@@ -139,6 +139,7 @@ add_action('woocommerce_thankyou', function ($orderId) {
         ]
     );
     wp_enqueue_script('tpay-thank-you');
+    wp_enqueue_style('tpay-thank-you', plugin_dir_url(__FILE__) . 'views/css/thank-you.css', [], time());
 
     require 'views/html/thank-you-blik0.php';
 }, 10, 2);
