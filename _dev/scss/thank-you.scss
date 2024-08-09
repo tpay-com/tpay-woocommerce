@@ -1,8 +1,10 @@
 @import url("https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css");
 
-span {
+.tpay_text{
   font-size: 14px;
   font-family: "Lato", sans-serif;
+  line-height: 21px;
+  color: #072653;
 }
 
 #tpay_pending {
@@ -35,8 +37,7 @@ span {
 
 #tpay_success {
   box-sizing: border-box;
-  display: flex;
-  visibility: collapse;
+  display: none;
   flex-direction: row;
   align-items: center;
   padding: 8px 24px 8px 8px;
@@ -64,8 +65,7 @@ span {
 #tpay_error {
   box-sizing: border-box;
 
-  display: flex;
-  visibility: collapse;
+  display: none;
   flex-direction: row;
   align-items: center;
   padding: 8px 24px 8px 8px;
@@ -87,4 +87,21 @@ span {
 #tpay_error i {
   color: #E74E29;
   font-size: 20px;
+}
+
+#tpay_retry-payment-message {
+  display: none;
+}
+
+#tpay_retry-payment-message .tpay_text {
+  margin: 5px;
+  color: #072653;
+}
+
+#tpay_retry-payment-message a.tpay_text {
+  font-weight: bold;
+}
+
+#tpay_email-sent-message {
+  display: none;
 }

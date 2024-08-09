@@ -120,8 +120,6 @@ add_action('woocommerce_thankyou', function ($orderId) {
         return;
     }
 
-    $transactionId = $order->get_transaction_id();
-
     wp_register_script(
         'tpay-thank-you',
         plugin_dir_url(__FILE__) . 'views/js/thank-you.min.js',
@@ -135,7 +133,7 @@ add_action('woocommerce_thankyou', function ($orderId) {
         [
             'url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('tpay-thank-you'),
-            'transactionId' => $transactionId
+            'transactionId' => $order->get_transaction_id()
         ]
     );
     wp_enqueue_script('tpay-thank-you');
