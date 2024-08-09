@@ -27,7 +27,7 @@ class UpdateOrderStatus implements IpnInterface
             exit();
         }
 
-        $order_method = $order->get_meta('_payment_method');
+        $order_method = $order->get_payment_method();
         $class = TPAY_CLASSMAP[$order_method];
         $gateway = new $class();
         $config = (new Helpers\ConfigProvider())->get_config($gateway);
