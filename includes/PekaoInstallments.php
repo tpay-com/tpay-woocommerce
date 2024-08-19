@@ -60,10 +60,13 @@ class PekaoInstallments extends TpayGateways
         $groupID = TPAYPEKAOINSTALLMENTS;
         $this->set_payment_data($order, $groupID);
         $channelId = $this->request->get('tpay-channel-id');
+
         if ($channelId) {
             $this->payment_data['pay'] = ['channelId' => (int) $channelId];
         }
+
         $result = $this->process_transaction($order);
+
         if ('success' == $result['result']) {
             if ($errors_list = $this->gateway_helper->tpay_has_errors($result)) {
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności ratalnej- zwrócone następujące błędy: '.implode(' ', $errors_list));
@@ -71,22 +74,22 @@ class PekaoInstallments extends TpayGateways
 
                 return false;
             }
+
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
             $order->set_transaction_id($result['transactionId']);
+            $order->set_payment_method($this->id);
             $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
-            $order->update_meta_data('_transaction_id', $result['transactionId']);
-            $order->update_meta_data('_md5_checksum', $md5);
-            $order->update_meta_data('_crc', $this->crc);
-            $order->update_meta_data('_payment_method', $this->id);
+            $order->update_meta_data('md5_checksum', $md5);
+            $order->update_meta_data('crc', $this->crc);
 
             $order->save();
-            $this->gateway_helper->tpay_logger('Udane zamówienie, płatność ratalna, redirect na: '.$redirect);
 
             return [
                 'result' => 'success',
                 'redirect' => $redirect,
             ];
         }
+
         wc_add_notice(__('Payment error', 'tpay'), 'error');
 
         return false;

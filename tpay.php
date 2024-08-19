@@ -3,7 +3,7 @@
  * Plugin Name: Tpay Payment Gateway
  * Plugin URI: https://tpay.com
  * Description: Tpay payment gateway for WooCommerce
- * Version: 1.6.4
+ * Version: 1.7.0
  * Author: Krajowy Integrator Płatności S.A.
  * Author URI: http://www.tpay.com
  * License: LGPL 3.0
@@ -28,7 +28,7 @@ use Tpay\TpayTwisto;
 
 require_once 'tpay-functions.php';
 
-define('TPAY_PLUGIN_VERSION', '1.6.4');
+define('TPAY_PLUGIN_VERSION', '1.7.0');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
@@ -112,3 +112,36 @@ if (is_admin()) {
 } else {
     add_action('wp_enqueue_scripts', 'enqueue_tpay_gateway_assets');
 }
+
+add_action('woocommerce_thankyou', function ($orderId) {
+    $order = wc_get_order($orderId);
+
+    if ($order->get_meta('blik0') === "") {
+        return;
+    }
+
+    wp_register_script(
+        'tpay-thank-you',
+        plugin_dir_url(__FILE__) . 'views/js/thank-you.min.js',
+        ['jquery'],
+        false,
+        true
+    );
+    wp_localize_script(
+        'tpay-thank-you',
+        'tpayThankYou',
+        [
+            'url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('tpay-thank-you'),
+            'transactionId' => $order->get_transaction_id()
+        ]
+    );
+    wp_enqueue_script('tpay-thank-you');
+    wp_enqueue_style('tpay-thank-you', plugin_dir_url(__FILE__) . 'views/css/thank-you.css', [], time());
+
+    require 'views/html/thank-you-blik0.php';
+}, 10, 2);
+
+
+add_action('wp_ajax_tpay_blik0_transaction_status', 'tpay_blik0_transaction_status');
+add_action('wp_ajax_nopriv_tpay_blik0_transaction_status', 'tpay_blik0_transaction_status');

@@ -85,7 +85,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
                     $cart_content_total = 0;
 
                     if (!is_admin() && WC()->cart) {
-                        $cart_content_total = WC()->cart->cart_contents_total;
+                        $cart_content_total = WC()->cart->get_cart_contents_total();
                     }
 
                     if ('min' == $constraint->type && $cart_content_total < $constraint->value) {
@@ -131,8 +131,9 @@ abstract class TpayGateways extends WC_Payment_Gateway
     public function getCartTotal()
     {
         $cart_content_total = 0;
+
         if (!is_admin() && WC()->cart) {
-            $cart_content_total = WC()->cart->cart_contents_total;
+            $cart_content_total = WC()->cart->get_cart_contents_total();
         }
 
         return $cart_content_total;
@@ -357,7 +358,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         }
 
         $this->payment_data = [
-            'description' => __('Order', 'tpay').' #'.$order->ID,
+            'description' => __('Order', 'tpay').' #'.$order->get_id(),
             'hiddenDescription' => $this->crc,
             'amount' => $order->get_total(),
             'pay' => [

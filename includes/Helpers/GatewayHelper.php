@@ -89,7 +89,11 @@ class GatewayHelper
 
     public function get_order_by_transaction_crc($crc): ?WC_Order
     {
-        $order = wc_get_orders(['meta_key' => '_crc', 'meta_value' => $crc]);
+        $order = wc_get_orders(['meta_key' => 'crc', 'meta_value' => $crc]);
+
+        if (null === $order) {
+            $order = wc_get_orders(['meta_key' => '_crc', 'meta_value' => $crc]);
+        }
 
         if (count($order) > 1) {
             $this->tpay_logger('Pobrano zbyt wiele zamówień. Liczba zamówień: '.count($order));

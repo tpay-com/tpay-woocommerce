@@ -1,5 +1,6 @@
 <?php
 
+use Tpay\TpayBlik;
 use Tpay\TpayGateways;
 
 defined( 'ABSPATH' ) || exit();
@@ -193,12 +194,26 @@ function tpay_refresh_checkout_on_payment_methods_change()
 
 function get_package_version(): string
 {
-    $dir = __DIR__ . '/composer.json';
-    if (file_exists($dir)) {
-        $composerJson = json_decode(file_get_contents($dir), true)['require'] ?? [];
+    $installed = __DIR__ . '/vendor/composer/installed.php';
 
-        return $composerJson['tpay-com/tpay-openapi-php'];
+    if (false === file_exists($installed)) {
+        throw new Exception('Composer installed file not found');
+    }
+
+    $dir = require $installed;
+
+    if (isset($dir['versions']['tpay/woocommerce'])) {
+        return $dir['versions']['tpay/woocommerce']['pretty_version'];
     }
 
     return 'n/a';
+}
+
+function tpay_blik0_transaction_status()
+{
+    check_ajax_referer('tpay-thank-you', 'nonce');
+
+    $result = (new TpayBlik())->checkTransactionStatus(htmlspecialchars($_POST['transactionId']));
+
+    wp_send_json($result);
 }
