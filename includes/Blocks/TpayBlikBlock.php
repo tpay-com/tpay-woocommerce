@@ -26,7 +26,7 @@ final class TpayBlikBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_script_handles(): array
     {
-        wp_register_script('tpayblik', plugin_dir_url(__DIR__).'../views/js/checkout.min.js', [
+        wp_register_script('tpayblik', plugin_dir_url(__DIR__).'../views/assets/checkout-blocks.min.js', [
             'wc-blocks-registry',
             'wc-settings',
             'wp-element',

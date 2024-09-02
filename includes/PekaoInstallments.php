@@ -14,9 +14,36 @@ class PekaoInstallments extends TpayGateways
         $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__).'../views/img/raty_pekao.png');
     }
 
+    public static function get_form_installments(): array
+    {
+        return [
+            'tpay_settings_installments_product' => [
+                'title' => __('Product page', 'tpay'),
+                'type' => 'checkbox',
+                'description' => __('Enable installments simulator on product page', 'tpay'),
+                'label' => __('Show', 'tpay'),
+                'desc_tip' => true,
+            ],
+            'tpay_settings_installments_cart' => [
+                'title' => __('Cart page', 'tpay'),
+                'type' => 'checkbox',
+                'description' => __('Enable installments simulator on cart page', 'tpay'),
+                'label' => __('Show', 'tpay'),
+                'desc_tip' => true,
+            ],
+            'tpay_settings_installments_checkout' => [
+                'title' => __('Checkout page', 'tpay'),
+                'type' => 'checkbox',
+                'description' => __('Enable installments simulator on checkout page', 'tpay'),
+                'label' => __('Show', 'tpay'),
+                'desc_tip' => true,
+            ],
+        ];
+    }
+
     public function init_form_fields()
     {
-        parent::tpay_init_form_fields(false);
+        parent::tpay_init_form_fields(false, false, false, true);
     }
 
     public function payment_fields()

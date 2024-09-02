@@ -1,80 +1,45 @@
-const path = require('path');
-const webpack = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require("terser-webpack-plugin");
+const path = require("path");
+const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+const WooCommerceDependencyExtractionWebpackPlugin = require('@woocommerce/dependency-extraction-webpack-plugin');
 
-let config = {
-    target: ["web", "es5"],
+const wcDepMap = {
+    '@woocommerce/blocks-registry': ['wc', 'wcBlocksRegistry'],
+    '@woocommerce/settings': ['wc', 'wcSettings']
+};
+
+const wcHandleMap = {
+    '@woocommerce/blocks-registry': 'wc-blocks-registry',
+    '@woocommerce/settings': 'wc-settings'
+};
+
+const requestToExternal = (request) => {
+    if (wcDepMap[request]) {
+        return wcDepMap[request];
+    }
+};
+
+const requestToHandle = (request) => {
+    if (wcHandleMap[request]) {
+        return wcHandleMap[request];
+    }
+};
+
+module.exports = {
+    ...defaultConfig,
     entry: {
         main: ['./js/main.ts', './scss/main.scss'],
         admin: ['./js/admin.ts', './scss/admin.scss'],
-        checkout: ['./js/blocks/checkout.ts', './js/blocks/checkout-blik.ts', './js/blocks/checkout-sf.ts', './js/blocks/checkout-cc.ts', './js/blocks/checkout-gpay.ts', './js/blocks/checkout-installments.ts', './js/blocks/checkout-twisto.ts', './js/blocks/checkout-pekao.ts'],
-        'thank-you': ['./js/thank-you.js', './scss/thank-you.scss']
+        'checkout-blocks': ['./js/blocks/checkout.tsx', './js/blocks/checkout-blik.tsx', './js/blocks/checkout-cc.tsx', './js/blocks/checkout-gpay.tsx', './js/blocks/checkout-installments.tsx', './js/blocks/checkout-pekao.tsx', './js/blocks/checkout-sf.tsx', './js/blocks/checkout-twisto.tsx'],
+        'thank-you': ['./js/thank-you.js', './scss/thank-you.scss'],
+        cart: ['./js/installments/cart.ts', './scss/installments.scss'],
+        checkout: ['./js/installments/checkout.ts', './scss/installments.scss'],
+        product: ['./js/installments/product.ts', './scss/installments.scss'],
+        'installments-blocks': ['./js/installments/block.tsx', './scss/installments.scss']
     },
     output: {
-        path: path.resolve(__dirname, '../views/js'),
-        filename: '[name].min.js'
+        path: path.resolve(__dirname, '../views/assets'), filename: '[name].min.js',
     },
-    module: {
-        rules: [
-            {
-                test: /\.ts?$/,
-                loader: 'esbuild-loader',
-                options: {loader: 'ts', target: 'es2015'}
-            },
-            {
-                test: /\.js$/,
-                loader: 'esbuild-loader',
-                options: {loader: 'js', target: 'es2015'}
-            },
-            {
-                test: /\.js/,
-                loader: 'esbuild-loader'
-            },
-            {
-                test: /\.scss$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
-            },
-            {
-                test: /.(png|woff(2)?|eot|otf|ttf|svg|gif)(\?[a-z0-9=\.]+)?$/,
-                use: [{loader: 'file-loader', options: {name: '../css/[hash].[ext]'}}]
-            },
-            {
-                test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, 'style-loader', 'css-loader'],
-            }
-        ]
-    },
-    resolve: {extensions: ['.ts', '.tsx', '.js']},
-    plugins: [new MiniCssExtractPlugin({filename: path.join('..', 'css', '[name].css')})]
-};
-
-if (process.env.NODE_ENV === 'production') {
-    config.optimization = {
-        minimizer: [new TerserPlugin({
-            minify: (file, sourceMap) => {
-                // https://github.com/mishoo/UglifyJS2#minify-options
-                const uglifyJsOptions = {};
-
-                if (sourceMap) {
-                    uglifyJsOptions.sourceMap = {content: sourceMap};
-                }
-
-                return require("uglify-js").minify(file, uglifyJsOptions);
-            },
-            terserOptions: {format: {comments: false}},
-            extractComments: "all",
-        })]
-    }
-} else {
-    config.optimization = {
-        minimizer: [new TerserPlugin({
-            terserOptions: {format: {comments: false}},
-            extractComments: "all",
-        })]
-    }
+    plugins: [...defaultConfig.plugins.filter((plugin) => plugin.constructor.name !== 'DependencyExtractionWebpackPlugin'), new WooCommerceDependencyExtractionWebpackPlugin({
+        requestToExternal, requestToHandle
+    })]
 }
-
-config.mode = process.env.NODE_ENV ?? 'development';
-
-module.exports = config;

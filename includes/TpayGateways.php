@@ -261,7 +261,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
     /**
      * @param bool $custom_order
      */
-    public function tpay_init_form_fields($custom_order = false, $blik0 = false, $sf = false)
+    public function tpay_init_form_fields($custom_order = false, $blik0 = false, $sf = false, $installments = false)
     {
         $this->form_fields = array_merge(
             $this->get_form_fields_basic(),
@@ -270,6 +270,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             $custom_order ? Tpay::get_form_custom_order() : [],
             $blik0 ? TpayBlik::get_form_blik0() : [],
             $sf ? TpaySF::get_form_sf() : [],
+            $installments ? PekaoInstallments::get_form_installments() : [],
             [
                 'notifications_url' => [
                     'title' => __('Your address for notifications', 'tpay'),

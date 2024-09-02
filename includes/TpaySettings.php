@@ -212,17 +212,24 @@ class TpaySettings
     {
         $id = $args['id'];
         $required = (isset($args['required']) && $args['required']) ? 'required="required"' : '';
-        $type = (isset($args['type']) && $args['type']) ?: 'text';
-        $step = (isset($args['step']) && $args['step']) ?: $type = '';
+        $type = $args['type'] ?? 'text';
+        $step = $args['step'] ?? '';
         $value = isset($this->tpay_settings_options[$id]) ? esc_attr($this->tpay_settings_options[$id]) : '';
+        $checked = '';
+
+        if ('checkbox' === $type && 1 == $value) {
+            $checked = 'checked="checked"';
+        }
+
         printf(
-            '<input type="%s" step="%s" class="regular-text" value="%s" name="tpay_settings_option_name[%s]" id="%s" %s />',
+            '<input type="%s" step="%s" class="regular-text" value="%s" name="tpay_settings_option_name[%s]" id="%s" %s %s/>',
             $type,
             $step,
             $value,
             $id,
             $id,
-            $required
+            $required,
+            $checked
         );
 
         if (isset($args['description']) && $args['description']) {
