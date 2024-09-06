@@ -2,7 +2,7 @@
 
 namespace Tpay;
 
-use Tpay\Dtos\Channel;
+use Tpay\Api\Dtos\Channel;
 use WC_Order;
 
 class PekaoInstallments extends TpayGateways

@@ -29,6 +29,24 @@ class UpdateOrderStatus implements IpnInterface
 
         $order_method = $order->get_payment_method();
         $class = TPAY_CLASSMAP[$order_method];
+
+        if (!class_exists($class)) {
+            $class = new class($order_method) extends \Tpay\TpayGeneric {
+                public function __construct($id = null)
+                {
+                    parent::__construct("tpaygeneric-$id", (int) $id);
+
+                    $channels = $this->channels();
+
+                    foreach ($channels as $channel) {
+                        if ($channel->id === $id) {
+                            $this->set_icon($channel->image->url);
+                        }
+                    }
+                }
+            };
+        }
+
         $gateway = new $class();
         $config = (new Helpers\ConfigProvider())->get_config($gateway);
 

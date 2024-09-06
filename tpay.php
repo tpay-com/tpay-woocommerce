@@ -16,6 +16,7 @@
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 use Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Tpay\Helpers\Cache;
 use Tpay\PekaoInstallments;
 use Tpay\Tpay;
 use Tpay\TpayBlik;
@@ -58,7 +59,7 @@ const TPAY_CLASSMAP = [
     TPAYGPAY_ID => TpayGPay::class,
     TPAYTWISTO_ID => TpayTwisto::class,
     TPAYINSTALLMENTS_ID => TpayInstallments::class,
-    TPAYPEKAOINSTALLMENTS_ID => PekaoInstallments::class
+    TPAYPEKAOINSTALLMENTS_ID => PekaoInstallments::class,
 ];
 
 
@@ -66,6 +67,14 @@ if (tpayOption('global_enable_fee') != 'disabled') {
     add_action('woocommerce_cart_calculate_fees', 'tpay_add_checkout_fee_for_gateway');
     add_action('woocommerce_after_checkout_form', 'tpay_refresh_checkout_on_payment_methods_change');
 }
+
+/**
+ * Tworzenie nowej klasy w locie i extendowanie TpayGeneric, a potem dodawanie tych klass za pomoca filtra add_gateway.
+ * Czy jakoś tak...
+ * Sprawdzic czy to wgl ma prawo dzialac
+ * Powinno w teorii.. Jezeli nie to lipton w chuj XD Bo trzeba bedzie szukac jakiegos hooka albo wtyki do payment gateway api + nie wiadomo jak to bedzie przy bloczkach...
+ * Chyba tedy tez trzeba bedzie dodatkowo w locie rejestrowac metody platnosci ? I guess ale brzmi to funky AF...
+ */
 
 add_action('before_woocommerce_init', function () {
     if (class_exists(FeaturesUtil::class)) {
@@ -81,16 +90,19 @@ add_action('woocommerce_blocks_loaded', function () {
         return;
     }
 
-    add_action('woocommerce_blocks_payment_method_type_registration', function (PaymentMethodRegistry $paymentMethodRegistry) {
-        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayBlock());
-        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayBlikBlock());
-        $paymentMethodRegistry->register(new \Tpay\Blocks\TpaySFBlock());
-        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayCCBlock());
-        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayGPayBlock());
-        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayInstallmentsBlock());
-        $paymentMethodRegistry->register(new \Tpay\Blocks\TpayTwistoBlock());
-        $paymentMethodRegistry->register(new \Tpay\Blocks\PekaoInstallmentsBlock());
-    });
+    add_action(
+        'woocommerce_blocks_payment_method_type_registration',
+        function (PaymentMethodRegistry $paymentMethodRegistry) {
+            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayBlock());
+            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayBlikBlock());
+            $paymentMethodRegistry->register(new \Tpay\Blocks\TpaySFBlock());
+            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayCCBlock());
+            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayGPayBlock());
+            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayInstallmentsBlock());
+            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayTwistoBlock());
+            $paymentMethodRegistry->register(new \Tpay\Blocks\PekaoInstallmentsBlock());
+        }
+    );
 });
 
 function init_gateway_tpay()
@@ -103,7 +115,31 @@ function init_gateway_tpay()
 
     load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
     require_once('vendor/autoload.php');
+    \Tpay\TpayGateways::gateways_list();
     new TpaySettings();
+
+
+
+    $generics = array_map(function (int $id) {
+        return new class($id) extends \Tpay\TpayGeneric {
+            public function __construct($id = null)
+            {
+                parent::__construct("tpaygeneric-$id", $id);
+
+                $channels = $this->channels();
+
+                foreach ($channels as $channel) {
+                    if ($channel->id === $id) {
+                        $this->set_icon($channel->image->url);
+                    }
+                }
+            }
+        };
+    }, tpayOption('global_generic_payments'));
+
+    add_filter('woocommerce_payment_gateways', function ($gateways) use ($generics) {
+        return array_merge($gateways, $generics);
+    });
     add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
 }
 
@@ -145,3 +181,25 @@ add_action('woocommerce_thankyou', function ($orderId) {
 
 add_action('wp_ajax_tpay_blik0_transaction_status', 'tpay_blik0_transaction_status');
 add_action('wp_ajax_nopriv_tpay_blik0_transaction_status', 'tpay_blik0_transaction_status');
+
+add_filter('tpay_generic_gateway_list', function ($gateways) {
+    $transactions = new \Tpay\Api\Transactions(new \Tpay\Api\Client(), new Cache(), new \Tpay\TpayLogger());
+    $channels = $transactions->channels();
+    $generics = tpayOption('global_generic_payments');
+    $genericGateways = [];
+
+    foreach ($channels as $channel) {
+        if (in_array($channel->id, $generics)) {
+            $genericGateways["tpaygeneric-{$channel->id}"] = [
+                'name' => $channel->name,
+                'front_name' => $channel->fullName,
+                'default_description' => '',
+                'api' => 'tpaygeneric-' . $channel->id,
+                'group_id' => null
+            ];
+        }
+    }
+
+    return array_merge($gateways, $genericGateways);
+});
+

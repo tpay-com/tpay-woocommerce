@@ -95,13 +95,13 @@ class TpaySettings
         );
         foreach ($this->fields as $field => $desc) {
             $args = [
-                'id' => 'global_'.$field,
+                'id' => 'global_' . $field,
                 'desc' => $desc['label'],
                 'name' => 'tpay_settings_option_name',
                 'description' => $desc['description'],
             ];
             add_settings_field(
-                $args['id'], // id
+                $args['id'], // idglobal_callback
                 $args['desc'], // title
                 [$this, 'global_callback'], // callback
                 'tpay-settings-admin', // page
@@ -205,6 +205,18 @@ class TpaySettings
                 ),
             ]
         );
+
+        add_settings_field(
+            'global_generic_payments',
+            __('Generic payments list', 'tpay'),
+            [$this, 'global_generic_payments_callback'],
+            'tpay-settings-admin',
+            'tpay_settings_setting_section',
+            [
+                'id' => 'global_generic_payments',
+                'description' => __('Payments list', 'tpay'),
+            ]
+        );
     }
 
     /** @param array $args */
@@ -238,8 +250,8 @@ class TpaySettings
     public function tpay_settings_sanitize($input)
     {
         foreach ($this->fields as $field => $desc) {
-            if (isset($input['global_'.$field])) {
-                $sanitary_values['global_'.$field] = sanitize_text_field($input['global_'.$field]);
+            if (isset($input['global_' . $field])) {
+                $sanitary_values['global_' . $field] = sanitize_text_field($input['global_' . $field]);
             }
         }
 
@@ -283,6 +295,10 @@ class TpaySettings
             );
         }
 
+        if (isset($input['global_generic_payments'])) {
+            $sanitary_values['global_generic_payments'] = $input['global_generic_payments'];
+        }
+
         return $sanitary_values;
     }
 
@@ -303,6 +319,24 @@ class TpaySettings
                 <?php
             } ?>
         </select>
+        <?php
+    }
+
+    public function global_generic_payments_callback()
+    {
+        $channels = (new Tpay())->channels();
+        $checkedChannels = tpayOption('global_generic_payments');
+
+        ?>
+        <select id="global_generic_payments" multiple name="tpay_settings_option_name[global_generic_payments][]">
+            <?php
+            foreach ($channels as $channel) {
+                $checked = in_array($channel->id, $checkedChannels) ? 'selected' : '';
+
+                echo "<option $checked value='{$channel->id}'>$channel->name</option>";
+            } ?>
+        </select>
+
         <?php
     }
 

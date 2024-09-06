@@ -1,7 +1,7 @@
 <?php
 
 $renderType = tpayOption('global_render_payment_type');
-/** @var \Tpay\Dtos\Channel[] $list */
+/** @var \Tpay\Api\Dtos\Channel[] $list */
 $list = $this->channels();
 $availableGateways = WC()->payment_gateways()->get_available_payment_gateways();
 
@@ -52,7 +52,7 @@ if ($customOrderString) {
     $list = array_merge($orderedList, $list);
 }
 
-$list = array_filter($list, function (\Tpay\Dtos\Channel $channel) {
+$list = array_filter($list, function (\Tpay\Api\Dtos\Channel $channel) {
     foreach ($channel->groups as $group) {
         if (in_array($group->id, $this->unset_banks)) {
             return false;
