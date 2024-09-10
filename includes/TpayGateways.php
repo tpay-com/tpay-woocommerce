@@ -4,19 +4,15 @@ namespace Tpay;
 
 use Error;
 use Exception;
-use Tpay\Dtos\Channel;
-use Tpay\Dtos\Constraint;
-use Tpay\Dtos\Group;
-use Tpay\Dtos\Image;
+use Tpay\Api\Client;
+use Tpay\Api\Dtos\Channel;
+use Tpay\Api\Transactions;
 use Tpay\OpenApi\Api\TpayApi;
 use WC_Order;
 use WC_Payment_Gateway;
 
 abstract class TpayGateways extends WC_Payment_Gateway
 {
-    const CACHE_TTL = 1800;
-    const CHANNELS_CACHE_KEY = 'channels';
-
     public $has_terms_checkbox;
     public $id_seller;
     public $security_code;
@@ -33,10 +29,12 @@ abstract class TpayGateways extends WC_Payment_Gateway
     protected $tpay_numeric_id;
     protected $enable_for_shipping;
     protected static $banksGroupMicrocache = [true => null, false => null];
-    protected static $channelsMicrocache = [];
     protected static $tpayConnection;
     protected $cache;
     protected $config;
+
+    /** @var Transactions */
+    protected $transactions;
 
     /**
      * Setup general properties for the gateway.
@@ -53,6 +51,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $this->request = new Helpers\RequestHelper();
         $this->gateway_helper = new Helpers\GatewayHelper();
         $this->shipping = new Helpers\ShippingHelper();
+        $this->transactions = new Transactions(new Client(), $this->cache);
 
         $this->setup_properties($id);
         $this->init_form_fields();
@@ -181,7 +180,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
     /** @return array */
     public static function gateways_list()
     {
-        return [
+        $list = [
             'tpaypbl' => [
                 'name' => __('Tpay banks list', 'tpay'),
                 'front_name' => __('Online payment by Tpay', 'tpay'),
@@ -239,6 +238,8 @@ abstract class TpayGateways extends WC_Payment_Gateway
                 'group_id' => TPAYSF,
             ],
         ];
+
+        return apply_filters('tpay_generic_gateway_list', $list);
     }
 
     /**
@@ -408,53 +409,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
     /** @return array<Channel> */
     public function channels(): array
     {
-        if (!empty(self::$channelsMicrocache)) {
-            return self::$channelsMicrocache;
-        }
-
-        $cached = $this->cache->get(self::CHANNELS_CACHE_KEY);
-
-        if ($cached) {
-            self::$channelsMicrocache = $cached;
-
-            return $cached;
-        }
-
-        $api = $this->tpay_api();
-
-        if (!$api) {
-            return [];
-        }
-
-        $result = $api->transactions()->getChannels();
-
-        if (!isset($result['result']) || 'success' !== $result['result']) {
-            $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
-            wc_add_notice('Unable to get channels list', 'error');
-        }
-
-        $channels = array_map(function (array $channel) {
-            return new Channel(
-                (int) $channel['id'],
-                $channel['name'],
-                $channel['fullName'],
-                new Image($channel['image']['url']),
-                $channel['available'],
-                $channel['onlinePayment'],
-                $channel['instantRedirection'],
-                array_map(function (array $group) {
-                    return new Group((int) $group['id'], $group['name'], new Image($group['image']['url']));
-                }, $channel['groups']),
-                array_map(function (array $constraint) {
-                    return new Constraint($constraint['field'], $constraint['type'], $constraint['value']);
-                }, $channel['constraints'])
-            );
-        }, $result['channels']);
-
-        self::$channelsMicrocache = $channels;
-        $this->cache->set(self::CHANNELS_CACHE_KEY, $channels, self::CACHE_TTL);
-
-        return $channels;
+        return $this->transactions->channels();
     }
 
     public function getBanksList($onlineOnly = false)

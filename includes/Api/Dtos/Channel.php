@@ -1,6 +1,6 @@
 <?php
 
-namespace Tpay\Dtos;
+namespace Tpay\Api\Dtos;
 
 class Channel
 {

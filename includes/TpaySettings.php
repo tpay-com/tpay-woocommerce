@@ -2,16 +2,20 @@
 
 namespace Tpay;
 
+use Tpay\Api\Client;
+use Tpay\Api\Transactions;
 use Tpay\Helpers\Cache;
 
 class TpaySettings
 {
     private $tpay_settings_options;
     private $fields;
+    private $transactions;
 
     public function __construct()
     {
         $this->fields = $this->tpay_fields();
+        $this->transactions = new Transactions(new Client(), new Cache());
         add_action('admin_menu', [$this, 'tpay_settings_add_plugin_page']);
         add_action('admin_init', [$this, 'tpay_settings_page_init']);
     }
@@ -205,6 +209,18 @@ class TpaySettings
                 ),
             ]
         );
+
+        add_settings_field(
+            'global_generic_payments',
+            __('Generic payments list', 'tpay'),
+            [$this, 'global_generic_payments_callback'],
+            'tpay-settings-admin',
+            'tpay_settings_setting_section',
+            [
+                'id' => 'global_generic_payments',
+                'description' => __('Payments list', 'tpay'),
+            ]
+        );
     }
 
     /** @param array $args */
@@ -235,6 +251,24 @@ class TpaySettings
         if (isset($args['description']) && $args['description']) {
             echo "<span class='tpay-help-tip' aria-label='{$args['description']}'><strong>?</strong></span>";
         }
+    }
+
+    public function global_generic_payments_callback()
+    {
+        $channels = $this->transactions->channels();
+        $checkedChannels = tpayOption('global_generic_payments') ?? [];
+
+        ?>
+        <select class="tpay-select" id="global_generic_payments" multiple name="tpay_settings_option_name[global_generic_payments][]">
+            <?php
+            foreach ($channels as $channel) {
+                $checked = in_array($channel->id, $checkedChannels) ? 'selected' : '';
+
+                echo "<option {$checked} value='{$channel->id}'>{$channel->name}</option>";
+            } ?>
+        </select>
+
+        <?php
     }
 
     /**
@@ -288,6 +322,10 @@ class TpaySettings
             $sanitary_values['global_tax_id_meta_field_name'] = sanitize_text_field(
                 $input['global_tax_id_meta_field_name']
             );
+        }
+
+        if (isset($input['global_generic_payments'])) {
+            $sanitary_values['global_generic_payments'] = $input['global_generic_payments'];
         }
 
         return $sanitary_values;
