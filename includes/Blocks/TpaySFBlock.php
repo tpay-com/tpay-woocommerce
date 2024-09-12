@@ -53,7 +53,7 @@ final class TpaySFBlock extends AbstractPaymentMethodType
             'description' => $this->gateway->description,
             'fields' => $fields,
             'icon' => $this->gateway->icon,
-            //            'supports' => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] ),
+            'supports' => array_filter($this->gateway->supports, [$this->gateway, 'supports']),
         ];
     }
 }
