@@ -52,7 +52,7 @@ if ($customOrderString) {
     $list = array_merge($orderedList, $list);
 }
 
-$generics = tpayOption('global_generic_payments');
+$generics = tpayOption('global_generic_payments') ?? [];
 
 $list = array_filter($list, function (\Tpay\Api\Dtos\Channel $channel) use ($generics) {
     foreach ($channel->groups as $group) {

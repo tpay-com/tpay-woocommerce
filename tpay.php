@@ -213,19 +213,16 @@ add_action('wp_ajax_nopriv_tpay_blik0_transaction_status', 'tpay_blik0_transacti
 add_filter('tpay_generic_gateway_list', function ($gateways) {
     $transactions = new Transactions(new Client(), new Cache());
     $channels = $transactions->channels();
-    $generics = tpayOption('global_generic_payments') ?? [];
     $genericGateways = [];
 
     foreach ($channels as $channel) {
-        if (in_array($channel->id, $generics)) {
-            $genericGateways["tpaygeneric-{$channel->id}"] = [
-                'name' => $channel->name,
-                'front_name' => $channel->fullName,
-                'default_description' => '',
-                'api' => 'tpaygeneric-'.$channel->id,
-                'group_id' => null,
-            ];
-        }
+        $genericGateways["tpaygeneric-{$channel->id}"] = [
+            'name' => $channel->name,
+            'front_name' => $channel->fullName,
+            'default_description' => '',
+            'api' => 'tpaygeneric-' . $channel->id,
+            'group_id' => null,
+        ];
     }
 
     return array_merge($gateways, $genericGateways);
