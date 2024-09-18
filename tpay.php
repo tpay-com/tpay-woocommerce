@@ -105,7 +105,12 @@ add_action('woocommerce_blocks_loaded', function () {
             $paymentMethodRegistry->register(new TpayInstallmentsBlock());
             $paymentMethodRegistry->register(new TpayTwistoBlock());
             $paymentMethodRegistry->register(new PekaoInstallmentsBlock());
-        $paymentMethodRegistry->register(new TpayGenericBlock());
+
+        $generics = tpayOption('global_generic_payments');
+
+        if (!empty($generics)) {
+            $paymentMethodRegistry->register(new TpayGenericBlock());
+        }
     });
 
     $merchantId = tpayOption('global_api_key');

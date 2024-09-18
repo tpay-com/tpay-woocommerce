@@ -32,7 +32,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
     public function is_active(): bool
     {
-        return $this->gateway->is_available();
+        return true;
     }
 
     public function get_payment_method_script_handles(): array
@@ -62,9 +62,10 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         $channels = $this->gateway->channels();
         $generics = tpayOption('global_generic_payments');
+        $availablePayments = WC()->payment_gateways()->get_available_payment_gateways();
 
         foreach ($channels as $channel) {
-            if (in_array($channel->id, $generics)) {
+            if (in_array($channel->id, $generics) && in_array("tpaygeneric-{$channel->id}", array_keys($availablePayments))) {
                 $config[$channel->id] = [
                     'id' => $channel->id,
                     'title' => $channel->fullName,
