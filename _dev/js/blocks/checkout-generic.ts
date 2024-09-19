@@ -4,8 +4,36 @@ const react = window.React;
 const {registerPaymentMethod} = wc.wcBlocksRegistry;
 const {useEffect} = wp.element;
 
+function checkConstraints(constraints, total) {
+    let check = false;
+
+    Object.entries(constraints).forEach((constraint) => {
+        switch (constraint[1].type) {
+            case 'min':
+                if (Number(total) < Number(constraint[1].value)) {
+                    check = true;
+                }
+
+                break;
+            case 'max':
+                if (Number(total) > Number(constraint[1].value)) {
+                    check = true;
+                }
+
+                break;
+        }
+    });
+
+    return check;
+}
+
 Object.entries(settings).forEach((channelSetting) => {
     let setting = channelSetting[1]
+
+    if (checkConstraints(setting.constraints, setting.total)) {
+        return;
+    }
+
     let Content = (props) => {
         const {eventRegistration, emitResponse} = props;
         const {onPaymentSetup} = eventRegistration;

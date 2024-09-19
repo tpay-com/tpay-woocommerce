@@ -9,6 +9,8 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 {
     protected $name = 'tpaygeneric';
     protected $settings;
+
+    /** @var TpayGeneric */
     private $gateway;
 
     public function initialize()
@@ -71,6 +73,8 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
                     'title' => $channel->fullName,
                     'icon' => $channel->image->url,
                     'fields' => $fields,
+                    'constraints' => $channel->constraints,
+                    'total' => $this->gateway->getCartTotal(),
                 ];
             }
         }

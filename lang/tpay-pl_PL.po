@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Tpay Payment Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-02 01:33+0000\n"
-"PO-Revision-Date: 2024-09-17 10:14+0200\n"
+"PO-Revision-Date: 2024-09-20 00:50+0200\n"
 "Last-Translator: dqw dqw\n"
 "Language-Team: Polski\n"
 "Language: pl_PL\n"
@@ -464,6 +464,7 @@ msgstr "Jeśli dodałeś dodatkowe metadane, w tym identyfikator podatkowy do za
 msgid "CRC number in Tpay"
 msgstr "Numer CRC w Tpay"
 
+
 msgid "Calculate the installment!"
 msgstr "Oblicz ratę!"
 
@@ -487,3 +488,7 @@ msgstr "Włącz symulator rat w koszyku"
 
 msgid "Enable installments simulator on checkout page"
 msgstr "Włącz symulator rat na stronie zamówienia"
+
+
+msgid "Easy ON-site"
+msgstr "Easy ON-site"

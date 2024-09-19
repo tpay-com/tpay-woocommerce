@@ -53,15 +53,16 @@ if ($customOrderString) {
 }
 
 $generics = tpayOption('global_generic_payments') ?? [];
+$availablePayments = WC()->payment_gateways()->get_available_payment_gateways();
 
-$list = array_filter($list, function (\Tpay\Api\Dtos\Channel $channel) use ($generics) {
+$list = array_filter($list, function (\Tpay\Api\Dtos\Channel $channel) use ($generics, $availablePayments) {
     foreach ($channel->groups as $group) {
         if (in_array($group->id, $this->unset_banks)) {
             return false;
         }
     }
 
-    if (in_array($channel->id, $generics)) {
+    if (in_array($channel->id, $generics) && in_array("tpaygeneric-{$channel->id}", array_keys($availablePayments))) {
         return false;
     }
 

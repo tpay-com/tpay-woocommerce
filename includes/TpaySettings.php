@@ -212,7 +212,7 @@ class TpaySettings
 
         add_settings_field(
             'global_generic_payments',
-            __('Generic payments list', 'tpay'),
+            __('Easy ON-site', 'tpay'),
             [$this, 'global_generic_payments_callback'],
             'tpay-settings-admin',
             'tpay_settings_setting_section',
