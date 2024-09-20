@@ -26,14 +26,23 @@ final class TpayBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_script_handles(): array
     {
-        wp_register_script('tpaypbl', plugin_dir_url(__DIR__).'../views/js/checkout.min.js', [
-            'wc-blocks-registry',
-            'wc-settings',
-            'wp-element',
-            'wp-html-entities',
-            'wp-i18n',
-            'react',
-        ], null, true);
+        $assetPath = '../../assets/checkout.min.asset.php';
+        $dependencies = [];
+        $version = TPAY_PLUGIN_VERSION;
+
+        if (file_exists($assetPath)) {
+            $asset = require $assetPath;
+            $version = $asset['version'] ?? TPAY_PLUGIN_VERSION;
+            $dependencies = $asset['dependencies'] ?? [];
+        }
+
+        wp_register_script(
+            'tpaypbl',
+            plugin_dir_url(__DIR__).'../views/assets/checkout-blocks.min.js',
+            $dependencies,
+            $version,
+            true
+        );
 
         if (function_exists('wp_set_script_translations')) {
             wp_set_script_translations('tpay-blocks-integration');

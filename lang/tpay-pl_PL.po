@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Tpay Payment Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-02 01:33+0000\n"
-"PO-Revision-Date: 2024-06-26 00:13+0200\n"
+"PO-Revision-Date: 2024-09-17 10:14+0200\n"
 "Last-Translator: dqw dqw\n"
 "Language-Team: Polski\n"
 "Language: pl_PL\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
-"X-Generator: Poedit 3.4.3\n"
+"X-Generator: Poedit 3.4.4\n"
 "X-Loco-Version: 2.6.2; wp-6.1.1\n"
 "X-Domain: tpay\n"
 
@@ -32,7 +32,7 @@ msgid "MID domain"
 msgstr "Domena MID"
 
 msgid "In order to purchase a subscription service, you must agree to save the card."
-msgstr "W celu zakupu usługi subskrypcyjnej należy wyrazić zgodę na zapisanie karty"
+msgstr "W celu zakupu usługi subskrypcyjnej należy wyrazić zgodę na zapisanie karty."
 
 msgid "Percentage fee"
 msgstr "Dodatkowa kwota %"
@@ -52,11 +52,11 @@ msgstr "ID Klienta"
 msgid "BLIK insufficient funds / user authorization error"
 msgstr "Niewystarczająca ilość środków na pokrycie transakcji"
 
-msgid "invalid BLIK six-digit code"
+msgid "Invalid BLIK six-digit code"
 msgstr "Podano błędy kod BLIK"
 
 msgid "Blik code is too short"
-msgstr "Podany kod BLIK jest za krótki. Spróbuj ponownie."
+msgstr "Podany kod BLIK jest za krótki. Spróbuj ponownie"
 
 msgid "BLIK payment declined by user"
 msgstr "Autoryzacja transakcji została odrzucona przez użytkownika"
@@ -115,7 +115,7 @@ msgstr "Domyślny status po opłaceniu"
 
 #: includes/WC_TpayGateways.php:273
 msgid "Description of Tpay Payment Gateway that users sees on Checkout page."
-msgstr "Opis bramki płatności Tpay, widoczny na stronie zamówienia"
+msgstr "Opis bramki płatności Tpay, widoczny na stronie zamówienia."
 
 #: includes/WC_TpayGateways.php:271
 msgid "Description"
@@ -131,10 +131,10 @@ msgstr "Włącz"
 
 #: includes/TpayBlik.php:49
 msgid "Enable Blik lvl 0"
-msgstr "BLIK LVL 0 "
+msgstr "BLIK LVL 0"
 
 msgid "Allows to enter blik code on the order page"
-msgstr "Zezwala na wpisywanie kodu blik na stronie zamówienia "
+msgstr "Zezwala na wpisywanie kodu blik na stronie zamówienia"
 
 msgid "You find in Merchant's Panel: Credit card payments -> API"
 msgstr "Znajdziesz w Panelu Akceptanta: Płatności kartami -> API"
@@ -166,15 +166,15 @@ msgstr "Data ważności"
 
 #: includes/WC_TpayGateways.php:122
 msgid "Google Pay"
-msgstr ""
+msgstr "Google Pay"
 
 #. Author URI of the plugin
 msgid "http://www.tpay.com"
-msgstr ""
+msgstr "http://www.tpay.com"
 
 #. URI of the plugin
 msgid "https://tpay.com"
-msgstr ""
+msgstr "https://tpay.com"
 
 #: views/html/blik0.php:10
 msgid "I pay with BLIK from saved account"
@@ -186,7 +186,7 @@ msgstr "Jeśli Tpay jest dostępny tylko dla niektórych metod dostawy, ustaw go
 
 #: includes/WC_TpayGateways.php:201
 msgid "If you do not already have Tpay account, <a href=\"https://register.tpay.com/\" target=\"_blank\">please register</a>."
-msgstr "Jeśli nie masz konta Tpay- <a href=\"https://register.tpay.com/\">zarejestruj się.</a>"
+msgstr "Jeśli nie masz konta Tpay- <a href=\"https://register.tpay.com/\">zarejestruj się.</a>."
 
 #: includes/WC_TpayGateways.php:134
 msgid "Installments"
@@ -194,11 +194,11 @@ msgstr "Raty"
 
 #. Author of the plugin
 msgid "Krajowy Integrator Płatności S.A."
-msgstr ""
+msgstr "Krajowy Integrator Płatności S.A."
 
 #: includes/WC_TpayGateways.php:96
 msgid "Official Tpay payment gateway for WooCommerce."
-msgstr "Oficjalna bramka płatności Tpay"
+msgstr "Oficjalna bramka płatności Tpay."
 
 #: includes/WC_TpayGateways.php:115
 msgid "Online payment by Blik"
@@ -296,7 +296,7 @@ msgstr "Znajdziesz w Panelu Akceptanta: Ustawienia -> Powiadomienia"
 
 #: includes/WC_TpayGateways.php:208
 msgid "Title of Tpay Payment Gateway that users sees on Checkout page."
-msgstr "Tytuł bramki płatności Tpay, widoczny na stronie zamówienia"
+msgstr "Tytuł bramki płatności Tpay, widoczny na stronie zamówienia."
 
 msgid "Function uses data from Tpay Settings"
 msgstr "Funkcja pobiera dane z Ustawień Tpay"
@@ -415,7 +415,7 @@ msgstr "Płacąc,"
 
 #: includes/helpers/GatewayHelper.php:151
 msgid "you accept the terms and conditions"
-msgstr "akceptujesz warunki i postanowienia."
+msgstr "akceptujesz warunki i postanowienia"
 
 #: includes/helpers/GatewayHelper.php:152
 msgid "The administrator of the personal data is Krajowy Integrator Płatności S.A., headquartered in Poznań."
@@ -463,3 +463,27 @@ msgstr "Jeśli dodałeś dodatkowe metadane, w tym identyfikator podatkowy do za
 
 msgid "CRC number in Tpay"
 msgstr "Numer CRC w Tpay"
+
+msgid "Calculate the installment!"
+msgstr "Oblicz ratę!"
+
+msgid "Installments simulator"
+msgstr "Symulator rat Pekao"
+
+msgid "Product page"
+msgstr "Karta produktu"
+
+msgid "Cart page"
+msgstr "Koszyk zakupowy"
+
+msgid "Checkout page"
+msgstr "Strona zamówienia"
+
+msgid "Enable installments simulator on product page"
+msgstr "Włącz symulator rat na stronie produktu"
+
+msgid "Enable installments simulator on cart page"
+msgstr "Włącz symulator rat w koszyku"
+
+msgid "Enable installments simulator on checkout page"
+msgstr "Włącz symulator rat na stronie zamówienia"

@@ -3,14 +3,14 @@
 use Tpay\TpayBlik;
 use Tpay\TpayGateways;
 
-defined( 'ABSPATH' ) || exit();
+defined('ABSPATH') || exit();
 
 /**
  * @return mixed|null
  */
-function tpayOption(?string $optionName = null)
+function tpayOption(?string $optionName = null, string $optionScope = 'tpay_settings_option_name')
 {
-    $options = get_option('tpay_settings_option_name');
+    $options = get_option($optionScope);
 
     if (empty($options)) {
         return null;
@@ -67,9 +67,8 @@ function childPluginHasParentPlugin()
 
 function enqueue_tpay_admin_assets()
 {
-//    wp_enqueue_script('tpay_admin_js', plugin_dir_url(__FILE__) . 'views/js/admin.min.js', [], TPAY_PLUGIN_VERSION);
-    wp_enqueue_script('tpay_admin_js', plugin_dir_url(__FILE__) . 'views/js/admin.min.js', [], time());
-    wp_enqueue_style('tpay_admin_css', plugin_dir_url(__FILE__) . 'views/css/admin.css', [], TPAY_PLUGIN_VERSION);
+    wp_enqueue_script('tpay_admin_js', plugin_dir_url(__FILE__) . 'views/assets/admin.min.js', [], time());
+    wp_enqueue_style('tpay_admin_css', plugin_dir_url(__FILE__) . 'views/assets/admin.css', [], TPAY_PLUGIN_VERSION);
 }
 
 function buildInfo(): string
@@ -86,29 +85,19 @@ function buildInfo(): string
 
 function enqueue_tpay_gateway_assets()
 {
-    wp_enqueue_script(
-        'tpay_payment_js',
-        plugin_dir_url(__FILE__) . 'views/js/jquery.payment.js',
+    wp_register_script(
+        'tpay_gateway_js',
+        plugin_dir_url(__FILE__) . 'views/assets/main.min.js',
         [],
-        TPAY_PLUGIN_VERSION,
+        time(),
         true
     );
-    wp_enqueue_script(
-        'tpay_jsencrypt_js',
-        plugin_dir_url(__FILE__) . 'views/js/jsencrypt.min.js',
-        [],
-        TPAY_PLUGIN_VERSION,
-        true
-    );
-    wp_enqueue_script(
-        'tpay_sr_js',
-        plugin_dir_url(__FILE__) . 'views/js/string_routines.js',
-        [],
-        TPAY_PLUGIN_VERSION,
-        true
-    );
-    wp_enqueue_script('tpay_gateway_js', plugin_dir_url(__FILE__) . 'views/js/main.min.js', [], time(), true);
-    wp_enqueue_style('tpay_gateway_css', plugin_dir_url(__FILE__) . 'views/css/main.css', [], time());
+    wp_localize_script('tpay_gateway_js', 'tpay', [
+        'merchantId' => tpayOption('global_api_key'),
+    ]);
+    wp_enqueue_script('tpay_gateway_js');
+
+    wp_enqueue_style('tpay_gateway_css', plugin_dir_url(__FILE__) . 'views/assets/main.css', [], time());
 }
 
 function add_tpay_gateways($gateways)

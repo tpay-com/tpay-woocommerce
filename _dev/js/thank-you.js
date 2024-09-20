@@ -1,4 +1,6 @@
-jQuery(document).ready(function ($) {
+import $ from "jquery";
+
+$(document).ready(function () {
     function checkOrder() {
         $.ajax({
             url: tpayThankYou.url, method: 'POST', data: {
