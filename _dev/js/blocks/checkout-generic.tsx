@@ -1,8 +1,8 @@
-let settings = window.wc.wcSettings.getPaymentMethodData('tpaygeneric', {});
-const react = window.React;
+import {getSetting} from '@woocommerce/settings';
+import {registerPaymentMethod} from '@woocommerce/blocks-registry';
+import {useEffect} from '@wordpress/element';
 
-const {registerPaymentMethod} = wc.wcBlocksRegistry;
-const {useEffect} = wp.element;
+let settings = getSetting('tpaygeneric_data');
 
 function checkConstraints(constraints, total) {
     let check = false;
@@ -58,13 +58,28 @@ Object.entries(settings).forEach((channelSetting) => {
             emitResponse.responseTypes.SUCCESS,
             onPaymentSetup,
         ]);
-        return react.createElement('div', {dangerouslySetInnerHTML: {__html: setting.fields}});
+
+        return (
+            <>
+                <div dangerouslySetInnerHTML={{__html: setting.fields}}></div>
+            </>
+        )
+    };
+
+    let Label = () => {
+        return (
+            <>
+                <label>
+                    {setting.title} <img src={setting.icon} />
+                </label>
+            </>
+        )
     };
 
     let Block_Gateway = {
         name: `tpaygeneric-${channelSetting[0]}`,
-        label: react.createElement('label', null, `${setting.title} `, react.createElement('img', {src: setting.icon})),
-        content: react.createElement(Content),
+        label: <Label/>,
+        content: <Content/>,
         edit: null,
         canMakePayment: () => true,
         ariaLabel: setting.title ?? '',
