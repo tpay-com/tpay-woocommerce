@@ -218,7 +218,7 @@ class TpaySettings
             'tpay_settings_setting_section',
             [
                 'id' => 'global_generic_payments',
-                'description' => __('Payments list', 'tpay'),
+                'description' => __('To select multiple items hold CTRL button', 'tpay'),
             ]
         );
     }
@@ -253,11 +253,10 @@ class TpaySettings
         }
     }
 
-    public function global_generic_payments_callback()
+    public function global_generic_payments_callback($args)
     {
         $channels = $this->transactions->channels();
         $checkedChannels = tpayOption('global_generic_payments') ?? [];
-
         ?>
         <select class="tpay-select" id="global_generic_payments" multiple name="tpay_settings_option_name[global_generic_payments][]">
             <?php
@@ -267,8 +266,11 @@ class TpaySettings
                 echo "<option {$checked} value='{$channel->id}'>{$channel->name}</option>";
             } ?>
         </select>
-
         <?php
+
+        if (isset($args['description']) && $args['description']) {
+            echo "<span class='tpay-help-tip' aria-label='{$args['description']}'><strong>?</strong></span>";
+        }
     }
 
     /**

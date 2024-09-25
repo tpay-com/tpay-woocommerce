@@ -318,7 +318,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             $order_shipping_items = is_object($order) ? $order->get_shipping_methods() : false;
             $chosen_shipping_methods_session = WC()->session->get('chosen_shipping_methods');
 
-            $products = WC()->cart->get_cart();
+            $products = WC()->cart->get_cart_contents();
             $virtualCart = true;
 
             foreach ($products as $product) {

@@ -51,7 +51,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         wp_register_script(
             'tpaygeneric',
-            plugin_dir_url(__DIR__) . '../views/assets/checkout-blocks.min.js',
+            plugin_dir_url(__DIR__).'../views/assets/checkout-blocks.min.js',
             $dependencies,
             $version,
             true
