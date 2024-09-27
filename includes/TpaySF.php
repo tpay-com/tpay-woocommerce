@@ -3,7 +3,7 @@
 namespace Tpay;
 
 use Error;
-use Tpay\Dtos\Group;
+use Tpay\Api\Dtos\Group;
 use Tpay\Helpers\DatabaseConnection;
 use WC_Data_Exception;
 use WC_Order;

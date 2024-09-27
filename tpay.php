@@ -16,12 +16,26 @@
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 use Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Tpay\Api\Client;
+use Tpay\Api\Transactions;
+use Tpay\Blocks\PekaoInstallmentsBlock;
+use Tpay\Blocks\TpayBlikBlock;
+use Tpay\Blocks\TpayBlock;
+use Tpay\Blocks\TpayCCBlock;
+use Tpay\Blocks\TpayGenericBlock;
+use Tpay\Blocks\TpayGPayBlock;
+use Tpay\Blocks\TpayInstallmentsBlock;
+use Tpay\Blocks\TpaySFBlock;
+use Tpay\Blocks\TpayTwistoBlock;
+use Tpay\Helpers\Cache;
+use Tpay\OpenApi\Utilities\Logger;
 use Tpay\PekaoInstallments;
 use Tpay\Tpay;
 use Tpay\TpayBlik;
 use Tpay\TpayCC;
 use Tpay\TpayGPay;
 use Tpay\TpayInstallments;
+use Tpay\TpayLogger;
 use Tpay\TpaySettings;
 use Tpay\TpaySF;
 use Tpay\TpayTwisto;
@@ -58,11 +72,10 @@ const TPAY_CLASSMAP = [
     TPAYGPAY_ID => TpayGPay::class,
     TPAYTWISTO_ID => TpayTwisto::class,
     TPAYINSTALLMENTS_ID => TpayInstallments::class,
-    TPAYPEKAOINSTALLMENTS_ID => PekaoInstallments::class
+    TPAYPEKAOINSTALLMENTS_ID => PekaoInstallments::class,
 ];
 
-
-if (tpayOption('global_enable_fee') != 'disabled') {
+if ('disabled' != tpayOption('global_enable_fee')) {
     add_action('woocommerce_cart_calculate_fees', 'tpay_add_checkout_fee_for_gateway');
     add_action('woocommerce_after_checkout_form', 'tpay_refresh_checkout_on_payment_methods_change');
 }
@@ -73,7 +86,7 @@ add_action('before_woocommerce_init', function () {
         FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__);
     }
 
-    \Tpay\OpenApi\Utilities\Logger::setLogger(new \Tpay\TpayLogger());
+    Logger::setLogger(new TpayLogger());
 });
 
 add_action('woocommerce_blocks_loaded', function () {
@@ -84,42 +97,21 @@ add_action('woocommerce_blocks_loaded', function () {
     add_action(
         'woocommerce_blocks_payment_method_type_registration',
         function (PaymentMethodRegistry $paymentMethodRegistry) {
-            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayBlock());
-            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayBlikBlock());
-            $paymentMethodRegistry->register(new \Tpay\Blocks\TpaySFBlock());
-            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayCCBlock());
-            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayGPayBlock());
-            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayInstallmentsBlock());
-            $paymentMethodRegistry->register(new \Tpay\Blocks\TpayTwistoBlock());
-            $paymentMethodRegistry->register(new \Tpay\Blocks\PekaoInstallmentsBlock());
+            $paymentMethodRegistry->register(new TpayBlock());
+            $paymentMethodRegistry->register(new TpayBlikBlock());
+            $paymentMethodRegistry->register(new TpaySFBlock());
+            $paymentMethodRegistry->register(new TpayCCBlock());
+            $paymentMethodRegistry->register(new TpayGPayBlock());
+            $paymentMethodRegistry->register(new TpayInstallmentsBlock());
+            $paymentMethodRegistry->register(new TpayTwistoBlock());
+            $paymentMethodRegistry->register(new PekaoInstallmentsBlock());
+
+        $generics = tpayOption('global_generic_payments');
+
+        if (!empty($generics)) {
+            $paymentMethodRegistry->register(new TpayGenericBlock());
         }
-    );
-
-    $merchantId = tpayOption('global_api_key');
-    $asset = require plugin_dir_path(__FILE__) . 'views/assets/installments-blocks.min.asset.php';
-
-    wp_register_script(
-        'tpay-installments-blocks',
-        plugin_dir_url(__FILE__) . 'views/assets/installments-blocks.min.js',
-        $asset['dependencies'],
-        $asset['version'],
-        true
-    );
-    wp_localize_script(
-        'tpay-installments-blocks',
-        'tpayInstallmentsBlocks',
-        [
-            'merchantId' => $merchantId,
-            'installments' => [
-                'cart' => tpayOption('tpay_settings_installments_cart', 'woocommerce_pekaoinstallments_settings'),
-                'checkout' => tpayOption('tpay_settings_installments_checkout', 'woocommerce_pekaoinstallments_settings'),
-            ],
-            'translations' => [
-                'button' => __('Calculate the installment!', 'tpay'),
-            ],
-        ]
-    );
-    wp_enqueue_script('tpay-installments-blocks');
+    });
 });
 
 function init_gateway_tpay()
@@ -130,9 +122,32 @@ function init_gateway_tpay()
         return;
     }
 
-    load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
-    require_once('vendor/autoload.php');
+    load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)).'/lang/');
+    require_once 'vendor/autoload.php';
+    Logger::setLogger(new TpayLogger());
     new TpaySettings();
+
+    $generics = array_map(function (int $id) {
+        return new class ($id) extends \Tpay\TpayGeneric {
+            public function __construct($id = null)
+            {
+                parent::__construct("tpaygeneric-{$id}", $id);
+
+                $channels = $this->channels();
+
+                foreach ($channels as $channel) {
+                    if ($channel->id === $id) {
+                        $this->set_icon($channel->image->url);
+                    }
+                }
+            }
+        };
+    }, tpayOption('global_generic_payments') ?? []);
+
+    add_filter('woocommerce_payment_gateways', function ($gateways) use ($generics) {
+        return array_merge($gateways, $generics);
+    });
+
     add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
 }
 
@@ -145,13 +160,13 @@ if (is_admin()) {
 add_action('woocommerce_thankyou', function ($orderId) {
     $order = wc_get_order($orderId);
 
-    if ($order->get_meta('blik0') === "") {
+    if ('' === $order->get_meta('blik0')) {
         return;
     }
 
     wp_register_script(
         'tpay-thank-you',
-        plugin_dir_url(__FILE__) . 'views/assets/thank-you.min.js',
+        plugin_dir_url(__FILE__).'views/assets/thank-you.min.js',
         ['jquery'],
         false,
         true
@@ -162,18 +177,35 @@ add_action('woocommerce_thankyou', function ($orderId) {
         [
             'url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('tpay-thank-you'),
-            'transactionId' => $order->get_transaction_id()
+            'transactionId' => $order->get_transaction_id(),
         ]
     );
     wp_enqueue_script('tpay-thank-you');
-    wp_enqueue_style('tpay-thank-you', plugin_dir_url(__FILE__) . 'views/assets/thank-you.css', [], time());
+    wp_enqueue_style('tpay-thank-you', plugin_dir_url(__FILE__).'views/assets/thank-you.css', [], time());
 
     require 'views/html/thank-you-blik0.php';
 }, 10, 2);
 
-
 add_action('wp_ajax_tpay_blik0_transaction_status', 'tpay_blik0_transaction_status');
 add_action('wp_ajax_nopriv_tpay_blik0_transaction_status', 'tpay_blik0_transaction_status');
+
+add_filter('tpay_generic_gateway_list', function ($gateways) {
+    $transactions = new Transactions(new Client(), new Cache());
+    $channels = $transactions->channels();
+    $genericGateways = [];
+
+    foreach ($channels as $channel) {
+        $genericGateways["tpaygeneric-{$channel->id}"] = [
+            'name' => $channel->name,
+            'front_name' => $channel->fullName,
+            'default_description' => '',
+            'api' => 'tpaygeneric-' . $channel->id,
+            'group_id' => null,
+        ];
+    }
+
+    return array_merge($gateways, $genericGateways);
+});
 
 add_action('woocommerce_after_add_to_cart_button', function () {
     if (tpayOption('tpay_settings_installments_product', 'woocommerce_pekaoinstallments_settings') !== 'yes') {

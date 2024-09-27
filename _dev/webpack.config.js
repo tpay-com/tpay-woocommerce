@@ -29,7 +29,7 @@ module.exports = {
     entry: {
         main: ['./js/main.ts', './scss/main.scss'],
         admin: ['./js/admin.ts', './scss/admin.scss'],
-        'checkout-blocks': ['./js/blocks/checkout.tsx', './js/blocks/checkout-blik.tsx', './js/blocks/checkout-cc.tsx', './js/blocks/checkout-gpay.tsx', './js/blocks/checkout-installments.tsx', './js/blocks/checkout-pekao.tsx', './js/blocks/checkout-sf.tsx', './js/blocks/checkout-twisto.tsx'],
+        'checkout-blocks': ['./js/blocks/checkout.tsx', './js/blocks/checkout-blik.tsx', './js/blocks/checkout-cc.tsx', './js/blocks/checkout-gpay.tsx', './js/blocks/checkout-installments.tsx', './js/blocks/checkout-pekao.tsx', './js/blocks/checkout-sf.tsx', './js/blocks/checkout-twisto.tsx', './js/blocks/checkout-generic.tsx'],
         'thank-you': ['./js/thank-you.js', './scss/thank-you.scss'],
         cart: ['./js/installments/cart.ts', './scss/installments.scss'],
         checkout: ['./js/installments/checkout.ts', './scss/installments.scss'],
