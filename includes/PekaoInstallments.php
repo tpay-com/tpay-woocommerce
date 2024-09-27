@@ -18,21 +18,21 @@ class PekaoInstallments extends TpayGateways
     {
         return [
             'tpay_settings_installments_product' => [
-                'title' => __('Product page', 'tpay'),
+                'title' => __('Installments simulator on product page', 'tpay'),
                 'type' => 'checkbox',
                 'description' => __('Enable installments simulator on product page', 'tpay'),
                 'label' => __('Show', 'tpay'),
                 'desc_tip' => true,
             ],
             'tpay_settings_installments_cart' => [
-                'title' => __('Cart page', 'tpay'),
+                'title' => __('Installments simulator on cart page', 'tpay'),
                 'type' => 'checkbox',
                 'description' => __('Enable installments simulator on cart page', 'tpay'),
                 'label' => __('Show', 'tpay'),
                 'desc_tip' => true,
             ],
             'tpay_settings_installments_checkout' => [
-                'title' => __('Checkout page', 'tpay'),
+                'title' => __('Installments simulator on checkout page', 'tpay'),
                 'type' => 'checkbox',
                 'description' => __('Enable installments simulator on checkout page', 'tpay'),
                 'label' => __('Show', 'tpay'),
