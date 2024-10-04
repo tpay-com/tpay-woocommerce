@@ -3,7 +3,7 @@
  * Plugin Name: Tpay Payment Gateway
  * Plugin URI: https://tpay.com
  * Description: Tpay payment gateway for WooCommerce
- * Version: 1.7.2
+ * Version: 1.7.3
  * Author: Krajowy Integrator Płatności S.A.
  * Author URI: http://www.tpay.com
  * License: LGPL 3.0
@@ -42,7 +42,7 @@ use Tpay\TpayTwisto;
 
 require_once 'tpay-functions.php';
 
-define('TPAY_PLUGIN_VERSION', '1.7.2');
+define('TPAY_PLUGIN_VERSION', '1.7.3');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
@@ -212,7 +212,7 @@ add_action('woocommerce_after_add_to_cart_button', function () {
         return;
     }
 
-    $merchantId = tpayOption('global_api_key');
+    $merchantId = tpayOption('tpay_settings_installments_merchant_id', 'woocommerce_pekaoinstallments_settings');
     $asset = require plugin_dir_path(__FILE__) . 'views/assets/product.min.asset.php';
 
     wp_register_script(
@@ -240,7 +240,7 @@ add_action('woocommerce_proceed_to_checkout', function () {
         return;
     }
 
-    $merchantId = tpayOption('global_api_key');
+    $merchantId = tpayOption('tpay_settings_installments_merchant_id', 'woocommerce_pekaoinstallments_settings');
     $asset = require plugin_dir_path(__FILE__) . 'views/assets/cart.min.asset.php';
 
     wp_register_script(
@@ -268,7 +268,7 @@ add_action('woocommerce_review_order_before_payment', function () {
         return;
     }
 
-    $merchantId = tpayOption('global_api_key');
+    $merchantId = tpayOption('tpay_settings_installments_merchant_id', 'woocommerce_pekaoinstallments_settings');
     $amount = WC()->cart->get_cart_contents_total();
 
     $asset = require plugin_dir_path(__FILE__) . 'views/assets/checkout.min.asset.php';

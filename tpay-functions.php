@@ -99,7 +99,6 @@ function enqueue_tpay_gateway_assets()
 
     wp_enqueue_style('tpay_gateway_css', plugin_dir_url(__FILE__) . 'views/assets/main.css', [], time());
 
-    $merchantId = tpayOption('global_api_key');
     $asset = require plugin_dir_path(__FILE__) . 'views/assets/installments-blocks.min.asset.php';
 
     wp_register_script(
@@ -113,7 +112,7 @@ function enqueue_tpay_gateway_assets()
         'tpay-installments-blocks',
         'tpayInstallmentsBlocks',
         [
-            'merchantId' => $merchantId,
+            'merchantId' => tpayOption('tpay_settings_installments_merchant_id', 'woocommerce_pekaoinstallments_settings'),
             'installments' => [
                 'cart' => tpayOption('tpay_settings_installments_cart', 'woocommerce_pekaoinstallments_settings'),
                 'checkout' => tpayOption('tpay_settings_installments_checkout', 'woocommerce_pekaoinstallments_settings'),

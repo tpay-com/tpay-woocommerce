@@ -17,6 +17,13 @@ class PekaoInstallments extends TpayGateways
     public static function get_form_installments(): array
     {
         return [
+            'tpay_settings_installments_merchant_id' => [
+                'title' => __('Merchant ID', 'tpay'),
+                'type' => 'number',
+                'description' => __('When the installment simulator is enabled, the merchant ID field must be filled in', 'tpay'),
+                'label' => __('Show', 'tpay'),
+                'desc_tip' => true,
+            ],
             'tpay_settings_installments_product' => [
                 'title' => __('Installments simulator on product page', 'tpay'),
                 'type' => 'checkbox',
