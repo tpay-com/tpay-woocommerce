@@ -212,7 +212,7 @@ add_action('woocommerce_after_add_to_cart_button', function () {
         return;
     }
 
-    $merchantId = tpayOption('global_api_key');
+    $merchantId = tpayOption('tpay_settings_installments_merchant_id', 'woocommerce_pekaoinstallments_settings');
     $asset = require plugin_dir_path(__FILE__) . 'views/assets/product.min.asset.php';
 
     wp_register_script(
