@@ -240,7 +240,7 @@ add_action('woocommerce_proceed_to_checkout', function () {
         return;
     }
 
-    $merchantId = tpayOption('global_api_key');
+    $merchantId = tpayOption('tpay_settings_installments_merchant_id', 'woocommerce_pekaoinstallments_settings');
     $asset = require plugin_dir_path(__FILE__) . 'views/assets/cart.min.asset.php';
 
     wp_register_script(
@@ -268,7 +268,7 @@ add_action('woocommerce_review_order_before_payment', function () {
         return;
     }
 
-    $merchantId = tpayOption('global_api_key');
+    $merchantId = tpayOption('tpay_settings_installments_merchant_id', 'woocommerce_pekaoinstallments_settings');
     $amount = WC()->cart->get_cart_contents_total();
 
     $asset = require plugin_dir_path(__FILE__) . 'views/assets/checkout.min.asset.php';

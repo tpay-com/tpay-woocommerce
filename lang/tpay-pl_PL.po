@@ -470,6 +470,9 @@ msgstr "Oblicz ratę!"
 msgid "Installments simulator"
 msgstr "Symulator rat Pekao"
 
+msgid "When the installment simulator is enabled, the merchant ID field must be filled in"
+msgstr "Przy włączonym symulatorze rat, należy uzupełnić pole ID merchanta"
+
 msgid "Installments simulator on product page"
 msgstr "Symulator rat na karcie produktu"
 
