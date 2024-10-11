@@ -368,6 +368,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
                 'method' => 'pay_by_link',
             ],
             'payer' => $payer_data,
+            'lang' => tpay_lang(),
             'callbacks' => [
                 'payerUrls' => [
                     'success' => $this->get_return_url($order),
@@ -476,7 +477,6 @@ abstract class TpayGateways extends WC_Payment_Gateway
     public function gateway_ipn()
     {
         $body = $_POST;
-        update_option('tpay_IPN'.time(), print_r($body, true));
         Ipn\IpnContext::chooseStrategy($body);
         wp_die();
     }
