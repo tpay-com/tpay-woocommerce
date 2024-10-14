@@ -85,11 +85,13 @@ function buildInfo(): string
 
 function enqueue_tpay_gateway_assets()
 {
+    $asset = require plugin_dir_path(__FILE__) . 'views/assets/installments-blocks.min.asset.php';
+
     wp_register_script(
         'tpay_gateway_js',
         plugin_dir_url(__FILE__) . 'views/assets/main.min.js',
-        [],
-        time(),
+        $asset['dependencies'],
+        $asset['version'],
         true
     );
     wp_localize_script('tpay_gateway_js', 'tpay', [
@@ -230,4 +232,15 @@ function tpay_blik0_transaction_status()
     $result = (new TpayBlik())->checkTransactionStatus(htmlspecialchars($_POST['transactionId']));
 
     wp_send_json($result);
+}
+
+function tpay_lang(): string
+{
+    $locale = explode('_', get_locale());
+
+    if (false === in_array($locale[0], ['pl', 'en', 'uk'])) {
+        return 'en';
+    }
+
+    return $locale[0];
 }

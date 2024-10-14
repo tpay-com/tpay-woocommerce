@@ -109,6 +109,7 @@ class TpayGeneric extends TpayGateways
             'hiddenDescription' => $this->crc,
             'amount' => $order->get_total(),
             'payer' => $payer_data,
+            'lang' => tpay_lang(),
             'callbacks' => [
                 'payerUrls' => [
                     'success' => $this->get_return_url($order),
