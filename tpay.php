@@ -106,12 +106,13 @@ add_action('woocommerce_blocks_loaded', function () {
             $paymentMethodRegistry->register(new TpayTwistoBlock());
             $paymentMethodRegistry->register(new PekaoInstallmentsBlock());
 
-        $generics = tpayOption('global_generic_payments');
+            $generics = tpayOption('global_generic_payments');
 
-        if (!empty($generics)) {
-            $paymentMethodRegistry->register(new TpayGenericBlock());
+            if (!empty($generics)) {
+                $paymentMethodRegistry->register(new TpayGenericBlock());
+            }
         }
-    });
+    );
 });
 
 function init_gateway_tpay()

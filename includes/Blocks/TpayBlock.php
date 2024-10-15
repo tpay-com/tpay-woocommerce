@@ -26,7 +26,7 @@ final class TpayBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_script_handles(): array
     {
-        $assetPath = '../../assets/checkout.min.asset.php';
+        $assetPath = plugin_dir_path(__FILE__).'views/assets/checkout.min.asset.php';
         $dependencies = [];
         $version = TPAY_PLUGIN_VERSION;
 

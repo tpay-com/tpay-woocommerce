@@ -1,5 +1,6 @@
 <?php
 
+use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
 use Tpay\TpayBlik;
 use Tpay\TpayGateways;
 
@@ -83,9 +84,9 @@ function buildInfo(): string
     );
 }
 
-function enqueue_tpay_gateway_assets()
+function enqueue_tpay_gateway_assets(): void
 {
-    $asset = require plugin_dir_path(__FILE__) . 'views/assets/installments-blocks.min.asset.php';
+    $asset = require plugin_dir_path(__FILE__) . 'views/assets/main.min.asset.php';
 
     wp_register_script(
         'tpay_gateway_js',
@@ -101,30 +102,38 @@ function enqueue_tpay_gateway_assets()
 
     wp_enqueue_style('tpay_gateway_css', plugin_dir_url(__FILE__) . 'views/assets/main.css', [], time());
 
-    $asset = require plugin_dir_path(__FILE__) . 'views/assets/installments-blocks.min.asset.php';
+    if (CartCheckoutUtils::is_checkout_block_default() || CartCheckoutUtils::is_cart_block_default()) {
+        $asset = require plugin_dir_path(__FILE__) . 'views/assets/installments-blocks.min.asset.php';
 
-    wp_register_script(
-        'tpay-installments-blocks',
-        plugin_dir_url(__FILE__) . 'views/assets/installments-blocks.min.js',
-        $asset['dependencies'],
-        $asset['version'],
-        true
-    );
-    wp_localize_script(
-        'tpay-installments-blocks',
-        'tpayInstallmentsBlocks',
-        [
-            'merchantId' => tpayOption('tpay_settings_installments_merchant_id', 'woocommerce_pekaoinstallments_settings'),
-            'installments' => [
-                'cart' => tpayOption('tpay_settings_installments_cart', 'woocommerce_pekaoinstallments_settings'),
-                'checkout' => tpayOption('tpay_settings_installments_checkout', 'woocommerce_pekaoinstallments_settings'),
-            ],
-            'translations' => [
-                'button' => __('Calculate the installment!', 'tpay'),
-            ],
-        ]
-    );
-    wp_enqueue_script('tpay-installments-blocks');
+        wp_register_script(
+            'tpay-installments-blocks',
+            plugin_dir_url(__FILE__) . 'views/assets/installments-blocks.min.js',
+            $asset['dependencies'],
+            $asset['version'],
+            true
+        );
+        wp_localize_script(
+            'tpay-installments-blocks',
+            'tpayInstallmentsBlocks',
+            [
+                'merchantId' => tpayOption(
+                    'tpay_settings_installments_merchant_id',
+                    'woocommerce_pekaoinstallments_settings'
+                ),
+                'installments' => [
+                    'cart' => tpayOption('tpay_settings_installments_cart', 'woocommerce_pekaoinstallments_settings'),
+                    'checkout' => tpayOption(
+                        'tpay_settings_installments_checkout',
+                        'woocommerce_pekaoinstallments_settings'
+                    ),
+                ],
+                'translations' => [
+                    'button' => __('Calculate the installment!', 'tpay'),
+                ],
+            ]
+        );
+        wp_enqueue_script('tpay-installments-blocks');
+    }
 }
 
 function add_tpay_gateways($gateways)
