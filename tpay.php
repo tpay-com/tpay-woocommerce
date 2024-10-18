@@ -3,7 +3,7 @@
  * Plugin Name: Tpay Payment Gateway
  * Plugin URI: https://tpay.com
  * Description: Tpay payment gateway for WooCommerce
- * Version: 1.7.5
+ * Version: 1.7.6
  * Author: Krajowy Integrator Płatności S.A.
  * Author URI: http://www.tpay.com
  * License: LGPL 3.0
@@ -42,7 +42,7 @@ use Tpay\TpayTwisto;
 
 require_once 'tpay-functions.php';
 
-define('TPAY_PLUGIN_VERSION', '1.7.5');
+define('TPAY_PLUGIN_VERSION', '1.7.6');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
@@ -126,9 +126,15 @@ function init_gateway_tpay()
     load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)).'/lang/');
     require_once 'vendor/autoload.php';
     Logger::setLogger(new TpayLogger());
-    new TpaySettings();
 
-    $generics = array_map(function (int $id) {
+    add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
+    $genericsSelected = tpayOption('global_generic_payments') ?? [];
+
+    if (is_admin()) {
+        new TpaySettings();
+    }
+
+    $generics = array_map(static function (int $id) {
         return new class ($id) extends \Tpay\TpayGeneric {
             public function __construct($id = null)
             {
@@ -143,13 +149,11 @@ function init_gateway_tpay()
                 }
             }
         };
-    }, tpayOption('global_generic_payments') ?? []);
+    }, $genericsSelected);
 
     add_filter('woocommerce_payment_gateways', function ($gateways) use ($generics) {
         return array_merge($gateways, $generics);
     });
-
-    add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
 }
 
 if (is_admin()) {
