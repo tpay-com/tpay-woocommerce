@@ -8,7 +8,22 @@ permissions:
   pull-requests: write
 
 jobs:
+  phive:
+    name: Install tools
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Install tools
+        uses: ngmy/phive-install-action@master
+      - name: Upload tools to artifact store
+        uses: actions/upload-artifact@master
+        with:
+          name: tools
+          path: .dev-tools/tools
+
   check:
+    needs: phive
     runs-on: ubuntu-latest
 
     steps:
@@ -24,9 +39,27 @@ jobs:
 
       - run: chmod 777 -R vendor
 
+      - name: Download tools from artifact store
+        uses: actions/download-artifact@master
+        with:
+          name: tools
+          path: .dev-tools/tools
+      - name: Set tools as an executable
+        run: find .dev-tools/tools -type f -print0 | xargs -0 chmod +x
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: none, curl, dom, mbstring, simplexml, tokenizer, xml, xmlwriter, json
+          coverage: none
+
+      - run: cd .dev-tools && tools/php-scoper add-prefix -fq --config=./scoper.inc.php
+
       - run: git archive --output=tpay-woocommerce.zip HEAD
 
       - run: zip -ur tpay-woocommerce.zip vendor/
+
+      - run: zip -ur tpay-woocommerce.zip vendor_prefixed/
 
       - run: mkdir plugin && unzip tpay-woocommerce.zip -d plugin
 

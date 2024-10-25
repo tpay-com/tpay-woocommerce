@@ -219,19 +219,7 @@ function tpay_refresh_checkout_on_payment_methods_change()
 
 function get_package_version(): string
 {
-    $installed = __DIR__ . '/vendor/composer/installed.php';
-
-    if (false === file_exists($installed)) {
-        throw new Exception('Composer installed file not found');
-    }
-
-    $dir = require $installed;
-
-    if (isset($dir['versions']['tpay/woocommerce'])) {
-        return $dir['versions']['tpay/woocommerce']['pretty_version'];
-    }
-
-    return 'n/a';
+    return \Tpay\Vendor\Composer\InstalledVersions::getPrettyVersion('tpay-com/tpay-openapi-php');
 }
 
 function tpay_blik0_transaction_status()
