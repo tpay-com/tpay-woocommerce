@@ -68,8 +68,22 @@ return [
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#patchers
     'patchers' => [
         static function (string $filePath, string $prefix, string $contents): string {
-            if (strpos($filePath, 'LoggerInterface.php')) {
-                return preg_replace('%interface LoggerInterface%', 'interface LoggerInterface extends \Psr\Log\LoggerInterface', $contents);
+            if (strpos($contents, '\'phpseclib3\\')) {
+                return preg_replace("%'phpseclib3%", "'\Tpay\Vendor\phpseclib3", $contents);
+            }
+
+            if (strpos($contents, '\'\\phpseclib3')) {
+                return str_replace("'\phpseclib3", "'\Tpay\Vendor\phpseclib3", $contents);
+            }
+
+            $file = '../vendor/tpay-com/tpay-openapi-php/src/Utilities/Logger.php';
+
+            if (file_exists($file)) {
+                $content = file_get_contents($file);
+
+                $changed = str_replace(" Psr\\Log\\", " Tpay\Vendor\Psr\Log\\", $content);
+
+                file_put_contents($file, $changed);
             }
 
             return $contents;

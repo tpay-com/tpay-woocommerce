@@ -61,9 +61,11 @@ jobs:
 
       - run: cd .dev-tools && tools/php-scoper add-prefix -fq --config=./scoper.inc.php
 
-      - run: .dev-tools/tools/php-scoper add-prefix -fq
-
       - run: git archive --output=tpay-woocommerce.zip HEAD
+
+      - run: rm -rf vendor/paragonie
+      - run: rm -rf vendor/phpseclib
+      - run: rm -rf vendor/psr
 
       - run: zip -ur tpay-woocommerce.zip vendor/
 
