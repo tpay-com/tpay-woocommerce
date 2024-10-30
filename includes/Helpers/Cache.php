@@ -48,7 +48,6 @@ class Cache
         if (is_writable($normalDir)) {
             return $normalDir;
         }
-        
         return '/tmp/tpay_';
     }
 }
