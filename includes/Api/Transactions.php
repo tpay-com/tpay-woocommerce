@@ -13,16 +13,16 @@ class Transactions
 {
     protected const CHANNELS_CACHE_KEY = 'tpay_channels';
 
-    protected $client;
     protected $cache;
     protected $logger;
+    protected $client;
     protected static $microCache = [];
 
     public function __construct(Client $client, Cache $cache)
     {
-        $this->client = $client->connect() ? $client->connect()->transactions() : null;
         $this->cache = $cache;
         $this->logger = new TpayLogger();
+        $this->client = $client;
     }
 
     public function channels()
@@ -32,18 +32,17 @@ class Transactions
         }
 
         $cached = $this->cache->get(self::CHANNELS_CACHE_KEY);
-
         if ($cached) {
             self::$microCache['channels'] = $cached;
 
             return $cached;
         }
 
-        if (!$this->client) {
+        if (!$this->getTransactionsApi()) {
             return [];
         }
 
-        $result = $this->client->getChannels();
+        $result = $this->getTransactionsApi()->getChannels();
 
         if (!isset($result['result']) || 'success' !== $result['result']) {
             $this->logger->error('Unable to retrieve channels from API');
@@ -71,5 +70,10 @@ class Transactions
         self::$microCache['channels'] = $channels;
 
         return $channels;
+    }
+
+    private function getTransactionsApi()
+    {
+        return $this->client->connect() ? $this->client->connect()->transactions() : null;
     }
 }

@@ -44,6 +44,11 @@ class Cache
 
     private function getCacheDir(): string
     {
-        return __DIR__.'/../../cache/';
+        $normalDir = __DIR__.'/../../cache/';
+        if (is_writable($normalDir)) {
+            return $normalDir;
+        }
+
+        return '/tmp/tpay_';
     }
 }

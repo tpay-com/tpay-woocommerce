@@ -180,7 +180,7 @@ class TpayBlik extends TpayGateways
 
     private function blik0_is_active(): bool
     {
-        return 'yes' == @get_option('woocommerce_tpayblik_settings')['enable_blik0'];
+        return 'yes' == get_option('woocommerce_tpayblik_settings', ['enable_blik0' => 'no'])['enable_blik0'];
     }
 
     private function additional_payment_data()
