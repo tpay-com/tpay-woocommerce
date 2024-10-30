@@ -8,7 +8,7 @@ class Cache
     {
         $key .= ':';
         $key .= tpayOption('global_tpay_environment');
-        $file = $this->getCacheDir() . md5($key);
+        $file = $this->getCacheDir().md5($key);
 
         if (file_exists($file)) {
             $data = unserialize(base64_decode(file_get_contents($file)));
@@ -25,7 +25,7 @@ class Cache
     {
         $key .= ':';
         $key .= tpayOption('global_tpay_environment');
-        $file = $this->getCacheDir() . md5($key);
+        $file = $this->getCacheDir().md5($key);
         $ttl += time();
         $data = base64_encode(serialize(['ttl' => $ttl, 'data' => $value]));
 
@@ -34,7 +34,7 @@ class Cache
 
     public function erase(): void
     {
-        foreach (glob($this->getCacheDir() . '*') as $file) {
+        foreach (glob($this->getCacheDir().'*') as $file) {
             if ($file === $this->getCacheDir()) {
                 continue;
             }
@@ -44,7 +44,7 @@ class Cache
 
     private function getCacheDir(): string
     {
-        $normalDir = __DIR__ . '/../../cache/';
+        $normalDir = __DIR__.'/../../cache/';
         if (is_writable($normalDir)) {
             return $normalDir;
         }
