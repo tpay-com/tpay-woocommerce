@@ -3,11 +3,14 @@
 namespace Tpay\Api;
 
 use Exception;
+use Tpay\Helpers\Cache;
 use Tpay\Helpers\GatewayHelper;
 use Tpay\OpenApi\Api\TpayApi;
 
 class Client
 {
+    public const TOKEN_CACHE_KEY = 'tpay_token';
+
     /** @var null|string */
     protected $apiKey;
 
@@ -20,12 +23,16 @@ class Client
     /** @var GatewayHelper */
     protected $gatewayHelper;
 
+    /** @var Cache */
+    protected $cache;
+
     /** @var null|false|TpayApi */
     protected static $api;
 
     public function __construct()
     {
         $this->gatewayHelper = new GatewayHelper();
+        $this->cache = new Cache();
     }
 
     public function connect()
@@ -41,7 +48,15 @@ class Client
         try {
             $isProd = 'sandbox' != tpayOption('global_tpay_environment');
             self::$api = new TpayApi($this->apiKey, $this->apiKeyPassword, $isProd, 'read', null, buildInfo());
-            self::$api->authorization();
+
+            $token = $this->cache->get(self::TOKEN_CACHE_KEY);
+
+            if ($token) {
+                self::$api->setCustomToken($token);
+            } else {
+                self::$api->authorization();
+                $this->cache->set(self::TOKEN_CACHE_KEY, self::$api->getToken());
+            }
 
             return self::$api;
         } catch (Exception $exception) {
