@@ -76,14 +76,19 @@ return [
                 return str_replace("'\phpseclib3", "'\Tpay\Vendor\phpseclib3", $contents);
             }
 
-            $file = '../vendor/tpay-com/tpay-openapi-php/src/Utilities/Logger.php';
+            $files = [
+                '../vendor/tpay-com/tpay-openapi-php/src/Utilities/Logger.php',
+                '../vendor/tpay-com/tpay-openapi-php/src/Utilities/TpayException.php',
+            ];
 
-            if (file_exists($file)) {
-                $content = file_get_contents($file);
+            foreach ($files as $file) {
+                if (file_exists($file)) {
+                    $content = file_get_contents($file);
 
-                $changed = str_replace(" Psr\\Log\\", " Tpay\Vendor\Psr\Log\\", $content);
+                    $changed = str_replace(" Psr\\Log\\", " Tpay\Vendor\Psr\Log\\", $content);
 
-                file_put_contents($file, $changed);
+                    file_put_contents($file, $changed);
+                }
             }
 
             return $contents;

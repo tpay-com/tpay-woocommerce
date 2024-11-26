@@ -67,6 +67,8 @@ jobs:
       - run: rm -rf vendor/phpseclib
       - run: rm -rf vendor/psr
 
+      - run: composer dump-autoload
+
       - run: zip -ur tpay-woocommerce.zip vendor/
 
       - run: zip -ur tpay-woocommerce.zip vendor_prefixed/
