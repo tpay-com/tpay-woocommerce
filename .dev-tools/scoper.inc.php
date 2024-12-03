@@ -76,6 +76,8 @@ return [
                 return str_replace("'\phpseclib3", "'\Tpay\Vendor\phpseclib3", $contents);
             }
 
+            // Change logger namespaces
+
             $files = [
                 '../vendor/tpay-com/tpay-openapi-php/src/Utilities/Logger.php',
                 '../vendor/tpay-com/tpay-openapi-php/src/Utilities/TpayException.php',
@@ -86,6 +88,26 @@ return [
                     $content = file_get_contents($file);
 
                     $changed = str_replace(" Psr\\Log\\", " Tpay\Vendor\Psr\Log\\", $content);
+
+                    file_put_contents($file, $changed);
+                }
+            }
+
+            // Change phpseclib namespaces
+
+            $files = [
+                '../vendor/tpay-com/tpay-openapi-php/src/Utilities/phpseclib/Crypt/RSA.php',
+                '../vendor/tpay-com/tpay-openapi-php/src/Utilities/phpseclib/File/X509.php',
+            ];
+
+            foreach ($files as $file) {
+                if (file_exists($file)) {
+                    $content = file_get_contents($file);
+
+                    $changed = str_replace("'phpseclib3\\", "'Tpay\Vendor\phpseclib3\\", $content);
+                    $changed = str_replace(" \phpseclib3\\", " \Tpay\Vendor\phpseclib3\\", $changed);
+                    $changed = str_replace("'phpseclib\\", "'Tpay\Vendor\phpseclib\\", $changed);
+                    $changed = str_replace(" \phpseclib\\", " \Tpay\Vendor\phpseclib\\", $changed);
 
                     file_put_contents($file, $changed);
                 }
