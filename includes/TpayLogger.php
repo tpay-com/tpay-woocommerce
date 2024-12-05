@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tpay;
 
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
+use Tpay\Vendor\Psr\Log\LoggerInterface;
+use Tpay\Vendor\Psr\Log\LogLevel;
 
 class TpayLogger implements LoggerInterface
 {
