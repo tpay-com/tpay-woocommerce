@@ -19,7 +19,8 @@
             "Tpay\\": "includes/"
         },
         "classmap": [
-            "tpay.php"
+            "tpay.php",
+            "vendor_prefixed/"
         ]
     },
     "config": {
