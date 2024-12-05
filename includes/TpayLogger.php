@@ -5,47 +5,48 @@ declare(strict_types=1);
 namespace Tpay;
 
 use Tpay\Vendor\Psr\Log\LoggerInterface;
+use Tpay\Vendor\Psr\Log\LogLevel;
 
 class TpayLogger implements LoggerInterface
 {
     public function emergency($message, array $context = [])
     {
-        // TODO: Implement emergency() method.
+        $this->log(LogLevel::EMERGENCY, $message, $context);
     }
 
     public function alert($message, array $context = [])
     {
-        // TODO: Implement alert() method.
+        $this->log(LogLevel::ALERT, $message, $context);
     }
 
     public function critical($message, array $context = [])
     {
-        // TODO: Implement critical() method.
+        $this->log(LogLevel::CRITICAL, $message, $context);
     }
 
     public function error($message, array $context = [])
     {
-        // TODO: Implement error() method.
+        $this->log(LogLevel::ERROR, $message, $context);
     }
 
     public function warning($message, array $context = [])
     {
-        // TODO: Implement warning() method.
+        $this->log(LogLevel::WARNING, $message, $context);
     }
 
     public function notice($message, array $context = [])
     {
-        // TODO: Implement notice() method.
+        $this->log(LogLevel::NOTICE, $message, $context);
     }
 
     public function info($message, array $context = [])
     {
-        // TODO: Implement info() method.
+        $this->log(LogLevel::INFO, $message, $context);
     }
 
     public function debug($message, array $context = [])
     {
-        // TODO: Implement debug() method.
+        $this->log(LogLevel::DEBUG, $message, $context);
     }
 
     public function log($level, $message, array $context = [])

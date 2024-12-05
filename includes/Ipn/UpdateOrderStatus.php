@@ -28,7 +28,7 @@ class UpdateOrderStatus implements IpnInterface
         }
 
         $order_method = $order->get_payment_method();
-        $class = TPAY_CLASSMAP[$order_method];
+        $class = TPAY_CLASSMAP[$order_method] ?? null;
 
         if (!class_exists($class)) {
             $class = new class ($order_method) extends \Tpay\TpayGeneric {
