@@ -126,7 +126,7 @@ function init_gateway_tpay()
     }
 
     load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)).'/lang/');
-    require_once 'vendor/autoload.php';
+    require_once realpath( __DIR__ . '/vendor/autoload.php' );
     Logger::setLogger(new TpayLogger());
 
     add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
