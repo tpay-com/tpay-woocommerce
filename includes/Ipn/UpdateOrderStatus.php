@@ -4,23 +4,26 @@ namespace Tpay\Ipn;
 
 use Exception;
 use Tpay\Helpers;
-use tpaySDK\Webhook\JWSVerifiedPaymentNotification;
+use Tpay\OpenApi\Webhook\JWSVerifiedPaymentNotification;
+use Tpay\Repository\OrderRepository;
 use WC_Order;
 
 class UpdateOrderStatus implements IpnInterface
 {
     private $gateway_helper;
     private $card_helper;
+    private $orderRepository;
 
     public function __construct()
     {
         $this->gateway_helper = new Helpers\GatewayHelper();
         $this->card_helper = new Helpers\CardHelper();
+        $this->orderRepository = new OrderRepository();
     }
 
     public function parseNotification($response)
     {
-        $order = $this->gateway_helper->get_order_by_transaction_crc($response['tr_crc']);
+        $order = $this->orderRepository->orderByCrc($response['tr_crc']);
 
         if (!$order) {
             echo 'FALSE';
@@ -126,7 +129,7 @@ class UpdateOrderStatus implements IpnInterface
     {
         $crc = $response['tr_crc'];
 
-        if ($order = $this->gateway_helper->get_order_by_transaction_crc($crc)) {
+        if ($order = $this->orderRepository->orderByCrc($response['tr_crc'])) {
             $this->gateway_helper->tpay_logger('Zapisanie tokenu karty');
             $this->card_helper->update_card_token(
                 $order->get_customer_id(),
