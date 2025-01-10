@@ -17,7 +17,7 @@ class TpaySF extends TpayGateways
         parent::__construct(TPAYSF_ID, TPAYSF);
         $this->card_helper = new Helpers\CardHelper();
         $this->has_terms_checkbox = true;
-        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__) . '../views/img/card-visa-mc.svg');
+        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__).'../views/img/card-visa-mc.svg');
         $this->setSubscriptionsSupport();
         $channels = $this->channels();
         $has_sf = false;
@@ -45,9 +45,9 @@ class TpaySF extends TpayGateways
     /**
      * @param WC_Order $order
      *
-     * @return bool
      * @throws WC_Data_Exception
      *
+     * @return bool
      */
     public function scheduled_subscription_payment($chargeAmount, $order)
     {
@@ -62,7 +62,7 @@ class TpaySF extends TpayGateways
 
             $payer_data = $this->gateway_helper->payer_data($order, tpayOption('global_tax_id_meta_field_name'));
             $payment_data = [
-                'description' => __('Order', 'tpay') . ' #' . $order->get_id(),
+                'description' => __('Order', 'tpay').' #'.$order->get_id(),
                 'amount' => $chargeAmount,
                 'pay' => [
                     'channelId' => TpayCC::CHANNEL_ID,
@@ -94,15 +94,14 @@ class TpaySF extends TpayGateways
             try {
                 $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($payment_data);
             } catch (Error $e) {
-                $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia ' . $order->get_id());
+                $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia '.$order->get_id());
 
                 return false;
             }
             $result = $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($paydata, $transaction['transactionId']);
 
-
             if ('success' == $result['result']) {
-                $md5 = md5($this->id_seller . $result['title'] . $payment_data['amount'] . $payment_data['hiddenDescription'] . $this->security_code);
+                $md5 = md5($this->id_seller.$result['title'].$payment_data['amount'].$payment_data['hiddenDescription'].$this->security_code);
                 $order->set_transaction_id($result['transactionId']);
                 $order->update_meta_data('md5_checksum', $md5);
                 $order->update_meta_data('crc', $payment_data['hiddenDescription']);
@@ -110,16 +109,17 @@ class TpaySF extends TpayGateways
                 $order->save();
 
                 $this->gateway_helper->tpay_logger(
-                    'Subskrypcja do zamówienia ' . $order->get_id() . ' osiągnęła status: ' . $result['status']
+                    'Subskrypcja do zamówienia '.$order->get_id().' osiągnęła status: '.$result['status']
                 );
-                //wait for order confirmation by webhook
+
+                // wait for order confirmation by webhook
                 return true;
             }
 
             $order->update_status('failed');
             $order->add_order_note(__('Nieudana płatność kartą'));
-            $this->gateway_helper->tpay_logger('Nieudane odnowienie subskrypcji w zamówieniu ' . $order->get_id());
-            $this->gateway_helper->tpay_logger('Błąd komunikacji z API: ' . json_encode($result));
+            $this->gateway_helper->tpay_logger('Nieudane odnowienie subskrypcji w zamówieniu '.$order->get_id());
+            $this->gateway_helper->tpay_logger('Błąd komunikacji z API: '.json_encode($result));
         } else {
             $order->update_status('failed');
             $order->add_order_note(__('Nieudana płatność kartą'));
@@ -140,7 +140,7 @@ class TpaySF extends TpayGateways
         }
 
         $cards = $this->userCards();
-        include plugin_dir_path(__FILE__) . '../views/html/sf.php';
+        include plugin_dir_path(__FILE__).'../views/html/sf.php';
     }
 
     public static function get_form_sf(): array
@@ -171,7 +171,7 @@ class TpaySF extends TpayGateways
 
         if ('success' == $result['result']) {
             if ($errors_list = $this->gateway_helper->tpay_has_errors($result)) {
-                $this->gateway_helper->tpay_logger('Nieudana próba płatności kartą na stronie sklepu- zwrócone następujące błędy: ' . implode(' ', $errors_list));
+                $this->gateway_helper->tpay_logger('Nieudana próba płatności kartą na stronie sklepu- zwrócone następujące błędy: '.implode(' ', $errors_list));
                 wc_add_notice(implode(' ', $errors_list), 'error');
 
                 return false;
@@ -179,7 +179,7 @@ class TpaySF extends TpayGateways
 
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
             $order->set_transaction_id($result['transactionId']);
-            $md5 = md5($this->id_seller . $result['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code);
+            $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
             unset($_SESSION['tpay_session']);
             unset($_SESSION['tpay_attempts']);
             $order->update_meta_data('md5_checksum', $md5);
@@ -203,12 +203,12 @@ class TpaySF extends TpayGateways
         try {
             $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
         } catch (Error $e) {
-            $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia ' . $order->get_id());
+            $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia '.$order->get_id());
 
             return false;
         }
 
-        $md5 = md5($this->id_seller . $transaction['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code);
+        $md5 = md5($this->id_seller.$transaction['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
         $order->set_transaction_id($transaction['transactionId']);
         $order->update_meta_data('md5_checksum', $md5);
         $order->update_meta_data('crc', $this->crc);
@@ -221,7 +221,7 @@ class TpaySF extends TpayGateways
 
         return [
             'result' => 'error',
-            'message' => __('Unable to create transaction', 'tpay') . '<pre>' . print_r($result, true) . '</pre>',
+            'message' => __('Unable to create transaction', 'tpay').'<pre>'.print_r($result, true).'</pre>',
         ];
     }
 
@@ -243,7 +243,7 @@ class TpaySF extends TpayGateways
         if (class_exists('WC_Subscriptions', false)) {
             $this->supports = array_merge($this->supports, $subscriptionsSupport);
             add_action(
-                'woocommerce_scheduled_subscription_payment_' . $this->id,
+                'woocommerce_scheduled_subscription_payment_'.$this->id,
                 [$this, 'scheduled_subscription_payment'],
                 10,
                 2
