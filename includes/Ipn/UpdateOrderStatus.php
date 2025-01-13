@@ -37,7 +37,7 @@ class UpdateOrderStatus implements IpnInterface
             $class = new class ($order_method) extends \Tpay\TpayGeneric {
                 public function __construct($id = null)
                 {
-                    parent::__construct("tpaygeneric-{$id}", (int)$id);
+                    parent::__construct("tpaygeneric-{$id}", (int) $id);
 
                     $channels = $this->channels();
 
@@ -95,13 +95,13 @@ class UpdateOrderStatus implements IpnInterface
         $order->update_status($status, sprintf('%s : %s. ', __('CRC number in Tpay', 'tpay'), $response['tr_crc']));
         $order->payment_complete($order->get_transaction_id());
         $this->gateway_helper->tpay_logger(
-            'Przyjęcie płatności dla zamówienia: ' . $order->get_id() . ', zrzut odpowiedzi:'
+            'Przyjęcie płatności dla zamówienia: '.$order->get_id().', zrzut odpowiedzi:'
         );
         $this->gateway_helper->tpay_logger(print_r($response, 1));
 
         if (isset($response['card_token'])) {
             $this->gateway_helper->tpay_logger(
-                'Komunikat z bramki z tokenem karty, dotyczy zamówienia: ' . $order->get_id() . ', zrzut odpowiedzi:'
+                'Komunikat z bramki z tokenem karty, dotyczy zamówienia: '.$order->get_id().', zrzut odpowiedzi:'
             );
             $this->gateway_helper->tpay_logger(print_r($response, 1));
             $this->saveUserCard($response);
