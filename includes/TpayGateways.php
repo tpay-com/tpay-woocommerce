@@ -203,27 +203,6 @@ abstract class TpayGateways extends WC_Payment_Gateway
                 'api' => TPAYBLIK_ID,
                 'group_id' => TPAYBLIK,
             ],
-            'tpaygpay' => [
-                'name' => __('Tpay Google Pay', 'tpay'),
-                'front_name' => __('Online payment by Google Pay', 'tpay'),
-                'default_description' => __('Google Pay', 'tpay'),
-                'api' => TPAYGPAY_ID,
-                'group_id' => TPAYGPAY,
-            ],
-            'tpaytwisto' => [
-                'name' => __('Tpay Twisto', 'tpay'),
-                'front_name' => __('Online payment by Twisto', 'tpay'),
-                'default_description' => __('Twisto', 'tpay'),
-                'api' => TPAYTWISTO_ID,
-                'group_id' => TPAYTWISTO,
-            ],
-            'tpayinstallments' => [
-                'name' => __('Tpay Installments', 'tpay'),
-                'front_name' => __('Online payment by installments', 'tpay'),
-                'default_description' => __('Installments', 'tpay'),
-                'api' => TPAYINSTALLMENTS_ID,
-                'group_id' => TPAYINSTALLMENTS,
-            ],
             'pekaoinstallments' => [
                 'name' => __('Pekao Installments', 'tpay'),
                 'front_name' => __('Online payment by installments', 'tpay'),
@@ -633,13 +612,9 @@ abstract class TpayGateways extends WC_Payment_Gateway
     private function get_installments_values(string $id): array
     {
         $valuesNames = [
-            TPAYTWISTO => TPAYTWISTO_ID,
-            TPAYINSTALLMENTS => TPAYINSTALLMENTS_ID,
             TPAYPEKAOINSTALLMENTS => TPAYPEKAOINSTALLMENTS_ID,
         ];
         $values = [
-            TPAYTWISTO_ID => [],
-            TPAYINSTALLMENTS_ID => [],
             TPAYPEKAOINSTALLMENTS_ID => [],
         ];
 

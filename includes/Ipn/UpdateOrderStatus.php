@@ -37,7 +37,7 @@ class UpdateOrderStatus implements IpnInterface
             $class = new class ($order_method) extends \Tpay\TpayGeneric {
                 public function __construct($id = null)
                 {
-                    parent::__construct("tpaygeneric-{$id}", (int) $id);
+                    parent::__construct("tpaygeneric-{$id}", (int)$id);
 
                     $channels = $this->channels();
 
@@ -91,19 +91,17 @@ class UpdateOrderStatus implements IpnInterface
 
     public function orderIsComplete(WC_Order $order, array $response): void
     {
-        $status = (@get_option(
-            'tpay_settings_option_name'
-        )['global_default_on_hold_status']) == 'completed' ? 'completed' : 'processing';
+        $status = $this->getOrderStatus($order);
         $order->update_status($status, sprintf('%s : %s. ', __('CRC number in Tpay', 'tpay'), $response['tr_crc']));
         $order->payment_complete($order->get_transaction_id());
         $this->gateway_helper->tpay_logger(
-            'Przyjęcie płatności dla zamówienia: '.$order->get_id().', zrzut odpowiedzi:'
+            'Przyjęcie płatności dla zamówienia: ' . $order->get_id() . ', zrzut odpowiedzi:'
         );
         $this->gateway_helper->tpay_logger(print_r($response, 1));
 
         if (isset($response['card_token'])) {
             $this->gateway_helper->tpay_logger(
-                'Komunikat z bramki z tokenem karty, dotyczy zamówienia: '.$order->get_id().', zrzut odpowiedzi:'
+                'Komunikat z bramki z tokenem karty, dotyczy zamówienia: ' . $order->get_id() . ', zrzut odpowiedzi:'
             );
             $this->gateway_helper->tpay_logger(print_r($response, 1));
             $this->saveUserCard($response);
@@ -138,5 +136,21 @@ class UpdateOrderStatus implements IpnInterface
                 $order->get_id()
             );
         }
+    }
+
+    private function getOrderStatus(WC_Order $order): string
+    {
+        $checkedStatus = 'global_default_virtual_product_on_hold_status';
+
+        foreach ($order->get_items() as $item) {
+            $product = $item->get_product();
+            if ($product && !$product->is_virtual()) {
+                $checkedStatus = 'global_default_on_hold_status';
+
+                break;
+            }
+        }
+
+        return (@get_option('tpay_settings_option_name')[$checkedStatus]) == 'completed' ? 'completed' : 'processing';
     }
 }

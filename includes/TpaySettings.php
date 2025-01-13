@@ -146,6 +146,14 @@ class TpaySettings
             'tpay_settings_setting_section' // section
         );
 
+        add_settings_field(
+            'global_default_virtual_product_on_hold_status', // id
+            esc_html__('Successful payment status for virtual products', 'tpay'), // title
+            [$this, 'global_default_virtual_product_on_hold_status_callback'], // callback
+            'tpay-settings-admin', // page
+            'tpay_settings_setting_section' // section
+        );
+
         if (false === \WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout')) {
             add_settings_field(
                 'enable_fee', // id
@@ -296,6 +304,12 @@ class TpaySettings
             );
         }
 
+        if (isset($input['global_default_virtual_product_on_hold_status'])) {
+            $sanitary_values['global_default_virtual_product_on_hold_status'] = sanitize_text_field(
+                $input['global_default_virtual_product_on_hold_status']
+            );
+        }
+
         if (isset($input['global_enable_fee'])) {
             $sanitary_values['global_enable_fee'] = sanitize_text_field($input['global_enable_fee']);
         }
@@ -342,6 +356,26 @@ class TpaySettings
             foreach ($this->before_payment_statuses() as $key => $value) { ?>
                 <option <?php
                 if (@$this->tpay_settings_options['global_default_on_hold_status'] === $key) {
+                    echo 'selected="selected"';
+                } ?>
+                        value="<?php
+                        echo esc_attr($key); ?>"><?php
+                    echo $value; ?></option>
+                <?php
+            } ?>
+        </select>
+        <?php
+    }
+
+    public function global_default_virtual_product_on_hold_status_callback()
+    {
+        ?>
+        <select class="regular-text" type="text" name="tpay_settings_option_name[global_default_virtual_product_on_hold_status]"
+                id="global_default_virtual_product_on_hold_status">
+            <?php
+            foreach ($this->before_payment_statuses() as $key => $value) { ?>
+                <option <?php
+                if (@$this->tpay_settings_options['global_default_virtual_product_on_hold_status'] === $key) {
                     echo 'selected="selected"';
                 } ?>
                         value="<?php
