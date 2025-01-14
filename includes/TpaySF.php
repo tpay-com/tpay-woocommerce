@@ -11,7 +11,6 @@ use WC_Order;
 class TpaySF extends TpayGateways
 {
     public $card_helper;
-
     protected static $hookRegistered = false;
 
     public function __construct()
@@ -245,9 +244,9 @@ class TpaySF extends TpayGateways
         if (class_exists('WC_Subscriptions', false)) {
             $this->gateway_helper->tpay_logger('REGISTERING');
             $this->supports = array_merge($this->supports, $subscriptionsSupport);
-            if(!self::$hookRegistered) {
+            if (!self::$hookRegistered) {
                 add_action(
-                    'woocommerce_scheduled_subscription_payment_' . $this->id,
+                    'woocommerce_scheduled_subscription_payment_'.$this->id,
                     [$this, 'scheduled_subscription_payment'],
                     10,
                     2
