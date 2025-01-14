@@ -26,7 +26,7 @@ class UpdateOrderStatus implements IpnInterface
         $order = $this->orderRepository->orderByCrc($response['tr_crc']);
 
         if (!$order) {
-            echo 'FALSE';
+            echo 'FALSE - no order found!';
             exit();
         }
 
@@ -96,16 +96,10 @@ class UpdateOrderStatus implements IpnInterface
         )['global_default_on_hold_status']) == 'completed' ? 'completed' : 'processing';
         $order->update_status($status, sprintf('%s : %s. ', __('CRC number in Tpay', 'tpay'), $response['tr_crc']));
         $order->payment_complete($order->get_transaction_id());
-        $this->gateway_helper->tpay_logger(
-            'Przyjęcie płatności dla zamówienia: '.$order->get_id().', zrzut odpowiedzi:'
-        );
-        $this->gateway_helper->tpay_logger(print_r($response, 1));
+        $this->gateway_helper->tpay_logger('Odebrano powiadomienie dla zamówienia: '.$order->get_id().', transakcja: '.$order->get_transaction_id());
 
         if (isset($response['card_token'])) {
-            $this->gateway_helper->tpay_logger(
-                'Komunikat z bramki z tokenem karty, dotyczy zamówienia: '.$order->get_id().', zrzut odpowiedzi:'
-            );
-            $this->gateway_helper->tpay_logger(print_r($response, 1));
+            $this->gateway_helper->tpay_logger('Powiadomienie do: '.$order->get_transaction_id().' zawiera stokenizowaną kartę.');
             $this->saveUserCard($response);
         }
 
@@ -117,9 +111,8 @@ class UpdateOrderStatus implements IpnInterface
     public function orderIsNotComplete($response)
     {
         $this->gateway_helper->tpay_logger(
-            'Przyjęto zgłoszenie z bramki Tpay, że płatność za zamówienie nie powiodło się. Zrzut odpowiedzi:'
+            'Przyjęto zgłoszenie z bramki Tpay, że płatność za zamówienie nie powiodło się. Zrzut: '.print_r($response, 1)
         );
-        $this->gateway_helper->tpay_logger(print_r($response, 1));
         header('HTTP/1.1 200 OK');
         echo 'FALSE';
         exit();

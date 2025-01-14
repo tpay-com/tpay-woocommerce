@@ -11,6 +11,7 @@ use WC_Order;
 class TpaySF extends TpayGateways
 {
     public $card_helper;
+    protected static $hookRegistered = false;
 
     public function __construct()
     {
@@ -87,46 +88,39 @@ class TpaySF extends TpayGateways
                     'token' => $use_card['token'],
                 ],
             ];
-            $i = 0;
-            $stop = false;
-            do {
-                $crc = $this->createCRC($order->get_id());
-                $payment_data['hiddenDescription'] = $crc;
 
-                try {
-                    $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($payment_data);
-                } catch (Error $e) {
-                    $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia '.$order->get_id());
+            $crc = $this->createCRC($order->get_id());
+            $payment_data['hiddenDescription'] = $crc;
 
-                    return false;
-                }
+            try {
+                $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($payment_data);
+            } catch (Error $e) {
+                $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia '.$order->get_id());
 
-                $result = $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($paydata, $transaction['transactionId']);
+                return false;
+            }
+            $result = $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($paydata, $transaction['transactionId']);
 
-                if ('correct' == $result['status'] || $i >= 1) {
-                    $stop = true;
-                }
-
-                sleep(1);
-                $i++;
-            } while (!$stop);
-            if ('success' == $result['result'] && 'correct' == $result['status']) {
+            if ('success' == $result['result']) {
                 $md5 = md5($this->id_seller.$result['title'].$payment_data['amount'].$payment_data['hiddenDescription'].$this->security_code);
                 $order->set_transaction_id($result['transactionId']);
                 $order->update_meta_data('md5_checksum', $md5);
                 $order->update_meta_data('crc', $payment_data['hiddenDescription']);
                 $order->set_payment_method($this->id);
-                $order->payment_complete($result['transactionId']);
-                $order->update_status('completed');
-
                 $order->save();
 
+                $this->gateway_helper->tpay_logger(
+                    'Subskrypcja do zamówienia '.$order->get_id().' osiągnęła status: '.$result['status']
+                );
+
+                // wait for order confirmation by webhook
                 return true;
             }
 
             $order->update_status('failed');
             $order->add_order_note(__('Nieudana płatność kartą'));
             $this->gateway_helper->tpay_logger('Nieudane odnowienie subskrypcji w zamówieniu '.$order->get_id());
+            $this->gateway_helper->tpay_logger('Błąd komunikacji z API: '.json_encode($result));
         } else {
             $order->update_status('failed');
             $order->add_order_note(__('Nieudana płatność kartą'));
@@ -248,13 +242,17 @@ class TpaySF extends TpayGateways
         ];
 
         if (class_exists('WC_Subscriptions', false)) {
+            $this->gateway_helper->tpay_logger('REGISTERING');
             $this->supports = array_merge($this->supports, $subscriptionsSupport);
-            add_action(
-                'woocommerce_scheduled_subscription_payment_'.$this->id,
-                [$this, 'scheduled_subscription_payment'],
-                10,
-                2
-            );
+            if (!self::$hookRegistered) {
+                add_action(
+                    'woocommerce_scheduled_subscription_payment_'.$this->id,
+                    [$this, 'scheduled_subscription_payment'],
+                    10,
+                    2
+                );
+                self::$hookRegistered = true;
+            }
         }
     }
 
