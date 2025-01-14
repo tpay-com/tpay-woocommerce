@@ -12,6 +12,8 @@ class TpaySF extends TpayGateways
 {
     public $card_helper;
 
+    protected static $hookRegistered = false;
+
     public function __construct()
     {
         parent::__construct(TPAYSF_ID, TPAYSF);
@@ -241,13 +243,17 @@ class TpaySF extends TpayGateways
         ];
 
         if (class_exists('WC_Subscriptions', false)) {
+            $this->gateway_helper->tpay_logger('REGISTERING');
             $this->supports = array_merge($this->supports, $subscriptionsSupport);
-            add_action(
-                'woocommerce_scheduled_subscription_payment_'.$this->id,
-                [$this, 'scheduled_subscription_payment'],
-                10,
-                2
-            );
+            if(!self::$hookRegistered) {
+                add_action(
+                    'woocommerce_scheduled_subscription_payment_' . $this->id,
+                    [$this, 'scheduled_subscription_payment'],
+                    10,
+                    2
+                );
+                self::$hookRegistered = true;
+            }
         }
     }
 
