@@ -242,7 +242,6 @@ class TpaySF extends TpayGateways
         ];
 
         if (class_exists('WC_Subscriptions', false)) {
-            $this->gateway_helper->tpay_logger('REGISTERING');
             $this->supports = array_merge($this->supports, $subscriptionsSupport);
             if (!self::$hookRegistered) {
                 add_action(
