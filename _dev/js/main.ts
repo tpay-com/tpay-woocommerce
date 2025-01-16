@@ -155,7 +155,7 @@ $(document).ready(function () {
         e.preventDefault();
         $('.modal-tpay-blik-container').css('display', 'flex');
     })
-    $('body').on('keyup', '.tpay-sf [name="card-number"]', function () {
+    $('body').on('keyup', '.tpay-sf #card_number', function () {
         $('.saved-cards').find('input[type="radio"]').prop('checked', false);
         new CardPayment($('.tpay-sf').attr('data-pubkey'));
     });
