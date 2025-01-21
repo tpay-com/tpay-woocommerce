@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adding a division between physical and digital products.
 
+## [1.7.14]
+
+### Fixed
+
+- Credit card encryption function for non "woo-blocks" checkout
+
+## [1.7.13]
+
+### Fixed
+
+- Woocommerce subscriptions double charges fix
+
 ## [1.7.12]
 
 ### Fixed
