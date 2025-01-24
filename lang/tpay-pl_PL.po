@@ -496,3 +496,6 @@ msgstr "Easy ON-site"
 
 msgid "To select multiple items hold CTRL button"
 msgstr "Żeby zaznaczyć wiele elementów przytrzymaj przycisk CTRL"
+
+msgid "Successful payment status for virtual products"
+msgstr "Domyślny status po opłaceniu, dla produktów wirtualnych"

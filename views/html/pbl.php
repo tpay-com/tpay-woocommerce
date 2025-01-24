@@ -7,24 +7,12 @@ $availableGateways = WC()->payment_gateways()->get_available_payment_gateways();
 
 if ($availableGateways) {
     foreach ($availableGateways as $available_gateway => $data) {
-        if (($available_gateway === TPAYGPAY_ID) && $data->enabled === 'yes') {
-            $this->unset_banks[] = TPAYGPAY;
-        }
-
         if (($available_gateway === TPAYBLIK_ID) && $data->enabled === 'yes') {
             $this->unset_banks[] = TPAYBLIK;
         }
 
         if ((in_array($available_gateway, [TPAYCC_ID, TPAYSF_ID])) && $data->enabled === 'yes') {
             $this->unset_banks[] = TPAYSF;
-        }
-
-        if (($available_gateway === TPAYTWISTO_ID) && $data->enabled === 'yes') {
-            $this->unset_banks[] = TPAYTWISTO;
-        }
-
-        if (($available_gateway === TPAYINSTALLMENTS_ID) && $data->enabled === 'yes') {
-            $this->unset_banks[] = TPAYINSTALLMENTS;
         }
 
         if (($available_gateway === TPAYPEKAOINSTALLMENTS_ID) && $data->enabled === 'yes') {

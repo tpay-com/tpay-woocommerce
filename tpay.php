@@ -3,7 +3,7 @@
  * Plugin Name: Tpay Payment Gateway
  * Plugin URI: https://tpay.com
  * Description: Tpay payment gateway for WooCommerce
- * Version: 1.7.14
+ * Version: 1.7.15
  * Author: Krajowy Integrator Płatności S.A.
  * Author URI: http://www.tpay.com
  * License: LGPL 3.0
@@ -23,38 +23,26 @@ use Tpay\Blocks\TpayBlikBlock;
 use Tpay\Blocks\TpayBlock;
 use Tpay\Blocks\TpayCCBlock;
 use Tpay\Blocks\TpayGenericBlock;
-use Tpay\Blocks\TpayGPayBlock;
-use Tpay\Blocks\TpayInstallmentsBlock;
 use Tpay\Blocks\TpaySFBlock;
-use Tpay\Blocks\TpayTwistoBlock;
 use Tpay\Helpers\Cache;
 use Tpay\OpenApi\Utilities\Logger;
 use Tpay\PekaoInstallments;
 use Tpay\Tpay;
 use Tpay\TpayBlik;
 use Tpay\TpayCC;
-use Tpay\TpayGPay;
-use Tpay\TpayInstallments;
 use Tpay\TpayLogger;
 use Tpay\TpaySettings;
 use Tpay\TpaySF;
-use Tpay\TpayTwisto;
 
 require_once 'tpay-functions.php';
 
-define('TPAY_PLUGIN_VERSION', '1.7.14');
+define('TPAY_PLUGIN_VERSION', '1.7.15');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
 
 const TPAYPBL = null;
 const TPAYPBL_ID = 'tpaypbl';
-const TPAYGPAY = 166;
-const TPAYGPAY_ID = 'tpaygpay';
-const TPAYTWISTO = 167;
-const TPAYTWISTO_ID = 'tpaytwisto';
-const TPAYINSTALLMENTS = 109;
-const TPAYINSTALLMENTS_ID = 'tpayinstallments';
 const TPAYCC = 103;
 const TPAYCC_ID = 'tpaycc';
 const TPAYSF = 103;
@@ -69,9 +57,6 @@ const TPAY_CLASSMAP = [
     TPAYBLIK_ID => TpayBlik::class,
     TPAYCC_ID => TpayCC::class,
     TPAYSF_ID => TpaySF::class,
-    TPAYGPAY_ID => TpayGPay::class,
-    TPAYTWISTO_ID => TpayTwisto::class,
-    TPAYINSTALLMENTS_ID => TpayInstallments::class,
     TPAYPEKAOINSTALLMENTS_ID => PekaoInstallments::class,
 ];
 
@@ -101,9 +86,6 @@ add_action('woocommerce_blocks_loaded', function () {
             $paymentMethodRegistry->register(new TpayBlikBlock());
             $paymentMethodRegistry->register(new TpaySFBlock());
             $paymentMethodRegistry->register(new TpayCCBlock());
-            $paymentMethodRegistry->register(new TpayGPayBlock());
-            $paymentMethodRegistry->register(new TpayInstallmentsBlock());
-            $paymentMethodRegistry->register(new TpayTwistoBlock());
             $paymentMethodRegistry->register(new PekaoInstallmentsBlock());
 
             $generics = tpayOption('global_generic_payments');
