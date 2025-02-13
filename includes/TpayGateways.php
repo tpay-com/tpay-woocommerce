@@ -405,7 +405,8 @@ abstract class TpayGateways extends WC_Payment_Gateway
         if (null !== self::$banksGroupMicrocache[$onlineOnly]) {
             return self::$banksGroupMicrocache[$onlineOnly];
         }
-        $cacheKey = 'getBanksList-'.($onlineOnly ? 'online' : 'all');
+
+        $cacheKey = 'tpay_getBanksList-'.($onlineOnly ? 'online' : 'all');
         $cached = $this->cache->get($cacheKey);
 
         if ($cached) {
