@@ -13,7 +13,7 @@ class IpnContext
         } elseif (isset($response['event'])) {
             $strategy = new UpdateBlikAlias();
         } else {
-            $text = implode("\n", array_map(fn ($k, $v) => "{$k}:{$v}", array_keys($response), $response));
+            $text =  json_encode($response);
             (new GatewayHelper())->tpay_logger('Mismatched strategy. Response content:  '.$text);
         }
 
