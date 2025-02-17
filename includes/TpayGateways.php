@@ -53,6 +53,10 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $this->shipping = new Helpers\ShippingHelper();
         $this->transactions = new Transactions(new Client(), $this->cache);
 
+        if (!isset(self::gateways_list()[$this->id])) {
+            return;
+        }
+
         $this->setup_properties($id);
         $this->init_form_fields();
         $this->init_settings();

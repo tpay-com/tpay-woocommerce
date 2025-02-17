@@ -107,7 +107,10 @@ function init_gateway_tpay()
         return;
     }
 
-    load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)).'/lang/');
+    add_action('init', function() {
+        load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)).'/lang/');
+    });
+
     require_once realpath( __DIR__ . '/vendor/autoload.php' );
     Logger::setLogger(new TpayLogger());
 
