@@ -74,9 +74,9 @@ class TpaySettings
             <form method="post" action="options.php">
                 <?php
                 settings_fields('tpay_settings_option_group');
-                do_settings_sections('tpay-settings-admin');
-                submit_button();
-                ?>
+        do_settings_sections('tpay-settings-admin');
+        submit_button();
+        ?>
             </form>
         </div>
         <?php

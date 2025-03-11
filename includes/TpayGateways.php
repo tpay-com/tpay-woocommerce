@@ -387,10 +387,10 @@ abstract class TpayGateways extends WC_Payment_Gateway
             return $transaction;
         }
 
-            return [
-                'result' => 'error',
-                'message' => __('Unable to create transaction', 'tpay'),
-            ];
+        return [
+            'result' => 'error',
+            'message' => __('Unable to create transaction', 'tpay'),
+        ];
     }
 
     public function createCRC($order_id): string
