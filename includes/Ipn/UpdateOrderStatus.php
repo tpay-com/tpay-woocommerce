@@ -144,6 +144,6 @@ class UpdateOrderStatus implements IpnInterface
             }
         }
 
-        return (@get_option('tpay_settings_option_name')[$checkedStatus]) == 'completed' ? 'completed' : 'processing';
+        return @get_option('tpay_settings_option_name')[$checkedStatus];
     }
 }

@@ -74,9 +74,9 @@ class TpaySettings
             <form method="post" action="options.php">
                 <?php
                 settings_fields('tpay_settings_option_group');
-        do_settings_sections('tpay-settings-admin');
-        submit_button();
-        ?>
+                do_settings_sections('tpay-settings-admin');
+                submit_button();
+                ?>
             </form>
         </div>
         <?php
@@ -99,7 +99,7 @@ class TpaySettings
         );
         foreach ($this->fields as $field => $desc) {
             $args = [
-                'id' => 'global_'.$field,
+                'id' => 'global_' . $field,
                 'desc' => $desc['label'],
                 'name' => 'tpay_settings_option_name',
                 'description' => $desc['description'],
@@ -266,7 +266,8 @@ class TpaySettings
         $channels = $this->transactions->channels();
         $checkedChannels = tpayOption('global_generic_payments') ?? [];
         ?>
-        <select class="tpay-select" id="global_generic_payments" multiple name="tpay_settings_option_name[global_generic_payments][]">
+        <select class="tpay-select" id="global_generic_payments" multiple
+                name="tpay_settings_option_name[global_generic_payments][]">
             <?php
             foreach ($channels as $channel) {
                 $checked = in_array($channel->id, $checkedChannels) ? 'selected' : '';
@@ -289,8 +290,8 @@ class TpaySettings
     public function tpay_settings_sanitize($input)
     {
         foreach ($this->fields as $field => $desc) {
-            if (isset($input['global_'.$field])) {
-                $sanitary_values['global_'.$field] = sanitize_text_field($input['global_'.$field]);
+            if (isset($input['global_' . $field])) {
+                $sanitary_values['global_' . $field] = sanitize_text_field($input['global_' . $field]);
             }
         }
 
@@ -370,7 +371,8 @@ class TpaySettings
     public function global_default_virtual_product_on_hold_status_callback()
     {
         ?>
-        <select class="regular-text" type="text" name="tpay_settings_option_name[global_default_virtual_product_on_hold_status]"
+        <select class="regular-text" type="text"
+                name="tpay_settings_option_name[global_default_virtual_product_on_hold_status]"
                 id="global_default_virtual_product_on_hold_status">
             <?php
             foreach ($this->before_payment_statuses() as $key => $value) { ?>
@@ -463,11 +465,13 @@ class TpaySettings
     public function before_payment_statuses(): array
     {
         $statuses = wc_get_order_statuses();
+        $isPaidStatuses = wc_get_is_paid_statuses();
         $available = [];
 
         foreach ($statuses as $key => $value) {
-            if (in_array($key, ['wc-completed', 'wc-processing'])) {
-                $available[str_replace('wc-', '', $key)] = $value;
+            $key = str_replace('wc-', '', $key);
+            if (in_array($key, $isPaidStatuses)) {
+                $available[$key] = $value;
             }
         }
 
