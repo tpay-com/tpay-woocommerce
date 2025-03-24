@@ -146,10 +146,18 @@ if (is_admin()) {
     add_action('wp_enqueue_scripts', 'enqueue_tpay_gateway_assets');
 }
 
-add_action('woocommerce_thankyou', function ($orderId) {
+add_action('woocommerce_before_thankyou', function ($orderId) {
     $order = wc_get_order($orderId);
 
     if ('' === $order->get_meta('blik0')) {
+        wp_enqueue_style(
+            'tpay-thank-you',
+            plugin_dir_url(__FILE__) . 'views/assets/thank-you.css',
+            [],
+            time()
+        );
+        require 'views/html/tpay-thank-you.php';
+
         return;
     }
 
@@ -167,6 +175,7 @@ add_action('woocommerce_thankyou', function ($orderId) {
             'url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('tpay-thank-you'),
             'transactionId' => $order->get_transaction_id(),
+            'orderId' => $order->get_id(),
         ]
     );
     wp_enqueue_script('tpay-thank-you');
@@ -177,6 +186,12 @@ add_action('woocommerce_thankyou', function ($orderId) {
 
 add_action('wp_ajax_tpay_blik0_transaction_status', 'tpay_blik0_transaction_status');
 add_action('wp_ajax_nopriv_tpay_blik0_transaction_status', 'tpay_blik0_transaction_status');
+
+add_action('wp_ajax_tpay_pay_by_transfer', 'tpay_pay_by_transfer');
+add_action('wp_ajax_nopriv_tpay_pay_by_transfer', 'tpay_pay_by_transfer');
+
+add_action('wp_ajax_tpay_blik0_repay', 'tpay_blik0_repay');
+add_action('wp_ajax_nopriv_tpay_blik0_repay', 'tpay_blik0_repay');
 
 add_filter('tpay_generic_gateway_list', function ($gateways) {
     $transactions = new Transactions(new Client(), new Cache());

@@ -175,7 +175,22 @@ class TpayBlik extends TpayGateways
 
     public function checkTransactionStatus(string $transactionId)
     {
-        return $this->tpay_api()->transactions()->getTransactionById($transactionId);
+        return $this->waitForBlikAccept($transactionId, 0);
+    }
+
+    public function payBlikTransaction($transactionId, $blikCode, $transactionCounter)
+    {
+        $transaction = $this->blik($transactionId, $blikCode, null);
+
+        if ('success' == $transaction['result']) {
+            $result = $this->waitForBlikAccept($transaction['transactionId'], $transactionCounter);
+        } else {
+            $result['status'] = 'error';
+        }
+
+        return [
+            'result' => $result['status'],
+        ];
     }
 
     private function blik0_is_active(): bool
@@ -209,7 +224,7 @@ class TpayBlik extends TpayGateways
                     }
                 } else {
                     $this->gateway_helper->tpay_logger(
-                        'Nieudana płatność BLIK, błąd: '.__('Enter Blik code', 'tpay')
+                        'Nieudana płatność BLIK, błąd: ' . __('Enter Blik code', 'tpay')
                     );
                     wc_add_notice(__('Enter Blik code', 'tpay'), 'error');
 
@@ -222,7 +237,7 @@ class TpayBlik extends TpayGateways
                     'label' => get_bloginfo('name'),
                 ];
             } else {
-                $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: '.__('Payment error', 'tpay'));
+                $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: ' . __('Payment error', 'tpay'));
                 wc_add_notice(__('Payment error', 'tpay'), 'error');
 
                 return false;
@@ -235,5 +250,54 @@ class TpayBlik extends TpayGateways
     private function init_blik_user_info()
     {
         [$this->user_blik_alias, $this->user_has_saved_blik_alias] = $this->gateway_helper->user_blik_status();
+    }
+
+    private function waitForBlikAccept($transactionId, $transactionCounter): array
+    {
+        $stop = false;
+        $i = 0;
+        do {
+            $correct = false;
+            $result = $this->tpay_api()->transactions()->getTransactionById($transactionId);
+            $errors = 0;
+
+            foreach ($result['payments']['attempts'] as $error) {
+                if ('' != $error['paymentErrorCode']) {
+                    $errors++;
+                }
+            }
+
+            if ('correct' == $result['status']) {
+                $correct = true;
+            }
+
+            if (60 == $i || $correct) {
+                $stop = true;
+            }
+
+            if ($errors > $transactionCounter && !$correct) {
+                $stop = true;
+                $result['payments']['errors'] = $result['payments']['attempts'];
+            }
+
+            sleep(1);
+            $i++;
+        } while (!$stop);
+
+        return $result;
+    }
+
+    private function blik(string $transactionId, string $blikCode): array
+    {
+        $additional_payment_data = [
+            'channelId' => 64,
+            'method' => 'pay_by_link',
+            'blikPaymentData' => [
+                'type' => 0,
+                'blikToken' => $blikCode,
+            ],
+        ];
+
+        return $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($additional_payment_data, $transactionId);
     }
 }
