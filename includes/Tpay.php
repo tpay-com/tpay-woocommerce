@@ -162,7 +162,7 @@ class Tpay extends TpayGateways
         }
 
         $payment_data = [
-            'description' =>  __('Order', 'tpay').' #'.$order->get_id(),
+            'description' => __('Order', 'tpay').' #'.$order->get_id(),
             'hiddenDescription' => $this->createCRC($orderId),
             'amount' => $order->get_total(),
             'payer' => $payer_data,
@@ -209,7 +209,7 @@ class Tpay extends TpayGateways
 
         return [
             'status' => 'correct',
-            'payment_url' => $transaction['transactionPaymentUrl']
+            'payment_url' => $transaction['transactionPaymentUrl'],
         ];
     }
 

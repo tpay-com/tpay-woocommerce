@@ -224,7 +224,7 @@ class TpayBlik extends TpayGateways
                     }
                 } else {
                     $this->gateway_helper->tpay_logger(
-                        'Nieudana płatność BLIK, błąd: ' . __('Enter Blik code', 'tpay')
+                        'Nieudana płatność BLIK, błąd: '.__('Enter Blik code', 'tpay')
                     );
                     wc_add_notice(__('Enter Blik code', 'tpay'), 'error');
 
@@ -237,7 +237,7 @@ class TpayBlik extends TpayGateways
                     'label' => get_bloginfo('name'),
                 ];
             } else {
-                $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: ' . __('Payment error', 'tpay'));
+                $this->gateway_helper->tpay_logger('Nieudana płatność BLIK, błąd: '.__('Payment error', 'tpay'));
                 wc_add_notice(__('Payment error', 'tpay'), 'error');
 
                 return false;
