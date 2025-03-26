@@ -419,16 +419,21 @@ abstract class TpayGateways extends WC_Payment_Gateway
         if (!$api) {
             return [];
         }
+        $ttl = 1200;
 
-        $result = $api->transactions()->getBankGroups($onlineOnly);
+        try {
+            $result = $api->transactions()->getBankGroups($onlineOnly);
+        } catch (Exception $exception) {
+            $result = ['groups' => [], 'result' => 'fail'];
+        }
 
         if (!isset($result['result']) || 'success' !== $result['result']) {
+            $ttl = 60;
             $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
-            wc_add_notice('Unable to get banks list', 'error');
         }
 
         self::$banksGroupMicrocache[$onlineOnly] = $result['groups'];
-        $this->cache->set($cacheKey, $result['groups'], 600);
+        $this->cache->set($cacheKey, $result['groups'], $ttl);
 
         return $result['groups'];
     }
