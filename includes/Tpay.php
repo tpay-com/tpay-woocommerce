@@ -41,12 +41,12 @@ class Tpay extends TpayGateways
         }
 
         if ($this->hide_bank_selection) {
-            include plugin_dir_path(__FILE__) . '../views/html/agreements.php';
+            include plugin_dir_path(__FILE__).'../views/html/agreements.php';
 
             return;
         }
 
-        include plugin_dir_path(__FILE__) . '../views/html/pbl.php';
+        include plugin_dir_path(__FILE__).'../views/html/pbl.php';
     }
 
     public static function get_form_custom_order(): array
@@ -90,7 +90,7 @@ class Tpay extends TpayGateways
 
         if ('success' == $result['result']) {
             if ($errors_list = $this->gateway_helper->tpay_has_errors($result)) {
-                $this->gateway_helper->tpay_logger('Nieudana próba płatności- zwrócone następujące błędy: ' . implode(' ', $errors_list));
+                $this->gateway_helper->tpay_logger('Nieudana próba płatności- zwrócone następujące błędy: '.implode(' ', $errors_list));
                 wc_add_notice(implode(' ', $errors_list), 'error');
 
                 return [];
@@ -98,7 +98,7 @@ class Tpay extends TpayGateways
 
             $order->set_transaction_id($result['transactionId']);
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
-            $md5 = md5($this->id_seller . $result['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code);
+            $md5 = md5($this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code);
 
             $order->update_meta_data('md5_checksum', $md5);
             $order->update_meta_data('crc', $this->crc);
@@ -126,7 +126,7 @@ class Tpay extends TpayGateways
         }
 
         $this->payment_data = [
-            'description' => __('Order', 'tpay') . ' #' . $order->get_id(),
+            'description' => __('Order', 'tpay').' #'.$order->get_id(),
             'hiddenDescription' => $this->crc,
             'amount' => $order->get_total(),
             'payer' => $payer_data,
@@ -145,7 +145,7 @@ class Tpay extends TpayGateways
 
         if (!$this->hide_bank_selection) {
             $this->payment_data['pay'] = [
-                'channelId' => (int)$channelId,
+                'channelId' => (int) $channelId,
                 'method' => 'pay_by_link',
             ];
         }
@@ -164,7 +164,7 @@ class Tpay extends TpayGateways
         $crc = $this->createCRC($orderId);
 
         $payment_data = [
-            'description' => __('Order', 'tpay') . ' #' . $order->get_id(),
+            'description' => __('Order', 'tpay').' #'.$order->get_id(),
             'hiddenDescription' => $crc,
             'amount' => $order->get_total(),
             'payer' => $payer_data,

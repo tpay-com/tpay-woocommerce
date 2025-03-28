@@ -66,13 +66,15 @@ class GatewayHelper
     public function agreements_field()
     {
         return sprintf(
-            '<div class="tpay-accept-conditions">
+            <<<'EOD'
+<div class="tpay-accept-conditions">
                        <p>%s <a href="%s" target="_blank">%s</a></p>
                        <p style="display: none">%s <br />
                        <a href="%s" target="_blank">%s</a>
                        </p>
                        <a href="#" class="agreement_text_scroller" data-less="%s" data-more="%s">%s</a>
-                       </div>',
+                       </div>
+EOD,
             __('By paying,', 'tpay'),
             $this->get_condition_url(),
             __('you accept the terms and conditions', 'tpay'),
