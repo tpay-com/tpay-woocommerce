@@ -32,7 +32,15 @@
             <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
         </div>
         <div class="bottom">
-            <input type="text" inputmode="numeric" pattern="[0-9]{6}" name="blik0" required minlength="6" maxlength="6" />
+            <input
+                    name="blik0"
+                    id="blik0-code"
+                    required
+                    type="text"
+                    maxlength="7"
+                    placeholder="000 000"
+                    pattern="\d*"
+            />
         </div>
     </div>
     <?php echo $agreements ?>
@@ -43,3 +51,20 @@
         <a class="close" href="#"><?php esc_html_e('I understand', 'tpay') ?></a>
     </div>
 </div>
+
+<script>
+    var blik0CodeInput = document.getElementById('blik0-code');
+    blik0CodeInput.addEventListener('keyup', onBlikCodeKeyUp);
+
+    function onBlikCodeKeyUp() {
+        const valueAsArray = getCleanBlikCode().split('');
+        if (valueAsArray.length > 3) {
+            valueAsArray.splice(3, 0, ' ');
+        }
+        blik0CodeInput.value = valueAsArray.join('');
+    }
+
+    function getCleanBlikCode() {
+        return (blik0CodeInput.value || '').replaceAll(/[^0-9]/g, '');
+    }
+</script>

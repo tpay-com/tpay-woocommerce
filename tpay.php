@@ -107,8 +107,8 @@ function init_gateway_tpay()
         return;
     }
 
-    load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)).'/lang/');
-    require_once realpath( __DIR__ . '/vendor/autoload.php' );
+    load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
+    require_once realpath(__DIR__ . '/vendor/autoload.php');
     Logger::setLogger(new TpayLogger());
 
     add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
@@ -150,20 +150,26 @@ add_action('woocommerce_before_thankyou', function ($orderId) {
     $order = wc_get_order($orderId);
 
     if ('' === $order->get_meta('blik0')) {
+        $status = (new Tpay())->checkTransactionStatus(htmlspecialchars($order->get_transaction_id()));
         wp_enqueue_style(
             'tpay-thank-you',
             plugin_dir_url(__FILE__) . 'views/assets/thank-you.css',
             [],
             time()
         );
-        require 'views/html/tpay-thank-you.php';
+
+        if (isset($status['status']) && in_array($status['status'], ['correct', 'success'])) {
+            require 'views/html/tpay-thank-you.php';
+        } else {
+            require 'views/html/tpay-thank-you-error.php';
+        }
 
         return;
     }
 
     wp_register_script(
         'tpay-thank-you',
-        plugin_dir_url(__FILE__).'views/assets/thank-you.min.js',
+        plugin_dir_url(__FILE__) . 'views/assets/thank-you.min.js',
         ['jquery'],
         false,
         true
@@ -179,7 +185,7 @@ add_action('woocommerce_before_thankyou', function ($orderId) {
         ]
     );
     wp_enqueue_script('tpay-thank-you');
-    wp_enqueue_style('tpay-thank-you', plugin_dir_url(__FILE__).'views/assets/thank-you.css', [], time());
+    wp_enqueue_style('tpay-thank-you', plugin_dir_url(__FILE__) . 'views/assets/thank-you.css', [], time());
 
     require 'views/html/thank-you-blik0.php';
 }, 10, 2);

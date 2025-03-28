@@ -524,7 +524,17 @@ msgstr "Płatność zakończona sukcesem!"
 msgid "Thank you for using Tpay."
 msgstr "Dziękujemy za skorzystanie z usługi Tpay."
 
+msgid "Paying, you accept the"
+msgstr "Płacąc, akceptujesz "
 
+msgid "terms and conditions."
+msgstr "regulamin."
+
+msgid "The administrator of the personal data is Krajowy Integrator Płatności spółka akcyjna, based in Poznań."
+msgstr "Administratorem danych osobowych jest Krajowy Integrator Płatności spółka akcyjna z siedzibą w Poznaniu."
+
+msgid "Read the full content."
+msgstr "Czytaj więcej."
 
 
 

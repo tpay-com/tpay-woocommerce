@@ -199,6 +199,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             'tpayblik' => [
                 'name' => __('Tpay Blik', 'tpay'),
                 'front_name' => __('Online payment by Blik', 'tpay'),
+                'default_description' => '',
                 'api' => TPAYBLIK_ID,
                 'group_id' => TPAYBLIK,
             ],

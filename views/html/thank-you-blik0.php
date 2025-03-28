@@ -45,6 +45,12 @@
                     <p class="error-message">
                         <?php esc_html_e('Payment error, please try again.', 'tpay') ?>
                     </p>
+                    <p class="info-text">
+                        <?php esc_html_e('Paying, you accept the', 'tpay') ?> <a href="https://tpay.com/user/assets/files_for_download/regulamin.pdf"
+                                               target="_blank"><?php esc_html_e('terms and conditions.', 'tpay') ?></a> <?php esc_html_e('The administrator of the personal data is Krajowy Integrator Płatności spółka akcyjna, based in Poznań.', 'tpay') ?> <a
+                                href="https://tpay.com/user/assets/files_for_download/klauzula-informacyjna-platnik.pdf"
+                                target="_blank"><?php esc_html_e('Read the full content.', 'tpay') ?></a>
+                    </p>
                 </div>
                 <div class="blik-waiting">
                     <img

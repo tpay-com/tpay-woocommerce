@@ -66,6 +66,7 @@ $(document).ready(function () {
         const blikInput = $('input[name=blik0]');
 
         if (blikInput.length) {
+            blikInput[0].value = getCleanBlikCode(blikInput[0].value);
             let x = blikInput[0].value;
             let match = /[0-9]{6}/.exec(x);
 
@@ -82,6 +83,9 @@ $(document).ready(function () {
         return true;
     }
 
+    function getCleanBlikCode(blikCode) {
+        return (blikCode || '').replace(/[^0-9]/g, '');
+    }
 
     $('body').on('click', 'li.wc_payment_method > label:not([for="payment_method_tpaysf"])', function () {
         $("#carddata").val('');

@@ -10,8 +10,8 @@
 }
 
 .payment-section {
-  min-width: 300px;
-  max-width: 403px;
+  min-width: 350px;
+  max-width: 453px;
   margin: 0 auto;
   padding: 0 8px;
 }
@@ -104,7 +104,7 @@ input:checked + .payment-option .radio-mark:before {
 }
 
 .blik-code-section .blik-input {
-  padding: 12px 16px;
+  padding: 0 16px;
   border: 1px solid #D8D8D8;
   border-radius: 4px;
   text-align: left;
@@ -113,7 +113,7 @@ input:checked + .payment-option .radio-mark:before {
   font-size: 18px;
   line-height: 24px;
   color: #072653;
-  width: 100%;
+  width: 90%;
   height: 48px;
 }
 
@@ -171,7 +171,7 @@ input:checked + .payment-option .radio-mark:before {
   font-size: 18px;
   line-height: 19px;
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 10px !important;
   display: none;
 }
 
