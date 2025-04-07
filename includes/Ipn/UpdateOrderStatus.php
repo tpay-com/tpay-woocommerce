@@ -34,8 +34,8 @@ class UpdateOrderStatus implements IpnInterface
         $class = TPAY_CLASSMAP[$order_method] ?? null;
 
         if (!class_exists($class)) {
-            if(!str_starts_with($order_method, 'tpaygeneric-')) {
-                echo 'FALSE - unsupported payment method: ' . $order_method;
+            if (!str_starts_with($order_method, 'tpaygeneric-')) {
+                echo 'FALSE - unsupported payment method: '.$order_method;
                 exit();
             }
             $order_method = str_replace('tpaygeneric-', '', $order_method);
