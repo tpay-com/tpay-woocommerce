@@ -5,7 +5,6 @@
         <div class="page-title-line"></div>
     </div>
     <div class="payments-container">
-
         <!--        BLIK-->
         <div class="blik_payment">
             <input
@@ -21,7 +20,7 @@
                     <span class="radio-mark"></span>
                     <span class="payment-title">BLIK</span>
                     <img
-                            src="<?php echo plugin_dir_url(__FILE__) . '../img/tpay--small.svg'; ?>"
+                            src="<?php echo plugin_dir_url(__FILE__) . '../img/blik.png'; ?>"
                             alt="Logo Blik"
                             style="width: 50px; height: auto;"
                     />
@@ -46,9 +45,21 @@
                         <?php esc_html_e('Payment error, please try again.', 'tpay') ?>
                     </p>
                     <p class="info-text">
-                        <?php esc_html_e('Paying, you accept the', 'tpay') ?> <a href="https://tpay.com/user/assets/files_for_download/regulamin.pdf"
-                                               target="_blank"><?php esc_html_e('terms and conditions.', 'tpay') ?></a> <?php esc_html_e('The administrator of the personal data is Krajowy Integrator Płatności spółka akcyjna, based in Poznań.', 'tpay') ?> <a
-                                href="https://tpay.com/user/assets/files_for_download/klauzula-informacyjna-platnik.pdf"
+                        <?php
+                        $regulationUrl = "https://tpay.com/user/assets/files_for_download/payment-terms-and-conditions.pdf";
+                        $clauseUrl = "https://tpay.com/user/assets/files_for_download/information-clause-payer.pdf";
+                        $locale = get_locale();
+                        if (strpos($locale, 'pl') !== false) {
+                            $regulationUrl = "https://tpay.com/user/assets/files_for_download/regulamin.pdf";
+                            $clauseUrl = "https://tpay.com/user/assets/files_for_download/klauzula-informacyjna-platnik.pdf";
+                        }
+                        ?>
+
+                        <?php esc_html_e('Paying, you accept the', 'tpay') ?> <a
+                                href="<?php echo esc_url($regulationUrl); ?>"
+                                target="_blank"><?php esc_html_e('terms and conditions.', 'tpay') ?></a> <?php esc_html_e('The administrator of the personal data is Krajowy Integrator Płatności spółka akcyjna, based in Poznań.', 'tpay') ?>
+                        <a
+                                href="<?php echo esc_url($clauseUrl); ?>"
                                 target="_blank"><?php esc_html_e('Read the full content.', 'tpay') ?></a>
                     </p>
                 </div>

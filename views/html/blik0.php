@@ -27,11 +27,12 @@
         <div class="top">
             <label>
                 <input type="radio" name="blik-type" value="code" <?php if($blikform_checked) echo 'checked="checked"' ?> />
-                <?php esc_html_e('Enter BLIK code', 'tpay') ?>
+                <span class="blik-label">BLIK</span>
             </label>
-            <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
+            <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/blik.png') ?>"/>
         </div>
         <div class="bottom">
+            <label for="blik0-code" class="blik-input-label"><?php esc_html_e('Enter BLIK code', 'tpay') ?></label>
             <input
                     name="blik0"
                     id="blik0-code"
@@ -55,6 +56,7 @@
 <script>
     var blik0CodeInput = document.getElementById('blik0-code');
     blik0CodeInput.addEventListener('keyup', onBlikCodeKeyUp);
+    blik0CodeInput.addEventListener('change', onBlikCodeKeyUp);
 
     function onBlikCodeKeyUp() {
         const valueAsArray = getCleanBlikCode().split('');
@@ -65,6 +67,6 @@
     }
 
     function getCleanBlikCode() {
-        return (blik0CodeInput.value || '').replaceAll(/[^0-9]/g, '');
+        return (blik0CodeInput.value || '').replace(/[^0-9]/g, '');
     }
 </script>
