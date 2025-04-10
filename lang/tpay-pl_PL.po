@@ -201,8 +201,8 @@ msgid "Official Tpay payment gateway for WooCommerce."
 msgstr "Oficjalna bramka płatności Tpay."
 
 #: includes/WC_TpayGateways.php:115
-msgid "Online payment by Blik"
-msgstr "Płatność Blikiem"
+msgid "Online payment by BLIK"
+msgstr "Płatność BLIK"
 
 #: includes/WC_TpayGateways.php:139
 msgid "Online payment by Credit Card"

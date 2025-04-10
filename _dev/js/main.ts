@@ -148,6 +148,22 @@ $(document).ready(function () {
         $('[class*="tpay_blik-payment-"]').removeClass('active');
         $(this).addClass('active');
         $(this).find('[name="blik-type"]').prop('checked', 'checked');
+
+        var blik0CodeInput = document.getElementById('blik0-code');
+        blik0CodeInput.addEventListener('keyup', onBlikCodeKeyUp);
+        blik0CodeInput.addEventListener('change', onBlikCodeKeyUp);
+
+        function onBlikCodeKeyUp() {
+            const valueAsArray = getFormCleanBlikCode().split('');
+            if (valueAsArray.length > 3) {
+                valueAsArray.splice(3, 0, ' ');
+            }
+            blik0CodeInput.value = valueAsArray.join('');
+        }
+
+        function getFormCleanBlikCode() {
+            return (blik0CodeInput.value || '').replace(/[^0-9]/g, '');
+        }
     });
     $('body').on('click', '.modal-tpay-blik .close', function (e) {
         e.preventDefault();
