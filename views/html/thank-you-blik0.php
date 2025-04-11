@@ -105,7 +105,7 @@
         </div>
     </div>
     <button class="btn blue pay-button" id="payment-button" disabled>
-        <span class="spinner"></span>
+        <span class="spinner"><img src="<?php echo plugin_dir_url(__FILE__) . '../img/spinner.svg'; ?>"/></span>
         <span class="label"><?php esc_html_e('Pay for your purchase with Tpay!', 'tpay') ?></span>
     </button>
     <div class="section-divider"></div>
