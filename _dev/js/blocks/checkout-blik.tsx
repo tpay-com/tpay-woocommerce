@@ -12,6 +12,10 @@ function validateBlikZero(code: string): boolean {
     return !!match;
 }
 
+function getCleanBlikCode(blikCode) {
+    return (blikCode || '').replace(/[^0-9]/g, '');
+}
+
 const Content = (props) => {
     const {eventRegistration, emitResponse} = props;
     const {onPaymentSetup} = eventRegistration;
@@ -34,12 +38,14 @@ const Content = (props) => {
             }
 
             if (settings.blikZero && blikCode !== false) {
-                if (!validateBlikZero(blikCode)) {
+                const validateCode = getCleanBlikCode(blikCode);
+
+                if (!validateBlikZero(getCleanBlikCode(validateCode))) {
                     return blikError();
                 }
 
                 data = {
-                    'blik0': blikCode,
+                    'blik0': validateCode,
                     'blik-type': 'code'
 
                 }

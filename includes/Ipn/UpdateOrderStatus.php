@@ -69,7 +69,7 @@ class UpdateOrderStatus implements IpnInterface
             $notificationData = $notification->getNotificationAssociative();
         } catch (Exception $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
-            echo 'FALSE';
+            echo sprintf('%s - %s', 'FALSE', $e->getMessage());
             exit();
         }
 

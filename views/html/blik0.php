@@ -27,12 +27,19 @@
         <div class="top">
             <label>
                 <input type="radio" name="blik-type" value="code" <?php if($blikform_checked) echo 'checked="checked"' ?> />
-                <?php esc_html_e('Enter BLIK code', 'tpay') ?>
+                <span class="blik-label"><?php esc_html_e('Enter BLIK code', 'tpay') ?></span>
             </label>
-            <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
         </div>
         <div class="bottom">
-            <input type="text" inputmode="numeric" pattern="[0-9]{6}" name="blik0" required minlength="6" maxlength="6" />
+            <input
+                    name="blik0"
+                    id="blik0-code"
+                    required
+                    type="text"
+                    maxlength="7"
+                    placeholder="000 000"
+                    pattern="\d*"
+            />
         </div>
     </div>
     <?php echo $agreements ?>

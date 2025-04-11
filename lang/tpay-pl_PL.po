@@ -154,11 +154,11 @@ msgstr "Włącz płatność Tpay"
 
 #: views/html/blik0.php:27
 msgid "Enter BLIK code"
-msgstr "Wpisz kod Blik"
+msgstr "Wpisz kod BLIK"
 
 #: includes/TpayBlik.php:87 includes/helpers/GatewayHelper.php:98
 msgid "Enter Blik code"
-msgstr "Wpisz kod Blik"
+msgstr "Wpisz kod BLIK"
 
 #: views/html/sf.php:12
 msgid "Expiry date"
@@ -201,8 +201,8 @@ msgid "Official Tpay payment gateway for WooCommerce."
 msgstr "Oficjalna bramka płatności Tpay."
 
 #: includes/WC_TpayGateways.php:115
-msgid "Online payment by Blik"
-msgstr "Płatność Blikiem"
+msgid "Online payment by BLIK"
+msgstr "Płatność BLIK"
 
 #: includes/WC_TpayGateways.php:139
 msgid "Online payment by Credit Card"
@@ -499,3 +499,44 @@ msgstr "Żeby zaznaczyć wiele elementów przytrzymaj przycisk CTRL"
 
 msgid "Successful payment status for virtual products"
 msgstr "Domyślny status po opłaceniu, dla produktów wirtualnych"
+
+msgid "Payment with Tpay"
+msgstr "Płatność z Tpay"
+
+msgid "Payment error, please try again."
+msgstr "Błąd płatności, spróbuj ponownie."
+
+msgid "Online payment"
+msgstr "Płatność online"
+
+msgid "Pay for your purchase with Tpay!"
+msgstr "Zapłać za zakupy z Tpay!"
+
+msgid "Confirm the payment in your bank's mobile app."
+msgstr "Potwierdź płatność w aplikacji mobilnej swojego banku."
+
+msgid "BLIK payment error, try paying online."
+msgstr "Błąd płatności BLIK, spróbuj zapłacić online."
+
+msgid "Payment completed successfully!"
+msgstr "Płatność zakończona sukcesem!"
+
+msgid "Thank you for using Tpay."
+msgstr "Dziękujemy za skorzystanie z usługi Tpay."
+
+msgid "Paying, you accept the"
+msgstr "Płacąc, akceptujesz "
+
+msgid "terms and conditions."
+msgstr "regulamin."
+
+msgid "The administrator of the personal data is Krajowy Integrator Płatności spółka akcyjna, based in Poznań."
+msgstr "Administratorem danych osobowych jest Krajowy Integrator Płatności spółka akcyjna z siedzibą w Poznaniu."
+
+msgid "Read the full content."
+msgstr "Czytaj więcej."
+
+
+
+
+

@@ -56,7 +56,7 @@ final class TpayBlikBlock extends AbstractPaymentMethodType
             'fields' => $fields,
             'icon' => $this->gateway->icon,
             'blikZero' => $this->gateway->isBlikZeroEnabled(),
-            'blikCodeNotTyped' => __('invalid BLIK six-digit code', 'tpay'),
+            'blikCodeNotTyped' => __('Invalid BLIK six-digit code', 'tpay'),
         ];
     }
 }
