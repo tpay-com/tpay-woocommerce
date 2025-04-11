@@ -6,11 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+
+## [1.8.0]
+
+### Added
+
+- Added custom paid statuses.
+
+### Changed
+
+- Cache mechanism swapped to transient.
+- BLIK Level 0 UI/UX improvements with custom widget on "thank you page"
+
+### Fixed 
+- Notification handling with warnings when key is not set
+- Getting bank groups fixed when API call fails
+- IPN update fixed for generic payment methods
+
 ## [1.7.15]
 
 ### Changed
 
-- Adding a division between physical and digital products.
+- Added a division between physical and digital products.
 
 ## [1.7.14]
 

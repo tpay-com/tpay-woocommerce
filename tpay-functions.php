@@ -1,6 +1,7 @@
 <?php
 
 use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
+use Tpay\Tpay;
 use Tpay\TpayBlik;
 use Tpay\TpayGateways;
 
@@ -37,10 +38,12 @@ function tpay_add_checkout_fee_for_gateway()
         $fee = $percentage / 100 * $amount;
     }
 
-    $fee = round($fee, 2);
+    if (is_numeric($fee)) {
+        $fee = round($fee, 2);
 
-    if (array_key_exists($chosen_gateway, TpayGateways::gateways_list())) {
-        WC()->cart->add_fee(__('Transaction fee', 'tpay'), $fee);
+        if (array_key_exists($chosen_gateway, TpayGateways::gateways_list())) {
+            WC()->cart->add_fee(__('Transaction fee', 'tpay'), $fee);
+        }
     }
 }
 
@@ -236,6 +239,20 @@ function tpay_blik0_transaction_status()
 
     $result = (new TpayBlik())->checkTransactionStatus(htmlspecialchars($_POST['transactionId']));
 
+    wp_send_json($result);
+}
+
+function tpay_pay_by_transfer()
+{
+    check_ajax_referer('tpay-thank-you', 'nonce');
+    $result = (new Tpay())->payByTransfer(htmlspecialchars($_POST['transactionId']), $_POST['orderId']);
+    wp_send_json($result);
+}
+
+function tpay_blik0_repay()
+{
+    check_ajax_referer('tpay-thank-you', 'nonce');
+    $result = (new TpayBlik())->payBlikTransaction(htmlspecialchars($_POST['transactionId']), $_POST['blikCode'], $_POST['transactionCounter']);
     wp_send_json($result);
 }
 

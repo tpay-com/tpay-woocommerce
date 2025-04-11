@@ -150,4 +150,78 @@ class Tpay extends TpayGateways
             ];
         }
     }
+
+    public function payByTransfer(string $transactionId, string $orderId)
+    {
+        $order = wc_get_order($orderId);
+        $payer_data = $this->gateway_helper->payer_data($order, tpayOption('global_tax_id_meta_field_name'));
+        $merchant_email = get_option('admin_email');
+
+        if (tpayOption('global_merchant_email')) {
+            $merchant_email = tpayOption('global_merchant_email');
+        }
+
+        $crc = $this->createCRC($orderId);
+
+        $payment_data = [
+            'description' => __('Order', 'tpay').' #'.$order->get_id(),
+            'hiddenDescription' => $crc,
+            'amount' => $order->get_total(),
+            'payer' => $payer_data,
+            'lang' => tpay_lang(),
+            'callbacks' => [
+                'payerUrls' => [
+                    'success' => $order->get_checkout_order_received_url(),
+                    'error' => wc_get_checkout_url(),
+                ],
+                'notification' => [
+                    'url' => add_query_arg('wc-api', $this->gateway_data('api'), home_url('/')),
+                    'email' => $merchant_email,
+                ],
+            ],
+        ];
+
+        $transaction = $this->tpay_api()->transactions()->createTransaction($payment_data);
+
+        if (!isset($transaction['transactionPaymentUrl'])) {
+            return ['status' => 'error'];
+        }
+
+        $md5 = md5(
+            sprintf(
+                '%s%s%s%s%s',
+                $this->id_seller,
+                $transaction['title'],
+                $this->payment_data['amount'],
+                $crc,
+                $this->security_code
+            )
+        );
+
+        $order->set_transaction_id($transaction['transactionId']);
+        $order->update_meta_data('md5_checksum', $md5);
+        $order->update_meta_data('crc', $crc);
+        $order->update_meta_data('blik0', '');
+        $order->set_payment_method(TPAYPBL_ID);
+        $order->set_payment_method_title(__('Online payment by Tpay', 'tpay'));
+
+        $order->save();
+
+        $this->cancelTransaction($transactionId);
+
+        return [
+            'status' => 'correct',
+            'payment_url' => $transaction['transactionPaymentUrl'],
+        ];
+    }
+
+    public function checkTransactionStatus($transactionId)
+    {
+        return $this->tpay_api()->transactions()->getTransactionById($transactionId);
+    }
+
+    private function cancelTransaction($transactionId)
+    {
+        $this->tpay_api()->transactions()->run('POST', sprintf('/transactions/%s/cancel', $transactionId));
+    }
 }

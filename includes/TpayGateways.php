@@ -53,6 +53,10 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $this->shipping = new Helpers\ShippingHelper();
         $this->transactions = new Transactions(new Client(), $this->cache);
 
+        if (!isset(self::gateways_list()[$this->id])) {
+            return;
+        }
+
         $this->setup_properties($id);
         $this->init_form_fields();
         $this->init_settings();
@@ -198,8 +202,8 @@ abstract class TpayGateways extends WC_Payment_Gateway
             ],
             'tpayblik' => [
                 'name' => __('Tpay Blik', 'tpay'),
-                'front_name' => __('Online payment by Blik', 'tpay'),
-                'default_description' => __('Blik payment', 'tpay'),
+                'front_name' => __('Online payment by BLIK', 'tpay'),
+                'default_description' => '',
                 'api' => TPAYBLIK_ID,
                 'group_id' => TPAYBLIK,
             ],
@@ -383,10 +387,10 @@ abstract class TpayGateways extends WC_Payment_Gateway
             return $transaction;
         }
 
-            return [
-                'result' => 'error',
-                'message' => __('Unable to create transaction', 'tpay'),
-            ];
+        return [
+            'result' => 'error',
+            'message' => __('Unable to create transaction', 'tpay'),
+        ];
     }
 
     public function createCRC($order_id): string
@@ -405,7 +409,8 @@ abstract class TpayGateways extends WC_Payment_Gateway
         if (null !== self::$banksGroupMicrocache[$onlineOnly]) {
             return self::$banksGroupMicrocache[$onlineOnly];
         }
-        $cacheKey = 'getBanksList-'.($onlineOnly ? 'online' : 'all');
+
+        $cacheKey = 'tpay_getBanksList-'.($onlineOnly ? 'online' : 'all');
         $cached = $this->cache->get($cacheKey);
 
         if ($cached) {
@@ -419,16 +424,21 @@ abstract class TpayGateways extends WC_Payment_Gateway
         if (!$api) {
             return [];
         }
+        $ttl = 1200;
 
-        $result = $api->transactions()->getBankGroups($onlineOnly);
+        try {
+            $result = $api->transactions()->getBankGroups($onlineOnly);
+        } catch (Exception $exception) {
+            $result = ['groups' => [], 'result' => 'fail'];
+        }
 
         if (!isset($result['result']) || 'success' !== $result['result']) {
+            $ttl = 60;
             $this->gateway_helper->tpay_logger('Nieudana próba pobrania listy banków');
-            wc_add_notice('Unable to get banks list', 'error');
         }
 
         self::$banksGroupMicrocache[$onlineOnly] = $result['groups'];
-        $this->cache->set($cacheKey, $result['groups'], 600);
+        $this->cache->set($cacheKey, $result['groups'], $ttl);
 
         return $result['groups'];
     }

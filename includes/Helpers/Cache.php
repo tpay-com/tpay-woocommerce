@@ -8,47 +8,25 @@ class Cache
     {
         $key .= ':';
         $key .= tpayOption('global_tpay_environment');
-        $file = $this->getCacheDir().md5($key);
 
-        if (file_exists($file)) {
-            $data = unserialize(base64_decode(file_get_contents($file)));
-
-            if ($data['ttl'] > time()) {
-                return $data['data'];
-            }
-
-            unlink($file);
-        }
+        return get_transient($key);
     }
 
     public function set($key, $value, $ttl = 3600)
     {
         $key .= ':';
         $key .= tpayOption('global_tpay_environment');
-        $file = $this->getCacheDir().md5($key);
-        $ttl += time();
-        $data = base64_encode(serialize(['ttl' => $ttl, 'data' => $value]));
-
-        file_put_contents($file, $data);
+        set_transient($key, $value, $ttl);
     }
 
     public function erase(): void
     {
-        foreach (glob($this->getCacheDir().'*') as $file) {
-            if ($file === $this->getCacheDir()) {
-                continue;
-            }
-            unlink($file);
-        }
-    }
+        global $wpdb;
+        $transients = $wpdb->get_col("SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '_transient_%' AND option_name LIKE '%tpay%'");
 
-    private function getCacheDir(): string
-    {
-        $normalDir = __DIR__.'/../../cache/';
-        if (is_writable($normalDir)) {
-            return $normalDir;
+        foreach ($transients as $transient) {
+            $transient_key = str_replace(['_transient_', '_transient_timeout_'], '', $transient);
+            delete_transient($transient_key);
         }
-
-        return '/tmp/tpay_';
     }
 }

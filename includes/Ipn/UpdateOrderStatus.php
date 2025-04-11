@@ -34,7 +34,12 @@ class UpdateOrderStatus implements IpnInterface
         $class = TPAY_CLASSMAP[$order_method] ?? null;
 
         if (!class_exists($class)) {
-            $class = new class ($order_method) extends \Tpay\TpayGeneric {
+            if (!str_starts_with($order_method, 'tpaygeneric-')) {
+                echo 'FALSE - unsupported payment method: '.$order_method;
+                exit();
+            }
+            $order_method = str_replace('tpaygeneric-', '', $order_method);
+            $gateway = new class ($order_method) extends \Tpay\TpayGeneric {
                 public function __construct($id = null)
                 {
                     parent::__construct("tpaygeneric-{$id}", (int) $id);
@@ -48,9 +53,10 @@ class UpdateOrderStatus implements IpnInterface
                     }
                 }
             };
+        } else {
+            $gateway = new $class();
         }
 
-        $gateway = new $class();
         $config = (new Helpers\ConfigProvider())->get_config($gateway);
 
         $isProd = 'sandbox' != tpayOption('global_tpay_environment');
@@ -63,7 +69,7 @@ class UpdateOrderStatus implements IpnInterface
             $notificationData = $notification->getNotificationAssociative();
         } catch (Exception $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
-            echo 'FALSE';
+            echo sprintf('%s - %s', 'FALSE', $e->getMessage());
             exit();
         }
 
@@ -144,6 +150,6 @@ class UpdateOrderStatus implements IpnInterface
             }
         }
 
-        return (@get_option('tpay_settings_option_name')[$checkedStatus]) == 'completed' ? 'completed' : 'processing';
+        return @get_option('tpay_settings_option_name')[$checkedStatus];
     }
 }
