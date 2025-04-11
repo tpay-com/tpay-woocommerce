@@ -53,6 +53,10 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $this->shipping = new Helpers\ShippingHelper();
         $this->transactions = new Transactions(new Client(), $this->cache);
 
+        if (!isset(self::gateways_list()[$this->id])) {
+            return;
+        }
+
         $this->setup_properties($id);
         $this->init_form_fields();
         $this->init_settings();
@@ -383,10 +387,10 @@ abstract class TpayGateways extends WC_Payment_Gateway
             return $transaction;
         }
 
-            return [
-                'result' => 'error',
-                'message' => __('Unable to create transaction', 'tpay'),
-            ];
+        return [
+            'result' => 'error',
+            'message' => __('Unable to create transaction', 'tpay'),
+        ];
     }
 
     public function createCRC($order_id): string
@@ -405,7 +409,8 @@ abstract class TpayGateways extends WC_Payment_Gateway
         if (null !== self::$banksGroupMicrocache[$onlineOnly]) {
             return self::$banksGroupMicrocache[$onlineOnly];
         }
-        $cacheKey = 'getBanksList-'.($onlineOnly ? 'online' : 'all');
+
+        $cacheKey = 'tpay_getBanksList-'.($onlineOnly ? 'online' : 'all');
         $cached = $this->cache->get($cacheKey);
 
         if ($cached) {
