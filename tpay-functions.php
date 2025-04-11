@@ -37,10 +37,12 @@ function tpay_add_checkout_fee_for_gateway()
         $fee = $percentage / 100 * $amount;
     }
 
-    $fee = round($fee, 2);
+    if (is_numeric($fee)) {
+        $fee = round($fee, 2);
 
-    if (array_key_exists($chosen_gateway, TpayGateways::gateways_list())) {
-        WC()->cart->add_fee(__('Transaction fee', 'tpay'), $fee);
+        if (array_key_exists($chosen_gateway, TpayGateways::gateways_list())) {
+            WC()->cart->add_fee(__('Transaction fee', 'tpay'), $fee);
+        }
     }
 }
 
