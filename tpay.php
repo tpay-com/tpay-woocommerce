@@ -3,7 +3,7 @@
  * Plugin Name: Tpay Payment Gateway
  * Plugin URI: https://tpay.com
  * Description: Tpay payment gateway for WooCommerce
- * Version: 1.8.0
+ * Version: 1.8.1
  * Author: Krajowy Integrator Płatności S.A.
  * Author URI: http://www.tpay.com
  * License: LGPL 3.0
@@ -36,7 +36,7 @@ use Tpay\TpaySF;
 
 require_once 'tpay-functions.php';
 
-define('TPAY_PLUGIN_VERSION', '1.8.0');
+define('TPAY_PLUGIN_VERSION', '1.8.1');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
@@ -108,10 +108,15 @@ function init_gateway_tpay()
     }
 
 //    add_action('init', function() {
-        load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)).'/lang/');
+    load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
 //    });
 
-    require_once realpath( __DIR__ . '/vendor/autoload.php' );
+    if(!file_exists(__DIR__ . '/vendor/autoload.php')){
+        die('Please download release version of module from: '
+            . '<a href="https://github.com/tpay-com/tpay-woocommerce/releases/latest">'
+            . 'https://github.com/tpay-com/tpay-woocommerce/releases/latest</a>');
+    }
+    require_once realpath(__DIR__ . '/vendor/autoload.php');
     Logger::setLogger(new TpayLogger());
 
     add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
@@ -151,6 +156,12 @@ if (is_admin()) {
 
 add_action('woocommerce_before_thankyou', function ($orderId) {
     $order = wc_get_order($orderId);
+    $tpayFound = in_array($order->get_payment_method(), array_keys(TPAY_CLASSMAP));
+    $tpayFound = $tpayFound || (0 === strpos($order->get_payment_method(), 'tpaygeneric-'));
+
+    if (!$tpayFound) {
+        return;
+    }
 
     if ('' === $order->get_meta('blik0')) {
         $status = (new Tpay())->checkTransactionStatus(htmlspecialchars($order->get_transaction_id()));
