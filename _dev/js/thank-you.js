@@ -5,9 +5,17 @@ $(document).ready(function () {
     const paymentButton = document.getElementById('payment-button');
     const blikCodeInput = document.getElementById('blik-code');
     const paymentsInputs = document.getElementsByName('payment');
-    const transactionCounter = document.getElementById('transaction_counter');
 
-    setFormState(false);
+    if (parseInt(parseInt(localStorage.getItem('tpay_transaction_counter'))) === 3) {
+        document.querySelector('.payment-section').style.display = 'block';
+        document.querySelector('.transfer_payment').style.display = 'block';
+        document.querySelector('.pay-button').style.display = 'block';
+        document.querySelector('.blik_payment').style.display = 'none';
+        setFormState(false, true);
+    } else {
+        checkOrder()
+        setFormState(false);
+    }
 
     function checkOrder() {
         let paymentData = {
@@ -121,12 +129,12 @@ $(document).ready(function () {
             action: 'tpay_blik0_repay',
             transactionId: tpayThankYou.transactionId,
             blikCode: getCleanBlikCode(),
-            transactionCounter: parseInt(transactionCounter.value),
+            transactionCounter: parseInt(localStorage.getItem('tpay_transaction_counter')),
             nonce: tpayThankYou.nonce
         };
 
         const data = (new URLSearchParams(paymentData)).toString();
-        transactionCounter.value = parseInt(transactionCounter.value) + 1;
+        localStorage.setItem('tpay_transaction_counter', parseInt(localStorage.getItem('tpay_transaction_counter')) + 1);
 
         fetch(tpayThankYou.url, {
             method: 'POST',
@@ -146,7 +154,7 @@ $(document).ready(function () {
                         document.querySelector('.transfer_payment').style.display = 'block';
                         document.querySelector('.pay-button').style.display = 'block';
 
-                        if (parseInt(transactionCounter.value) === 3) {
+                        if (parseInt(parseInt(localStorage.getItem('tpay_transaction_counter'))) === 3) {
                             document.querySelector('.blik_payment').style.display = 'none';
                             document.querySelector('.blik-master-error').style.display = 'block';
                             setFormState(false, true);
@@ -164,7 +172,7 @@ $(document).ready(function () {
                 document.querySelector('.transfer_payment').style.display = 'block';
                 document.querySelector('.pay-button').style.display = 'block';
 
-                if (parseInt(transactionCounter.value) === 3) {
+                if (parseInt(parseInt(localStorage.getItem('tpay_transaction_counter'))) === 3) {
                     document.querySelector('.blik_payment').style.display = 'none';
                     document.querySelector('.blik-master-error').style.display = 'block';
                 } else {
@@ -215,6 +223,4 @@ $(document).ready(function () {
     paymentsInputs.forEach(function (input) {
         input.addEventListener('click', onPaymentInputClick)
     });
-
-    checkOrder()
 })

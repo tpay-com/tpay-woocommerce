@@ -51,6 +51,8 @@ const Content = (props) => {
                 }
             }
 
+            localStorage.setItem('tpay_transaction_counter', '1');
+
             return {
                 type: emitResponse.responseTypes.SUCCESS,
                 meta: {

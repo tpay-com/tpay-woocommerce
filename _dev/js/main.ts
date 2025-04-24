@@ -32,6 +32,7 @@ $(document).ready(function () {
                 break;
             }
             case 'tpayblik': {
+                localStorage.setItem('tpay_transaction_counter', '1');
                 validateResult = validateTpayBlik();
                 break;
             }

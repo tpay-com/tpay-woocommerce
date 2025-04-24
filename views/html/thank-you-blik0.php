@@ -32,7 +32,6 @@
                 </label>
                 <div class="blik-code-section" style="display: none">
                     <label for="blik-code" class="blik-code-label"><?php esc_html_e('Enter BLIK code', 'tpay') ?></label>
-                    <input type="hidden" id="transaction_counter" value="1">
                     <input
                             type="text"
                             id="blik-code"
