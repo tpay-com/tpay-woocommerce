@@ -12,10 +12,10 @@
             <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
         </div>
         <div class="bottom">
-            <small class="show-blik-info">
+            <p class="show-blik-info">
                 <?php esc_html_e('Why don\'t I have to enter a code?', 'tpay'); ?>
                 <span class="tooltip-text"> <?php esc_html_e('You do not need to enter the BLIK code, because you linked your account to this device during one of the previous payments. The payment still requires confirmation in the app.', 'tpay') ?> </span>
-            </small>
+            </p>
         </div>
     </div>
     <?php else:
