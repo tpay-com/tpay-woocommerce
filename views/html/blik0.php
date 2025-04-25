@@ -12,7 +12,10 @@
             <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
         </div>
         <div class="bottom">
-            <a href="#" class="show-blik-info"><?php esc_html_e('Why don\'t I have to enter a code?', 'tpay'); ?></a>
+            <small class="show-blik-info">
+                <?php esc_html_e('Why don\'t I have to enter a code?', 'tpay'); ?>
+                <span class="tooltip-text"> <?php esc_html_e('You do not need to enter the BLIK code, because you linked your account to this device during one of the previous payments. The payment still requires confirmation in the app.', 'tpay') ?> </span>
+            </small>
         </div>
     </div>
     <?php else:
@@ -44,9 +47,4 @@
     </div>
     <?php echo $agreements ?>
 </div>
-<div class="modal-tpay-blik-container">
-    <div class="modal-tpay-blik">
-        <p><?php esc_html_e('You do not need to enter the BLIK code, because you linked your account to this device during one of the previous payments. The payment still requires confirmation in the app.', 'tpay') ?></p>
-        <a class="close" href="#"><?php esc_html_e('I understand', 'tpay') ?></a>
-    </div>
-</div>
+

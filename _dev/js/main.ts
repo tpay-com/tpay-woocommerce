@@ -166,16 +166,6 @@ $(document).ready(function () {
             return (blik0CodeInput.value || '').replace(/[^0-9]/g, '');
         }
     });
-    $('body').on('click', '.modal-tpay-blik .close', function (e) {
-        e.preventDefault();
-        $('.modal-tpay-blik-container').hide();
-        $('.tpay-blik-alias').click();
-        $('.tpay-blik-alias').addClass('active');
-    })
-    $('body').on('click', '.show-blik-info', function (e) {
-        e.preventDefault();
-        $('.modal-tpay-blik-container').css('display', 'flex');
-    })
     $('body').on('keyup', '.tpay-sf #card_number', function () {
         $('.saved-cards').find('input[type="radio"]').prop('checked', false);
         new CardPayment($('.tpay-sf').attr('data-pubkey'));
