@@ -33,6 +33,14 @@ $(document).ready(function () {
             }
             case 'tpayblik': {
                 localStorage.setItem('tpay_transaction_counter', '1');
+
+                const aliasInput = document.querySelector('input[name="blik-type"][value="alias"]') as HTMLInputElement;
+
+                if (aliasInput && aliasInput.checked) {
+                    validateResult = true;
+                    break;
+                }
+
                 validateResult = validateTpayBlik();
                 break;
             }

@@ -32,11 +32,25 @@ const Content = (props) => {
             let data = {};
             const blikInput: HTMLInputElement = document.querySelector('input[name="blik0"]');
             const blikCode = blikInput ? blikInput.value : false;
+            const aliasInput = document.querySelector('input[name="blik-type"][value="alias"]') as HTMLInputElement;
+            localStorage.setItem('tpay_transaction_counter', '1');
+
+            if (aliasInput && aliasInput.checked) {
+                data = {
+                    'blik-type': 'alias'
+                }
+
+                return {
+                    type: emitResponse.responseTypes.SUCCESS,
+                    meta: {
+                        paymentMethodData: data
+                    },
+                }
+            }
 
             if (settings.blikZero && !blikCode) {
                 return blikError();
             }
-
             if (settings.blikZero && blikCode !== false) {
                 const validateCode = getCleanBlikCode(blikCode);
 
@@ -50,8 +64,6 @@ const Content = (props) => {
 
                 }
             }
-
-            localStorage.setItem('tpay_transaction_counter', '1');
 
             return {
                 type: emitResponse.responseTypes.SUCCESS,
