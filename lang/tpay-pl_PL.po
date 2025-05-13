@@ -23,7 +23,7 @@ msgid "I understand"
 msgstr "Rozumiem"
 
 msgid "You do not need to enter the BLIK code, because you linked your account to this device during one of the previous payments. The payment still requires confirmation in the app."
-msgstr "Nie musisz wpisywać kodu BLIK, gdyż powiązałeś swoje konto z tym urządzeniem podczas jednej z poprzednich płatności. Płatność nadal wymaga potwierdzenia w aplikacji."
+msgstr "Nie musisz wpisywać kodu bo powiązałeś swoje konto z tym urządzeniem przy innej płatności. Płatność nadal wymaga potwierdzenia w aplikacji."
 
 msgid "MID number"
 msgstr "Numer MID"
@@ -156,6 +156,10 @@ msgstr "Włącz płatność Tpay"
 msgid "Enter BLIK code"
 msgstr "Wpisz kod BLIK"
 
+#: views/html/blik0.php:33
+msgid "Pay with BLIK code"
+msgstr "Płatność kodem BLIK"
+
 #: includes/TpayBlik.php:87 includes/helpers/GatewayHelper.php:98
 msgid "Enter Blik code"
 msgstr "Wpisz kod BLIK"
@@ -178,7 +182,7 @@ msgstr "https://tpay.com"
 
 #: views/html/blik0.php:10
 msgid "I pay with BLIK from saved account"
-msgstr "Płacę Blikiem przez zapisane konto"
+msgstr "Płatność BLIK z zapisanym kontem"
 
 #: includes/WC_TpayGateways.php:284
 msgid "If Tpay is only available for certain methods, set it up here. Leave blank to enable for all methods."
@@ -383,7 +387,7 @@ msgstr "Niewystarczające ilość środków / błąd autoryzacji"
 
 #: views/html/blik0.php:15
 msgid "Why don't I have to enter a code?"
-msgstr "Dlaczego nie muszę wpisywać kodu?"
+msgstr "Dlaczego nie musisz wpisywac kodu?"
 
 #: includes/WC_TpayGateways.php:140
 msgid "You will be redirected to tpay.com where you will enter your credit card details"

@@ -69,9 +69,9 @@ Object.entries(settings).forEach((channelSetting) => {
     let Label = () => {
         return (
             <>
-                <label>
-                    {setting.title} <img src={setting.icon} />
-                </label>
+                <span>
+                    {setting.title} <img class="tpay-inline" src={setting.icon} />
+                </span>
             </>
         )
     };

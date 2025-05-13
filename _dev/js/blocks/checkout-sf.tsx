@@ -94,9 +94,9 @@ const Content = (props) => {
 let Label = () => {
     return (
         <>
-            <label>
-                {settings.title} <img src={settings.icon}/>
-            </label>
+            <span>
+                {settings.title} <img class="tpay-inline" src={settings.icon}/>
+            </span>
         </>
     )
 };

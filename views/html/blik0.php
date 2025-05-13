@@ -7,15 +7,17 @@
         <div class="top">
             <label>
                 <input type="radio" name="blik-type" value="alias" checked="checked" />
-                <?php esc_html_e('I pay with BLIK from saved account', 'tpay') ?>
+                <span class="blik-label">
+                    <?php esc_html_e('I pay with BLIK from saved account', 'tpay') ?>
+                </span>
+                <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
             </label>
-            <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
         </div>
         <div class="bottom">
-            <p class="show-blik-info">
+            <span class="show-blik-info">
                 <?php esc_html_e('Why don\'t I have to enter a code?', 'tpay'); ?>
                 <span class="tooltip-text"> <?php esc_html_e('You do not need to enter the BLIK code, because you linked your account to this device during one of the previous payments. The payment still requires confirmation in the app.', 'tpay') ?> </span>
-            </p>
+            </span>
         </div>
     </div>
     <?php else:
@@ -30,10 +32,11 @@
         <div class="top">
             <label>
                 <input type="radio" name="blik-type" value="code" <?php if($blikform_checked) echo 'checked="checked"' ?> />
-                <span class="blik-label"><?php esc_html_e('Enter BLIK code', 'tpay') ?></span>
+                <span class="blik-label"><?php esc_html_e('Pay with BLIK code', 'tpay') ?></span>
             </label>
         </div>
         <div class="bottom">
+            <div><?php esc_html_e('Enter Blik code', 'tpay') ?></div>
             <input
                     name="blik0"
                     id="blik0-code"
