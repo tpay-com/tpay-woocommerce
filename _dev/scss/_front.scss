@@ -212,6 +212,7 @@
         font-weight: 700;
         margin: 0;
         color: inherit;
+        width: 100%;
 
         .blik-label {
           font-size: 18px;
@@ -225,7 +226,10 @@
         width: 50px;
         height: auto;
         padding-left: 16px;
+        margin-left: auto;
       }
+
+
     }
   }
   .tpay_blik-payment-form {
@@ -257,6 +261,10 @@
       align-items: center;
       padding: 19px 24px 0 24px;
       position: relative;
+
+      .spacer {
+        width: 25px;
+      }
 
       label {
         width: calc(100% - 50px);

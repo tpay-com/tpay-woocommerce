@@ -30,9 +30,17 @@
     </ul>
     <div class="tpay_blik-payment-form <?php echo esc_attr($blikform) ?>">
         <div class="top">
+            <?php if(!$alias): ?>
+                <span class="spacer">&nbsp;</span>
+            <?php endif; ?>
             <label>
-                <input type="radio" name="blik-type" value="code" <?php if($blikform_checked) echo 'checked="checked"' ?> />
+                <?php if($alias): ?>
+                    <input type="radio" name="blik-type" value="code" <?php if($blikform_checked) echo 'checked="checked"' ?> />
+                <?php endif; ?>
                 <span class="blik-label"><?php esc_html_e('Pay with BLIK code', 'tpay') ?></span>
+                <?php if(!$alias): ?>
+                    <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
+                <?php endif; ?>
             </label>
         </div>
         <div class="bottom">
