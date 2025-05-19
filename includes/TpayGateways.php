@@ -267,7 +267,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
                 'notifications_url' => [
                     'title' => __('Your address for notifications', 'tpay'),
                     'type' => 'title',
-                    'description' => add_query_arg('wc-api', 'tpayblik', home_url('/')),
+                    'description' => add_query_arg('wc-api', 'Tpay', home_url('/')),
                 ],
             ]
         );
