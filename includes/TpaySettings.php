@@ -291,7 +291,13 @@ class TpaySettings
     {
         foreach ($this->fields as $field => $desc) {
             if (isset($input['global_'.$field])) {
-                $sanitary_values['global_'.$field] = sanitize_text_field($input['global_'.$field]);
+                $value = sanitize_text_field($input['global_'.$field]);
+
+                if (in_array($field, ['security_code', 'api_key', 'api_key_password'])) {
+                    $value = preg_replace('/\s+/', '', $value);
+                }
+
+                $sanitary_values['global_'.$field] = $value;
             }
         }
 

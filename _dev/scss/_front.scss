@@ -23,7 +23,11 @@
 }
 
 .tpay-blik0{
-  padding: 20px 0;
+  //padding: 20px 0;
+  //font-family: "Lato";
+  font-weight: 400;
+  color: #072653;
+
   input:not([type="checkbox"]):not([type="radio"]){
     height: 40px;
     padding: 0 10px;
@@ -168,17 +172,11 @@
 .tpay-blik0{
   background: #fff;
   max-width: 750px;
-  padding: 30px 0;
+  //padding: 30px 0;
   .tpay_blik-payment-alias{
-    margin-bottom: 20px;
-    a{
-      font-size: 14px;
-      color: #000;
-    }
-  }
-  .tpay_blik-payment-form {
     cursor: pointer;
-    max-width: 453px;
+    //max-width: 620px;
+    margin: 5px;
     min-width: 350px;
     border-radius: 8px;
     display: flex;
@@ -186,6 +184,66 @@
     padding: 0;
     border: 1px solid #D8D8D8;
     font-family: inherit;
+    min-height: 64px;
+
+    &.active {
+      border: 2px solid #2953C6;
+      background: none;
+
+
+    }
+
+    .bottom {
+      display: block;
+      //padding: 0 24px 16px;
+      margin-left: 24px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      padding: 19px 24px 0 24px;
+      position: relative;
+
+      label {
+        display: flex;
+        align-items: center;
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0;
+        color: inherit;
+        width: 100%;
+
+        .blik-label {
+          font-size: 18px;
+          font-weight: 700;
+          margin-left: 12px;
+          color: inherit;
+        }
+      }
+
+      img {
+        width: 50px;
+        height: auto;
+        padding-left: 16px;
+        margin-left: auto;
+      }
+
+
+    }
+  }
+  .tpay_blik-payment-form {
+    cursor: pointer;
+    //max-width: 620px;
+    margin: 5px;
+    min-width: 350px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border: 1px solid #D8D8D8;
+    font-family: inherit;
+    min-height: 64px;
 
     &.active {
       border: 2px solid #2953C6;
@@ -193,30 +251,35 @@
 
       .bottom {
         display: block;
-        padding: 0 24px 16px;
+        //padding: 0 24px 16px;
+        margin-left: 60px;
       }
     }
 
     .top {
       display: flex;
       align-items: center;
-      padding: 19px 24px;
+      padding: 19px 24px 0 24px;
       position: relative;
+
+      .spacer {
+        width: 25px;
+      }
 
       label {
         width: calc(100% - 50px);
         display: flex;
         align-items: center;
         font-size: 18px;
-        font-weight: 500;
+        font-weight: 700;
         margin: 0;
-        color: #000;
+        color: inherit;
 
         .blik-label {
           font-size: 18px;
-          font-weight: 500;
+          font-weight: 700;
           margin-left: 12px;
-          color: #000;
+          color: inherit;
         }
       }
 
@@ -229,6 +292,11 @@
 
     .bottom {
       display: none;
+      padding: 10px 0;
+
+      div {
+        font-size: 12px;
+      }
 
       .blik-input-label {
         font-size: 14px;
@@ -244,9 +312,9 @@
         height: 48px;
         padding: 0 16px;
         margin: 0 auto 8px auto;
-        border: 1px solid #D8D8D8;
+        border: 1px solid #2953C6;
         border-radius: 4px;
-        font-weight: 600;
+        font-weight: 400;
         font-size: 18px;
         line-height: 24px;
         color: #072653;
@@ -257,7 +325,7 @@
         }
 
         &:focus {
-          border-color: #B9B9BB;
+          border-color: #2953C6;
           outline: none;
         }
       }
@@ -327,40 +395,50 @@
   }
 }
 
-.modal-tpay-blik-container{
-  position: fixed;
-  z-index: 999;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  background: fade_out(#000, .5);
-  @include flexcenter;
-  display: none;
-  .modal-tpay-blik{
-    width: 90%;
-    height: 90%;
-    padding: 20px;
-    @include md{
-      width: 500px;
-      height: unset;
-    }
-    background: #fff;
-    font-size: 16px;
-    .title{
-      font-size: 24px;
-    }
-    p{
-      margin-bottom: 15px;
-    }
-    a{
-      background: red;
-      border-radius: 10px;
-      color: #fff !important;
-      text-decoration: none;
-      padding: 10px;
-    }
-  }
+.show-blik-info {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 13px;
+  margin-left: 36px;
+  text-decoration: underline;
+  padding-bottom: 20px;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  width: 330px;
+  background-color: #203759;
+  color: #fff;
+  text-align: center;
+  padding: 12px 14px;
+  border-radius: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 135%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.3s;
+  font-size: 14px;
+  line-height: 1.4;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px;
+  border-style: solid;
+  border-color: #203759 transparent transparent transparent;
+}
+
+.show-blik-info:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 
 .pbl-error, .blik0-error {
@@ -399,4 +477,10 @@ li.wc_payment_method[class*="payment_method_"]
     clear: both;
     margin-top: 10px;
   }
+}
+
+img.tpay-inline
+{
+  position: absolute;
+  margin: 0 8px 0 8px;
 }
