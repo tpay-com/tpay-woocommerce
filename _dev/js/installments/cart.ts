@@ -2,8 +2,15 @@ import $ from "jquery";
 
 function createInstallmentsButton() {
     let valueText = $('.cart-subtotal .woocommerce-Price-amount bdi').contents()[0].data;
-    valueText = valueText.replace(/[^0-9,\.]/g, '');
-    valueText = valueText.replace(',', '.');
+    let thousands = `${tpayCart.thousands_separator}`;
+    let decimal = `${tpayCart.decimal_separator}`;
+    if (thousands) {
+        valueText = valueText.replaceAll(thousands, '');
+    }
+    if (decimal != '.') {
+        valueText = valueText.replaceAll(decimal, '.');
+    }
+    valueText = valueText.replace(/[^0-9\.]/g, '');
     let cartValue = parseFloat(valueText);
 
     if (cartValue >= 100 && cartValue <= 20000) {
