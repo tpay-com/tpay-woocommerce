@@ -251,6 +251,8 @@ add_action('woocommerce_after_add_to_cart_button', function () {
         'tpayProduct',
         [
             'merchantId' => $merchantId,
+            'thousands_separator' => wc_get_price_thousand_separator(),
+            'decimal_separator' => wc_get_price_decimal_separator(),
             'translations' => [
                 'button' => __('Calculate the installment!', 'tpay'),
             ],
@@ -279,6 +281,8 @@ add_action('woocommerce_proceed_to_checkout', function () {
         'tpayCart',
         [
             'merchantId' => $merchantId,
+            'thousands_separator' => wc_get_price_thousand_separator(),
+            'decimal_separator' => wc_get_price_decimal_separator(),
             'translations' => [
                 'button' => __('Calculate the installment!', 'tpay'),
             ],
