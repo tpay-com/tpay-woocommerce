@@ -17,12 +17,28 @@ $(document).ready(function ($) {
     }
 
     function createInstallmentsButton() {
-        let price = parseFloat($('.woocommerce-Price-amount bdi').contents()[0].data.replace(/,/g, '.'));
+        let valueText = $('.woocommerce-Price-amount bdi').contents()[0].data;
+        let thousands = `${tpayProduct.thousands_separator}`;
+        let decimal = `${tpayProduct.decimal_separator}`;
+        if (thousands) {
+            valueText = valueText.replaceAll(thousands, '');
+        }
+        if (decimal != '.') {
+            valueText = valueText.replaceAll(decimal, '.');
+        }
+        valueText = valueText.replace(/[^0-9\.]/g, '');
+
         let quantity = parseInt($('input[name="quantity"]').val());
+        let price = parseFloat(valueText);
         let amount = quantity * price;
 
         if (amount >= 100 && amount <= 20000) {
             createInstallmentContainer(amount);
+        } else {
+            let button = document.querySelector('.installments-button');
+            if (button) {
+                button.remove();
+            }
         }
     }
 
