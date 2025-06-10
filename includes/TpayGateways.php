@@ -654,12 +654,13 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $values = [];
         foreach ($this->channels() as $channel) {
             if (in_array($channel->id, $genericPayments) && isset($channel->constraints[1]->value)) {
-                $values['tpaygeneric-' . $channel->id] = [
+                $values['tpaygeneric-'.$channel->id] = [
                     'min' => (float) $channel->constraints[0]->value,
                     'max' => (float) $channel->constraints[1]->value,
                 ];
             }
         }
+
         return $values;
     }
 }
