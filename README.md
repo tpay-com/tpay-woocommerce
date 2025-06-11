@@ -3,7 +3,7 @@
 Contributors: tpay.com \
 Tags: tpay, tpay.com, payment, payment gateway, woocommerce \
 Tested up to: 6.2.2 \
-Stable tag: 1.7.4 \
+Stable tag: 1.8.5 \
 Requires PHP: 7.1 or higher \
 License: GPLv3 \
 Tpay is payment gateway for WooCommerce.

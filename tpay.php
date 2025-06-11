@@ -36,7 +36,7 @@ use Tpay\TpaySF;
 
 require_once 'tpay-functions.php';
 
-define('TPAY_PLUGIN_VERSION', '1.8.4');
+define('TPAY_PLUGIN_VERSION', '1.8.5');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
