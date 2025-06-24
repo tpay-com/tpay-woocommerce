@@ -107,9 +107,9 @@ function init_gateway_tpay()
         return;
     }
 
-//    add_action('init', function() {
-    load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
-//    });
+    add_action('init', function () {
+        load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
+    });
 
     if(!file_exists(__DIR__ . '/vendor/autoload.php')){
         die('Please download release version of module from: '
@@ -123,27 +123,29 @@ function init_gateway_tpay()
     $genericsSelected = tpayOption('global_generic_payments') ?? [];
 
     if (is_admin()) {
-        new TpaySettings();
+        add_action('init', function () {
+            new TpaySettings();
+        });
     }
 
-    $generics = array_map(static function (int $id) {
-        return new class ($id) extends \Tpay\TpayGeneric {
-            public function __construct($id = null)
-            {
-                parent::__construct("tpaygeneric-{$id}", $id);
+    add_filter('woocommerce_payment_gateways', function ($gateways) use ($genericsSelected) {
+        $generics = array_map(static function (int $id) {
+            return new class ($id) extends \Tpay\TpayGeneric {
+                public function __construct($id = null)
+                {
+                    parent::__construct("tpaygeneric-{$id}", $id);
 
-                $channels = $this->channels();
+                    $channels = $this->channels();
 
-                foreach ($channels as $channel) {
-                    if ($channel->id === $id) {
-                        $this->set_icon($channel->image->url);
+                    foreach ($channels as $channel) {
+                        if ($channel->id === $id) {
+                            $this->set_icon($channel->image->url);
+                        }
                     }
                 }
-            }
-        };
-    }, $genericsSelected);
+            };
+        }, $genericsSelected);
 
-    add_filter('woocommerce_payment_gateways', function ($gateways) use ($generics) {
         return array_merge($gateways, $generics);
     });
 }
