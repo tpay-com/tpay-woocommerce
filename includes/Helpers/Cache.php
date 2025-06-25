@@ -2,14 +2,9 @@
 
 namespace Tpay\Helpers;
 
-use Psr\Cache\CacheItemPoolInterface;
-use Psr\SimpleCache\CacheInterface;
-
 class Cache extends \Tpay\OpenApi\Utilities\Cache
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function get($key)
     {
