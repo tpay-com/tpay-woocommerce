@@ -47,7 +47,7 @@ class Client
 
         try {
             $isProd = 'sandbox' != tpayOption('global_tpay_environment');
-            self::$api = new TpayApi($this->apiKey, $this->apiKeyPassword, $isProd, 'read', null, buildInfo());
+            self::$api = new TpayApi($this->cache, $this->apiKey, $this->apiKeyPassword, $isProd, null, buildInfo());
 
             $token = $this->cache->get(self::TOKEN_CACHE_KEY);
 

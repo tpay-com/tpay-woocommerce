@@ -2,8 +2,15 @@
 
 namespace Tpay\Helpers;
 
-class Cache
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\SimpleCache\CacheInterface;
+
+class Cache extends \Tpay\OpenApi\Utilities\Cache
 {
+    public function __construct()
+    {
+    }
+
     public function get($key)
     {
         $key .= ':';
@@ -17,6 +24,13 @@ class Cache
         $key .= ':';
         $key .= tpayOption('global_tpay_environment');
         set_transient($key, $value, $ttl);
+    }
+
+    public function delete($key)
+    {
+        $key .= ':';
+        $key .= tpayOption('global_tpay_environment');
+        delete_transient($key);
     }
 
     public function erase(): void
