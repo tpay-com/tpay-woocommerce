@@ -9,7 +9,7 @@ class CardHelper
     public function save_card(array $card): bool
     {
         if (defined('WP_TPAY_HASH')) {
-            $hash = sha1($card['card_hash'] . WP_TPAY_HASH);
+            $hash = sha1($card['card_hash'].WP_TPAY_HASH);
             DatabaseConnection::delete(self::TABLE, ['hash' => $hash, 'source_order' => null]);
         } else {
             $hash = md5($card['card_hash']);
