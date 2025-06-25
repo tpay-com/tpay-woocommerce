@@ -93,7 +93,7 @@ EOD,
             $user_blik_alias = false;
             $user_has_saved_blik_alias = false;
         } else {
-            $user_blik_alias = WP_TPAY_BLIK_PREFIX.'_'.get_current_user_id();
+            $user_blik_alias = generate_random_string().'_'.get_current_user_id();
             $user_has_saved_blik_alias = (bool) get_user_meta(get_current_user_id(), 'tpay_alias_blik', true);
         }
 

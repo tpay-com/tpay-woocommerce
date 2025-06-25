@@ -99,8 +99,6 @@ add_action('woocommerce_blocks_loaded', function () {
 
 function init_gateway_tpay()
 {
-    tpay_config_init();
-
     if (!class_exists('WC_Payment_Gateway')) {
         childPluginHasParentPlugin();
 

@@ -56,11 +56,6 @@ function displayChildPluginNotice()
     );
 }
 
-function displayConfigPluginNotice()
-{
-    echo sprintf('<div class="error"><p>%s</p></div>', 'Cannot modify wp-config.php, you have to do it manually and add WP_TPAY_HASH and WP_TPAY_BLIK_PREFIX');
-}
-
 function childPluginHasParentPlugin()
 {
     if (is_admin() && current_user_can('activate_plugins')) {
@@ -162,24 +157,6 @@ function generate_random_string($length = 10): string
     return $randomString;
 }
 
-function wp_config_put($slash = '')
-{
-    $hash = generate_random_string(64);
-    $config = file_get_contents(ABSPATH . "wp-config.php");
-
-    if (strpos($config, 'WP_TPAY_HASH') === false) {
-        $config .= PHP_EOL . "define('WP_TPAY_HASH', '" . $hash . "');";
-        file_put_contents(ABSPATH . $slash . "wp-config.php", $config);
-    }
-
-    $hash = generate_random_string();
-
-    if (strpos($config, 'WP_TPAY_BLIK_PREFIX') === false) {
-        $config .= PHP_EOL . "define('WP_TPAY_BLIK_PREFIX', '" . $hash . "');";
-        file_put_contents(ABSPATH . $slash . "wp-config.php", $config);
-    }
-}
-
 function tpay_on_activate()
 {
     global $wpdb;
@@ -196,25 +173,6 @@ function tpay_on_activate()
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
     $wpdb->get_results($sql);
-}
-
-function tpay_config_init()
-{
-    if (file_exists(ABSPATH . "wp-config.php") && is_writable(ABSPATH . "wp-config.php")) {
-        wp_config_put();
-    } else {
-        if (file_exists(dirname(ABSPATH) . "/wp-config.php") && is_writable(dirname(ABSPATH) . "/wp-config.php")) {
-            wp_config_put('/');
-        } else {
-            require_once(ABSPATH . 'wp-admin/includes/plugin.php');
-            add_action('admin_notices', 'displayConfigPluginNotice');
-            deactivate_plugins(plugin_basename(__DIR__ . '/tpay.php'));
-
-            if (filter_input(INPUT_GET, 'activate')) {
-                unset($_GET['activate']);
-            }
-        }
-    }
 }
 
 function tpay_refresh_checkout_on_payment_methods_change()
