@@ -9,6 +9,7 @@ use Throwable;
 use Tpay\Api\Client;
 use Tpay\TpayGateways;
 use Tpay\TpaySettings;
+use WC_Order;
 
 class CancelService
 {
@@ -28,7 +29,7 @@ class CancelService
             try {
                 $this->cancelTransaction($order);
             } catch (Throwable $e) {
-                $logger->warning('Failed to cancel order ' . $order->get_id() . ': ' . $e->getMessage(), ['exception' => $e, 'source' => 'tpay']);
+                $logger->warning('Failed to cancel order '.$order->get_id().': '.$e->getMessage(), ['exception' => $e, 'source' => 'tpay']);
             }
         }
     }
@@ -41,21 +42,20 @@ class CancelService
         }
 
         $date = new DateTime();
-        $date->sub(new DateInterval('P' . $period . 'D'));
+        $date->sub(new DateInterval('P'.$period.'D'));
         $initialDate = $date->format('Y-m-d');
 
         $args = [
             'limit' => -1,
             'type' => 'shop_order',
             'status' => [OrderInternalStatus::PENDING],
-            'date_created' => '<' . $initialDate
+            'date_created' => '<'.$initialDate,
         ];
-        $orders = wc_get_orders($args);
 
-        return $orders;
+        return wc_get_orders($args);
     }
 
-    private function cancelTransaction(\WC_Order $order): void
+    private function cancelTransaction(WC_Order $order): void
     {
         $tpayMethods = array_keys(TpayGateways::gateways_list());
         $isTpayOrder = in_array($order->get_payment_method(), $tpayMethods);
