@@ -25,6 +25,7 @@ use Tpay\Blocks\TpayCCBlock;
 use Tpay\Blocks\TpayGenericBlock;
 use Tpay\Blocks\TpaySFBlock;
 use Tpay\Helpers\Cache;
+use Tpay\Helpers\CancelService;
 use Tpay\OpenApi\Utilities\Logger;
 use Tpay\PekaoInstallments;
 use Tpay\Tpay;
@@ -320,4 +321,14 @@ add_action('woocommerce_review_order_before_payment', function () {
         ]
     );
     wp_enqueue_script('tpay-checkout');
+});
+
+
+add_action( 'wc_admin_daily', function () {
+    if (!tpayOption('global_generic_auto_cancel_enabled')) {
+        return;
+    }
+
+    $service = new CancelService();
+    $service->process();
 });
