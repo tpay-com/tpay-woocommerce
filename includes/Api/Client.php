@@ -2,7 +2,7 @@
 
 namespace Tpay\Api;
 
-use Exception;
+use Throwable;
 use Tpay\Helpers\Cache;
 use Tpay\Helpers\GatewayHelper;
 use Tpay\OpenApi\Api\TpayApi;
@@ -59,7 +59,7 @@ class Client
             }
 
             return self::$api;
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             $this->gatewayHelper->tpay_logger('Bramka Tpay nie została uruchomiona - brak danych lub dane niepoprawne');
             self::$api = false; // microcache that tpay connection is unavailable
             if (is_admin() && strpos($exception->getMessage(), 'Authorization error')) {
