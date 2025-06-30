@@ -2,6 +2,7 @@
 
 namespace Tpay\Ipn;
 
+use Automattic\WooCommerce\Enums\OrderInternalStatus;
 use Exception;
 use Tpay\Helpers;
 use Tpay\OpenApi\Utilities\CacheCertificateProvider;
@@ -154,6 +155,6 @@ class UpdateOrderStatus implements IpnInterface
             }
         }
 
-        return @get_option('tpay_settings_option_name')[$checkedStatus];
+        return tpayOption($checkedStatus) ?? OrderInternalStatus::PROCESSING;
     }
 }
