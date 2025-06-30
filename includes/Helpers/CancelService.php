@@ -6,20 +6,12 @@ use Automattic\WooCommerce\Enums\OrderInternalStatus;
 use DateInterval;
 use DateTime;
 use Throwable;
-use Tpay\Api\Client;
 use Tpay\TpayGateways;
 use Tpay\TpaySettings;
 use WC_Order;
 
 class CancelService
 {
-    private Client $tpayClient;
-
-    public function __construct()
-    {
-        $this->tpayClient = new Client();
-    }
-
     public function process()
     {
         $orders = $this->getCancellableOrders();
@@ -62,9 +54,6 @@ class CancelService
         if (!$isTpayOrder) {
             return;
         }
-        $transactionId = $order->get_transaction_id();
-        $api = $this->tpayClient->connect();
-        $api->transactions()->cancelTransaction($transactionId);
         $order->update_status(OrderInternalStatus::CANCELLED, __('Cancelled automatically due to lack of payment', 'tpay'));
     }
 }

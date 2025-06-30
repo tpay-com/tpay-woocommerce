@@ -328,7 +328,7 @@ class TpaySettings
         $disabled = empty($checked) ? 'disabled="disabled"' : '';
 
         printf(
-            '<input type="number" step="1" value="%s" name="tpay_settings_option_name[%s]" id="%s" %s/>',
+            '<input type="number" min="1" max="30" step="1" value="%s" name="tpay_settings_option_name[%s]" id="%s" %s/>',
             $value,
             $id,
             $id,

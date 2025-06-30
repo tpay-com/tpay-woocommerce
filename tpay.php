@@ -31,6 +31,7 @@ use Tpay\PekaoInstallments;
 use Tpay\Tpay;
 use Tpay\TpayBlik;
 use Tpay\TpayCC;
+use Tpay\TpayGateways;
 use Tpay\TpayLogger;
 use Tpay\TpaySettings;
 use Tpay\TpaySF;
@@ -110,7 +111,7 @@ function init_gateway_tpay()
         load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
     });
 
-    if(!file_exists(__DIR__ . '/vendor/autoload.php')){
+    if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
         die('Please download release version of module from: '
             . '<a href="https://github.com/tpay-com/tpay-woocommerce/releases/latest">'
             . 'https://github.com/tpay-com/tpay-woocommerce/releases/latest</a>');
@@ -324,7 +325,23 @@ add_action('woocommerce_review_order_before_payment', function () {
 });
 
 
-add_action( 'wc_admin_daily', function () {
+add_action('woocommerce_order_status_cancelled', function ($order_id) {
+    $order = wc_get_order($order_id);
+
+    $tpayMethods = array_keys(TpayGateways::gateways_list());
+    $isTpayOrder = in_array($order->get_payment_method(), $tpayMethods);
+    if (!$isTpayOrder) {
+        return;
+    }
+
+    $client = new Client();
+    $transactionId = $order->get_transaction_id();
+    $api = $client->connect();
+    $api->transactions()->cancelTransaction($transactionId);
+
+});
+
+add_action('wc_admin_daily', function () {
     if (!tpayOption('global_generic_auto_cancel_enabled')) {
         return;
     }
