@@ -109,6 +109,10 @@ function init_gateway_tpay()
 
     add_action('init', function () {
         load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
+
+        if ( ! wp_next_scheduled( 'tpay_cancel_transactions' ) && ! wp_installing() ) {
+            wp_schedule_event( time(), 'hourly', 'tpay_cancel_transactions' );
+        }
     });
 
     if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
@@ -334,14 +338,18 @@ add_action('woocommerce_order_status_cancelled', function ($order_id) {
         return;
     }
 
-    $client = new Client();
-    $transactionId = $order->get_transaction_id();
-    $api = $client->connect();
-    $api->transactions()->cancelTransaction($transactionId);
+    try {
+        $client = new Client();
+        $transactionId = $order->get_transaction_id();
+        $api = $client->connect();
+        $api->transactions()->cancelTransaction($transactionId);
+    } catch (Throwable $e) {
+        wc_get_logger()->notice('Failed to cancel Tpay transaction', ['transaction_id' => $transactionId ?? null, 'order_id' => $order_id, 'reason' => $e->getMessage()]);
+    }
 
 });
 
-add_action('wc_admin_daily', function () {
+add_action('tpay_cancel_transactions', function () {
     if (!tpayOption('global_generic_auto_cancel_enabled')) {
         return;
     }

@@ -35,13 +35,15 @@ class CancelService
 
         $date = new DateTime();
         $date->sub(new DateInterval('P'.$period.'D'));
-        $initialDate = $date->format('Y-m-d');
+        $toDate = $date->format('Y-m-d H:i:s');
+        $date->sub(new DateInterval('P1D'));
+        $fromDate = $date->format('Y-m-d 00:00:00');
 
         $args = [
             'limit' => -1,
             'type' => 'shop_order',
             'status' => [OrderInternalStatus::PENDING],
-            'date_created' => '<'.$initialDate,
+            'date_created' => $fromDate.'...'.$toDate,
         ];
 
         return wc_get_orders($args);
