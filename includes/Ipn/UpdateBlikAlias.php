@@ -6,7 +6,7 @@ class UpdateBlikAlias implements IpnInterface
 {
     public function parseNotification($response)
     {
-        $uid = str_replace(WP_TPAY_BLIK_PREFIX.'_', '', $response['msg_value']['value']);
+        [, $uid] = explode('_', $response['msg_value']['value'], 2);
         switch ($response['event']) {
             case 'ALIAS_REGISTER':
                 $this->saveBlikAlias($response['msg_value']['value'], $uid);

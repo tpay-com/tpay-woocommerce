@@ -3,7 +3,7 @@
  * Plugin Name: Tpay Payment Gateway
  * Plugin URI: https://tpay.com
  * Description: Tpay payment gateway for WooCommerce
- * Version: 1.8.5
+ * Version: 1.9.0
  * Author: Krajowy Integrator Płatności S.A.
  * Author URI: http://www.tpay.com
  * License: LGPL 3.0
@@ -25,18 +25,20 @@ use Tpay\Blocks\TpayCCBlock;
 use Tpay\Blocks\TpayGenericBlock;
 use Tpay\Blocks\TpaySFBlock;
 use Tpay\Helpers\Cache;
+use Tpay\Helpers\CancelService;
 use Tpay\OpenApi\Utilities\Logger;
 use Tpay\PekaoInstallments;
 use Tpay\Tpay;
 use Tpay\TpayBlik;
 use Tpay\TpayCC;
+use Tpay\TpayGateways;
 use Tpay\TpayLogger;
 use Tpay\TpaySettings;
 use Tpay\TpaySF;
 
 require_once 'tpay-functions.php';
 
-define('TPAY_PLUGIN_VERSION', '1.8.5');
+define('TPAY_PLUGIN_VERSION', '1.9.0');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
@@ -99,19 +101,21 @@ add_action('woocommerce_blocks_loaded', function () {
 
 function init_gateway_tpay()
 {
-    tpay_config_init();
-
     if (!class_exists('WC_Payment_Gateway')) {
         childPluginHasParentPlugin();
 
         return;
     }
 
-//    add_action('init', function() {
-    load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
-//    });
+    add_action('init', function () {
+        load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
 
-    if(!file_exists(__DIR__ . '/vendor/autoload.php')){
+        if ( ! wp_next_scheduled( 'tpay_cancel_transactions' ) && ! wp_installing() ) {
+            wp_schedule_event( time(), 'hourly', 'tpay_cancel_transactions' );
+        }
+    });
+
+    if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
         die('Please download release version of module from: '
             . '<a href="https://github.com/tpay-com/tpay-woocommerce/releases/latest">'
             . 'https://github.com/tpay-com/tpay-woocommerce/releases/latest</a>');
@@ -123,27 +127,29 @@ function init_gateway_tpay()
     $genericsSelected = tpayOption('global_generic_payments') ?? [];
 
     if (is_admin()) {
-        new TpaySettings();
+        add_action('init', function () {
+            new TpaySettings();
+        });
     }
 
-    $generics = array_map(static function (int $id) {
-        return new class ($id) extends \Tpay\TpayGeneric {
-            public function __construct($id = null)
-            {
-                parent::__construct("tpaygeneric-{$id}", $id);
+    add_filter('woocommerce_payment_gateways', function ($gateways) use ($genericsSelected) {
+        $generics = array_map(static function (int $id) {
+            return new class ($id) extends \Tpay\TpayGeneric {
+                public function __construct($id = null)
+                {
+                    parent::__construct("tpaygeneric-{$id}", $id);
 
-                $channels = $this->channels();
+                    $channels = $this->channels();
 
-                foreach ($channels as $channel) {
-                    if ($channel->id === $id) {
-                        $this->set_icon($channel->image->url);
+                    foreach ($channels as $channel) {
+                        if ($channel->id === $id) {
+                            $this->set_icon($channel->image->url);
+                        }
                     }
                 }
-            }
-        };
-    }, $genericsSelected);
+            };
+        }, $genericsSelected);
 
-    add_filter('woocommerce_payment_gateways', function ($gateways) use ($generics) {
         return array_merge($gateways, $generics);
     });
 }
@@ -320,4 +326,34 @@ add_action('woocommerce_review_order_before_payment', function () {
         ]
     );
     wp_enqueue_script('tpay-checkout');
+});
+
+
+add_action('woocommerce_order_status_cancelled', function ($order_id) {
+    $order = wc_get_order($order_id);
+
+    $tpayMethods = array_keys(TpayGateways::gateways_list());
+    $isTpayOrder = in_array($order->get_payment_method(), $tpayMethods);
+    if (!$isTpayOrder) {
+        return;
+    }
+
+    try {
+        $client = new Client();
+        $transactionId = $order->get_transaction_id();
+        $api = $client->connect();
+        $api->transactions()->cancelTransaction($transactionId);
+    } catch (Throwable $e) {
+        wc_get_logger()->notice('Failed to cancel Tpay transaction', ['transaction_id' => $transactionId ?? null, 'order_id' => $order_id, 'reason' => $e->getMessage()]);
+    }
+
+});
+
+add_action('tpay_cancel_transactions', function () {
+    if (!tpayOption('global_generic_auto_cancel_enabled')) {
+        return;
+    }
+
+    $service = new CancelService();
+    $service->process();
 });

@@ -39,12 +39,14 @@
   color: #fff;
   padding: 5px 10px;
   border-radius: 5px;
-  white-space: nowrap;
   z-index: 100;
   opacity: 0;
   transition: opacity 0.3s;
   visibility: hidden;
-  width: max-content; /* Adjust based on content */
+  min-width: 200px;
+  width: max-content;
+  max-width: 500px;
+  text-wrap: pretty;
 }
 
 .tpay-help-tip:hover::after {

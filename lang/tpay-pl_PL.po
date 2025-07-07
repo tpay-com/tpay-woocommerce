@@ -501,6 +501,18 @@ msgstr "Easy ON-site"
 msgid "To select multiple items hold CTRL button"
 msgstr "Żeby zaznaczyć wiele elementów przytrzymaj przycisk CTRL"
 
+msgid "Automatic order cancellation"
+msgstr "Automatyczne anulowanie zamówień"
+
+msgid "Cancelled automatically due to lack of payment"
+msgstr "Anulowane automatycznie z uwagi na brak płatności"
+
+msgid "When enabled once a day Your store will try to analyse orders in pending payment status and cancel those older than number of days specified in next configuration option"
+msgstr "Gdy włączone sklep raz dziennie podjmie próbę analizy zamówień w stanie oczekujące na opłacenie i anuluje te starsze niż liczba dni podana w kolejnym polu konfiguracji"
+
+msgid "Number of days"
+msgstr "Liczba dni"
+
 msgid "Successful payment status for virtual products"
 msgstr "Domyślny status po opłaceniu, dla produktów wirtualnych"
 

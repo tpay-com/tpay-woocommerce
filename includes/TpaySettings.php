@@ -8,6 +8,8 @@ use Tpay\Helpers\Cache;
 
 class TpaySettings
 {
+    const CANCEL_DEFAULT_PERIOD = 30;
+
     private $tpay_settings_options;
     private $fields;
     private $transactions;
@@ -229,6 +231,19 @@ class TpaySettings
                 'description' => __('To select multiple items hold CTRL button', 'tpay'),
             ]
         );
+
+        add_settings_field(
+            'global_generic_auto_cancel_enabled',
+            __('Automatic order cancellation', 'tpay'),
+            [$this, 'global_cancel_callback'],
+            'tpay-settings-admin',
+            'tpay_settings_setting_section',
+            [
+                'id' => 'global_generic_auto_cancel_enabled',
+                'description' => esc_html__('When enabled once a day Your store will try to analyse orders in pending payment status and cancel those older than number of days specified in next configuration option', 'tpay'),
+                'type' => 'checkbox',
+            ]
+        );
     }
 
     /** @param array $args */
@@ -280,6 +295,45 @@ class TpaySettings
         if (isset($args['description']) && $args['description']) {
             echo "<span class='tpay-help-tip' aria-label='{$args['description']}'><strong>?</strong></span>";
         }
+    }
+
+    public function global_cancel_callback($args)
+    {
+        $id = $args['id'];
+        $value = isset($this->tpay_settings_options[$id]) ? esc_attr($this->tpay_settings_options[$id]) : '';
+        $checked = '';
+
+        if (1 == $value) {
+            $checked = 'checked="checked"';
+        }
+
+        printf(
+            '<input type="checkbox" class="regular-text" value="1" name="tpay_settings_option_name[%s]" id="%s" %s onchange="document.getElementById(\'global_generic_auto_cancel_days\').disabled = !this.checked;"/>',
+            $id,
+            $id,
+            $checked
+        );
+
+        echo ' '.esc_html__('Enable', 'tpay');
+        if (isset($args['description']) && $args['description']) {
+            echo "<span class='tpay-help-tip' aria-label='{$args['description']}'><strong>?</strong></span>";
+        }
+
+        echo '<br />';
+
+        echo esc_html__('Number of days', 'tpay').': ';
+
+        $id = 'global_generic_auto_cancel_days';
+        $value = isset($this->tpay_settings_options[$id]) ? esc_attr($this->tpay_settings_options[$id]) : self::CANCEL_DEFAULT_PERIOD;
+        $disabled = empty($checked) ? 'disabled="disabled"' : '';
+
+        printf(
+            '<input type="number" min="1" max="30" step="1" value="%s" name="tpay_settings_option_name[%s]" id="%s" %s/>',
+            $value,
+            $id,
+            $id,
+            $disabled,
+        );
     }
 
     /**
@@ -349,6 +403,23 @@ class TpaySettings
 
         if (isset($input['global_generic_payments'])) {
             $sanitary_values['global_generic_payments'] = $input['global_generic_payments'];
+        }
+
+        if (isset($input['global_generic_auto_cancel_enabled'])) {
+            $sanitary_values['global_generic_auto_cancel_enabled'] = (int) $input['global_generic_auto_cancel_enabled'];
+        }
+
+        if (isset($input['global_generic_auto_cancel_days'])) {
+            $sanitary_values['global_generic_auto_cancel_days'] = abs((int) $input['global_generic_auto_cancel_days']);
+        }
+        if (empty($this->tpay_settings_options)) {
+            $this->tpay_settings_options = tpayOption();
+        }
+        if (empty($sanitary_values['global_generic_auto_cancel_days'])) {
+            $sanitary_values['global_generic_auto_cancel_days'] = self::CANCEL_DEFAULT_PERIOD;
+            if (isset($this->tpay_settings_options['global_generic_auto_cancel_days'])) {
+                $sanitary_values['global_generic_auto_cancel_days'] = $this->tpay_settings_options['global_generic_auto_cancel_days'];
+            }
         }
 
         return $sanitary_values;

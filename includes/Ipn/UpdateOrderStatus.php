@@ -2,8 +2,10 @@
 
 namespace Tpay\Ipn;
 
+use Automattic\WooCommerce\Enums\OrderInternalStatus;
 use Exception;
 use Tpay\Helpers;
+use Tpay\OpenApi\Utilities\CacheCertificateProvider;
 use Tpay\OpenApi\Webhook\JWSVerifiedPaymentNotification;
 use Tpay\Repository\OrderRepository;
 use WC_Order;
@@ -13,12 +15,14 @@ class UpdateOrderStatus implements IpnInterface
     private $gateway_helper;
     private $card_helper;
     private $orderRepository;
+    private $certificateProvider;
 
     public function __construct()
     {
         $this->gateway_helper = new Helpers\GatewayHelper();
         $this->card_helper = new Helpers\CardHelper();
         $this->orderRepository = new OrderRepository();
+        $this->certificateProvider = new CacheCertificateProvider(new Helpers\Cache());
     }
 
     public function parseNotification($response)
@@ -33,7 +37,7 @@ class UpdateOrderStatus implements IpnInterface
         $order_method = $order->get_payment_method();
         $class = TPAY_CLASSMAP[$order_method] ?? null;
 
-        if (!class_exists($class)) {
+        if (null === $class || !class_exists($class)) {
             if (!str_starts_with($order_method, 'tpaygeneric-')) {
                 echo 'FALSE - unsupported payment method: '.$order_method;
                 exit();
@@ -62,6 +66,7 @@ class UpdateOrderStatus implements IpnInterface
         $isProd = 'sandbox' != tpayOption('global_tpay_environment');
         try {
             $NotificationWebhook = new JWSVerifiedPaymentNotification(
+                $this->certificateProvider,
                 $config['security_code'],
                 $isProd
             );
@@ -150,6 +155,6 @@ class UpdateOrderStatus implements IpnInterface
             }
         }
 
-        return @get_option('tpay_settings_option_name')[$checkedStatus];
+        return tpayOption($checkedStatus) ?? OrderInternalStatus::PROCESSING;
     }
 }

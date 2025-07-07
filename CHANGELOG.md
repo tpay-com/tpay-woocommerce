@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0]
+
+### Added
+
+- Option to automatically cancel payment pending orders after selected number of days
+
+### Changed
+
+- Uses Tpay OpenApi SDK 2.0 
+
+### Fixed
+
+- Resolves issue with translations loading to early (produced warning to logs)
+
+### Removed
+
+- Dependency on additional constants added to `wp-config.php` file added during plugin initialization
+
 ## [1.8.5]
 
 ### Fixed
