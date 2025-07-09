@@ -137,6 +137,7 @@ class TpayBlik extends TpayGateways
 
     public function process_transaction(WC_Order $order)
     {
+        $this->payment_data = apply_filters('tpay_transport_before_transaction', $this->payment_data, $order);
         try {
             $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection(
                 $this->payment_data
@@ -151,6 +152,7 @@ class TpayBlik extends TpayGateways
         }
 
         if ($this->blik0_is_active()) {
+            $this->additional_payment_data = apply_filters('tpay_transport_before_pay', $this->additional_payment_data, $order);
             $this->tpay_api()->transactions()->createInstantPaymentByTransactionId(
                 $this->additional_payment_data,
                 $transaction['transactionId']
@@ -297,6 +299,8 @@ class TpayBlik extends TpayGateways
                 'blikToken' => $blikCode,
             ],
         ];
+
+        $additional_payment_data = apply_filters('tpay_transport_before_pay', $additional_payment_data, null);
 
         return $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($additional_payment_data, $transactionId);
     }

@@ -58,6 +58,22 @@ Accept online payments in a safe and fast way.**
   integration.
   If you have any questions, please contact our [technical support](https://tpay.com/en#contact).
 
+### Exposed filters
+
+Plugin exposes filters for customization behaviour:
+
+#### `tpay_transport_before_transaction`
+
+Contains payload for transaction creation API request. (`POST /transaction`)
+
+`WC_Order` instance passed as second parameter.
+
+#### `tpay_transport_before_pay`
+
+Contains payload for transaction payment API request. (`POST /transaction/{transactionId}/pay`)
+
+`WC_Order` instance or `null` (for subsequent BLIK payment attempts) passed as second parameter.
+
 ### Frequently Asked Questions
 
 #### What do I need to use the plugin:

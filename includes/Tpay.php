@@ -181,6 +181,7 @@ class Tpay extends TpayGateways
             ],
         ];
 
+        $payment_data = apply_filters('tpay_transport_before_transaction', $payment_data, $order);
         $transaction = $this->tpay_api()->transactions()->createTransaction($payment_data);
 
         if (!isset($transaction['transactionPaymentUrl'])) {
