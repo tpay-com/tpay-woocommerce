@@ -92,6 +92,7 @@ class TpaySF extends TpayGateways
             $crc = $this->createCRC($order->get_id());
             $payment_data['hiddenDescription'] = $crc;
 
+            $payment_data = apply_filters('tpay_transport_before_transaction', $payment_data, $order);
             try {
                 $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($payment_data);
             } catch (Error $e) {
@@ -99,6 +100,7 @@ class TpaySF extends TpayGateways
 
                 return false;
             }
+            $paydata = apply_filters('tpay_transport_before_pay', $paydata, $order);
             $result = $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($paydata, $transaction['transactionId']);
 
             if ('success' == $result['result']) {
@@ -201,6 +203,7 @@ class TpaySF extends TpayGateways
 
     public function process_transaction(WC_Order $order)
     {
+        $this->payment_data = apply_filters('tpay_transport_before_transaction', $this->payment_data, $order);
         try {
             $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
         } catch (Error $e) {
@@ -214,6 +217,7 @@ class TpaySF extends TpayGateways
         $order->update_meta_data('md5_checksum', $md5);
         $order->update_meta_data('crc', $this->crc);
 
+        $this->additional_payment_data = apply_filters('tpay_transport_before_pay', $this->additional_payment_data, $order);
         $result = $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($this->additional_payment_data, $transaction['transactionId']);
 
         if ('success' == $result['result']) {
