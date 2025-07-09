@@ -301,6 +301,7 @@ class TpayBlik extends TpayGateways
         ];
 
         $additional_payment_data = apply_filters('tpay_transport_before_pay', $additional_payment_data, null);
+
         return $this->tpay_api()->transactions()->createInstantPaymentByTransactionId($additional_payment_data, $transactionId);
     }
 }
