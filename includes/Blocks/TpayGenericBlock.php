@@ -4,6 +4,7 @@ namespace Tpay\Blocks;
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 use Tpay\TpayGeneric;
+use Tpay\TpaySettings;
 
 final class TpayGenericBlock extends AbstractPaymentMethodType
 {
@@ -39,7 +40,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_script_handles(): array
     {
-        $assetPath = plugin_dir_path(__FILE__).'views/assets/checkout.min.asset.php';
+        $assetPath = plugin_dir_path(__FILE__) . 'views/assets/checkout.min.asset.php';
         $dependencies = [];
         $version = TPAY_PLUGIN_VERSION;
 
@@ -51,7 +52,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         wp_register_script(
             'tpaygeneric',
-            plugin_dir_url(__DIR__).'../views/assets/checkout-blocks.min.js',
+            plugin_dir_url(__DIR__) . '../views/assets/checkout-blocks.min.js',
             $dependencies,
             $version,
             true
@@ -73,13 +74,23 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         $channels = $this->gateway->channels();
         $generics = tpayOption('global_generic_payments');
+        if (!is_array($generics)) {
+            $generics = [];
+        }
+
+        $generics = array_unique($generics);
+
         $availablePayments = WC()->payment_gateways()->get_available_payment_gateways();
 
         foreach ($channels as $channel) {
-            if (in_array($channel->id, $generics) && in_array("tpaygeneric-{$channel->id}", array_keys($availablePayments))) {
+            if (in_array($channel->id, $generics) && in_array(
+                    "tpaygeneric-{$channel->id}",
+                    array_keys($availablePayments)
+                )) {
                 $config[$channel->id] = [
                     'id' => $channel->id,
                     'title' => $channel->fullName,
+                    'description' => $this->gateway->description,
                     'icon' => $channel->image->url,
                     'fields' => $fields,
                     'constraints' => $channel->constraints,
