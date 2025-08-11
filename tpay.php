@@ -141,7 +141,6 @@ function init_gateway_tpay()
                 public function __construct($id = null)
                 {
                     parent::__construct("tpaygeneric-{$id}", $id);
-
                     $channels = $this->channels();
 
                     foreach ($channels as $channel) {

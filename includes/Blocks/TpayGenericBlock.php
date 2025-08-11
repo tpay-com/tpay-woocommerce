@@ -87,12 +87,14 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
                     "tpaygeneric-{$channel->id}",
                     array_keys($availablePayments)
                 )) {
+
+                $fieldsCopy = wpautop(wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description'])).$fields;
                 $config[$channel->id] = [
                     'id' => $channel->id,
-                    'title' => $channel->fullName,
-                    'description' => $this->gateway->description,
+                    'title' => $availablePayments["tpaygeneric-{$channel->id}"]->title,
+                    'description' => $availablePayments["tpaygeneric-{$channel->id}"]->settings['description'],
                     'icon' => $channel->image->url,
-                    'fields' => $fields,
+                    'fields' => $fieldsCopy,
                     'constraints' => $channel->constraints,
                     'total' => $this->gateway->getCartTotal(),
                 ];
