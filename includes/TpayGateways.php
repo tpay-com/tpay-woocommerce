@@ -425,7 +425,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         if (!$api) {
             return [];
         }
-        $ttl = 1_200;
+        $ttl = 1200;
 
         try {
             $result = $api->transactions()->getBankGroups($onlineOnly);
