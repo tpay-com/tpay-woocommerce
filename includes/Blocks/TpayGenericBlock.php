@@ -4,7 +4,6 @@ namespace Tpay\Blocks;
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 use Tpay\TpayGeneric;
-use Tpay\TpaySettings;
 
 final class TpayGenericBlock extends AbstractPaymentMethodType
 {
@@ -40,7 +39,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_script_handles(): array
     {
-        $assetPath = plugin_dir_path(__FILE__) . 'views/assets/checkout.min.asset.php';
+        $assetPath = plugin_dir_path(__FILE__).'views/assets/checkout.min.asset.php';
         $dependencies = [];
         $version = TPAY_PLUGIN_VERSION;
 
@@ -52,7 +51,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         wp_register_script(
             'tpaygeneric',
-            plugin_dir_url(__DIR__) . '../views/assets/checkout-blocks.min.js',
+            plugin_dir_url(__DIR__).'../views/assets/checkout-blocks.min.js',
             $dependencies,
             $version,
             true
@@ -84,15 +83,14 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         foreach ($channels as $channel) {
             if (in_array($channel->id, $generics) && in_array(
-                    "tpaygeneric-{$channel->id}",
-                    array_keys($availablePayments)
-                )) {
-
+                "tpaygeneric-{$channel->id}",
+                array_keys($availablePayments)
+            )) {
                 $fieldsCopy = wpautop(wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description'])).$fields;
                 $config[$channel->id] = [
                     'id' => $channel->id,
                     'title' => $availablePayments["tpaygeneric-{$channel->id}"]->title,
-                    'description' => $availablePayments["tpaygeneric-{$channel->id}"]->settings['description'],
+                    'description' => '',
                     'icon' => $channel->image->url,
                     'fields' => $fieldsCopy,
                     'constraints' => $channel->constraints,

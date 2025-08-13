@@ -9,17 +9,19 @@ use Tpay\Helpers\Cache;
 class TpaySettings
 {
     const CANCEL_DEFAULT_PERIOD = 30;
+    const GENERICS_MOVED_OUTSIDE = [
+        84, // BLIK BNPL
+        86,
+        85,
+        17,
+        20,
+        30,
+        90,
+    ];
 
     private $tpay_settings_options;
     private $fields;
     private $transactions;
-
-    const GENERICS_MOVED_OUTSIDE = [
-            84, //BLIK BNPL
-            86,
-            85,
-            17
-    ];
 
     public function __construct()
     {
@@ -33,24 +35,24 @@ class TpaySettings
     public static function tpay_fields()
     {
         return [
-                'security_code' => [
-                        'label' => esc_html__('Security code', 'tpay'),
-                        'description' => esc_html__('You find in Merchant\'s Panel: Settings -> Notifications', 'tpay'),
-                ],
-                'api_key' => [
-                        'label' => esc_html__('Client ID', 'tpay'),
-                        'description' => esc_html__(
-                                'You find in Merchant\'s Panel: Integration -> API -> Open Api Keys section',
-                                'tpay'
-                        ),
-                ],
-                'api_key_password' => [
-                        'label' => esc_html__('Secret', 'tpay'),
-                        'description' => esc_html__(
-                                'You find in Merchant\'s Panel: Integration -> API -> Open Api Keys section',
-                                'tpay'
-                        ),
-                ],
+            'security_code' => [
+                'label' => esc_html__('Security code', 'tpay'),
+                'description' => esc_html__('You find in Merchant\'s Panel: Settings -> Notifications', 'tpay'),
+            ],
+            'api_key' => [
+                'label' => esc_html__('Client ID', 'tpay'),
+                'description' => esc_html__(
+                    'You find in Merchant\'s Panel: Integration -> API -> Open Api Keys section',
+                    'tpay'
+                ),
+            ],
+            'api_key_password' => [
+                'label' => esc_html__('Secret', 'tpay'),
+                'description' => esc_html__(
+                    'You find in Merchant\'s Panel: Integration -> API -> Open Api Keys section',
+                    'tpay'
+                ),
+            ],
         ];
     }
 
@@ -59,13 +61,13 @@ class TpaySettings
         $capability = apply_filters('tpay_settings_add_plugin_page_capability', 'manage_options', []);
 
         add_submenu_page(
-                'woocommerce',
-                esc_html__('Tpay settings', 'tpay'), // page_title
-                esc_html__('Tpay settings', 'tpay'), // menu_title
-                $capability, // capability
-                'tpay-settings', // menu_slug
-                [$this, 'tpay_settings_create_admin_page'], // function
-                100
+            'woocommerce',
+            esc_html__('Tpay settings', 'tpay'), // page_title
+            esc_html__('Tpay settings', 'tpay'), // menu_title
+            $capability, // capability
+            'tpay-settings', // menu_slug
+            [$this, 'tpay_settings_create_admin_page'], // function
+            100
         );
     }
 
@@ -83,9 +85,9 @@ class TpaySettings
             <form method="post" action="options.php">
                 <?php
                 settings_fields('tpay_settings_option_group');
-                do_settings_sections('tpay-settings-admin');
-                submit_button();
-                ?>
+        do_settings_sections('tpay-settings-admin');
+        submit_button();
+        ?>
             </form>
         </div>
         <?php
@@ -94,137 +96,137 @@ class TpaySettings
     public function tpay_settings_page_init()
     {
         register_setting(
-                'tpay_settings_option_group', // option_group
-                'tpay_settings_option_name', // option_name
-                [$this, 'tpay_settings_sanitize'] // sanitize_callback
+            'tpay_settings_option_group', // option_group
+            'tpay_settings_option_name', // option_name
+            [$this, 'tpay_settings_sanitize'] // sanitize_callback
         );
 
         // global
         add_settings_section(
-                'tpay_settings_setting_section', // id
-                esc_html__('Tpay config global', 'tpay'), // title
-                [], // callback
-                'tpay-settings-admin' // page
+            'tpay_settings_setting_section', // id
+            esc_html__('Tpay config global', 'tpay'), // title
+            [], // callback
+            'tpay-settings-admin' // page
         );
         foreach ($this->fields as $field => $desc) {
             $args = [
-                    'id' => 'global_' . $field,
-                    'desc' => $desc['label'],
-                    'name' => 'tpay_settings_option_name',
-                    'description' => $desc['description'],
+                'id' => 'global_'.$field,
+                'desc' => $desc['label'],
+                'name' => 'tpay_settings_option_name',
+                'description' => $desc['description'],
             ];
             add_settings_field(
-                    $args['id'], // id
-                    $args['desc'], // title
-                    [$this, 'global_callback'], // callback
-                    'tpay-settings-admin', // page
-                    'tpay_settings_setting_section',
-                    $args
+                $args['id'], // id
+                $args['desc'], // title
+                [$this, 'global_callback'], // callback
+                'tpay-settings-admin', // page
+                'tpay_settings_setting_section',
+                $args
             );
         }
 
         add_settings_field(
-                'global_tpay_environment', // id
-                esc_html__('Tpay environment', 'tpay'), // title
-                [$this, 'global_change_environment_callback'], // callback
-                'tpay-settings-admin', // page
-                'tpay_settings_setting_section' // section
+            'global_tpay_environment', // id
+            esc_html__('Tpay environment', 'tpay'), // title
+            [$this, 'global_change_environment_callback'], // callback
+            'tpay-settings-admin', // page
+            'tpay_settings_setting_section' // section
         );
 
         $args = [
-                'id' => 'global_merchant_email',
-                'desc' => esc_html__('Merchant email', 'tpay'),
-                'name' => 'tpay_settings_option_name',
-                'required' => true,
-                'type' => 'email',
-                'step' => '',
+            'id' => 'global_merchant_email',
+            'desc' => esc_html__('Merchant email', 'tpay'),
+            'name' => 'tpay_settings_option_name',
+            'required' => true,
+            'type' => 'email',
+            'step' => '',
         ];
         add_settings_field(
+            $args['id'], // id
+            $args['desc'], // title
+            [$this, 'global_callback'], // callback
+            'tpay-settings-admin', // page
+            'tpay_settings_setting_section', // section
+            $args
+        );
+        add_settings_field(
+            'global_default_on_hold_status', // id
+            esc_html__('Successful payment status', 'tpay'), // title
+            [$this, 'global_default_on_hold_status_callback'], // callback
+            'tpay-settings-admin', // page
+            'tpay_settings_setting_section' // section
+        );
+
+        add_settings_field(
+            'global_default_virtual_product_on_hold_status', // id
+            esc_html__('Successful payment status for virtual products', 'tpay'), // title
+            [$this, 'global_default_virtual_product_on_hold_status_callback'], // callback
+            'tpay-settings-admin', // page
+            'tpay_settings_setting_section' // section
+        );
+
+        if (false === \WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout')) {
+            add_settings_field(
+                'enable_fee', // id
+                esc_html__('Enable fee', 'tpay'), // title
+                [$this, 'global_enable_fee_callback_callback'], // callback
+                'tpay-settings-admin', // page
+                'tpay_settings_setting_section' // section
+            );
+            $args = [
+                'id' => 'global_amount_fee',
+                'desc' => esc_html__('Amount fee', 'tpay'),
+                'name' => 'tpay_settings_option_name',
+                'type' => 'number',
+                'step' => '0.01',
+            ];
+            add_settings_field(
                 $args['id'], // id
                 $args['desc'], // title
                 [$this, 'global_callback'], // callback
                 'tpay-settings-admin', // page
                 'tpay_settings_setting_section', // section
                 $args
-        );
-        add_settings_field(
-                'global_default_on_hold_status', // id
-                esc_html__('Successful payment status', 'tpay'), // title
-                [$this, 'global_default_on_hold_status_callback'], // callback
-                'tpay-settings-admin', // page
-                'tpay_settings_setting_section' // section
-        );
-
-        add_settings_field(
-                'global_default_virtual_product_on_hold_status', // id
-                esc_html__('Successful payment status for virtual products', 'tpay'), // title
-                [$this, 'global_default_virtual_product_on_hold_status_callback'], // callback
-                'tpay-settings-admin', // page
-                'tpay_settings_setting_section' // section
-        );
-
-        if (false === \WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout')) {
-            add_settings_field(
-                    'enable_fee', // id
-                    esc_html__('Enable fee', 'tpay'), // title
-                    [$this, 'global_enable_fee_callback_callback'], // callback
-                    'tpay-settings-admin', // page
-                    'tpay_settings_setting_section' // section
-            );
-            $args = [
-                    'id' => 'global_amount_fee',
-                    'desc' => esc_html__('Amount fee', 'tpay'),
-                    'name' => 'tpay_settings_option_name',
-                    'type' => 'number',
-                    'step' => '0.01',
-            ];
-            add_settings_field(
-                    $args['id'], // id
-                    $args['desc'], // title
-                    [$this, 'global_callback'], // callback
-                    'tpay-settings-admin', // page
-                    'tpay_settings_setting_section', // section
-                    $args
             );
 
             $args = [
-                    'id' => 'global_percentage_fee',
-                    'desc' => esc_html__('Percentage fee', 'tpay'),
-                    'name' => 'tpay_settings_option_name',
-                    'type' => 'number',
-                    'step' => '0.01',
+                'id' => 'global_percentage_fee',
+                'desc' => esc_html__('Percentage fee', 'tpay'),
+                'name' => 'tpay_settings_option_name',
+                'type' => 'number',
+                'step' => '0.01',
             ];
             add_settings_field(
-                    $args['id'], // id
-                    $args['desc'], // title
-                    [$this, 'global_callback'], // callback
-                    'tpay-settings-admin', // page
-                    'tpay_settings_setting_section', // section
-                    $args
+                $args['id'], // id
+                $args['desc'], // title
+                [$this, 'global_callback'], // callback
+                'tpay-settings-admin', // page
+                'tpay_settings_setting_section', // section
+                $args
             );
         }
 
         add_settings_field(
-                'global_render_payment_type', // id
-                esc_html__('Displaying the list of payments', 'tpay'), // title
-                [$this, 'global_render_payment_type_callback'], // callback
-                'tpay-settings-admin', // page
-                'tpay_settings_setting_section' // section
+            'global_render_payment_type', // id
+            esc_html__('Displaying the list of payments', 'tpay'), // title
+            [$this, 'global_render_payment_type_callback'], // callback
+            'tpay-settings-admin', // page
+            'tpay_settings_setting_section' // section
         );
 
         add_settings_field(
-                'global_tax_id_meta_field_name',
-                esc_html__('Tax identifier field name', 'tpay'),
-                [$this, 'global_callback'],
-                'tpay-settings-admin',
-                'tpay_settings_setting_section',
-                [
-                        'id' => 'global_tax_id_meta_field_name',
-                        'description' => esc_html__(
-                                'If you\'re added extra meta data including tax id to order - place here meta field name',
-                                'tpay'
-                        ),
-                ]
+            'global_tax_id_meta_field_name',
+            esc_html__('Tax identifier field name', 'tpay'),
+            [$this, 'global_callback'],
+            'tpay-settings-admin',
+            'tpay_settings_setting_section',
+            [
+                'id' => 'global_tax_id_meta_field_name',
+                'description' => esc_html__(
+                    'If you\'re added extra meta data including tax id to order - place here meta field name',
+                    'tpay'
+                ),
+            ]
         );
 
         $channels = $this->transactions->channels();
@@ -237,49 +239,49 @@ class TpaySettings
                 continue;
             }
             add_settings_field(
-                    'global_generic_payments_' . $id,
-                    __($channelNames[$id], 'tpay'),
-                    [$this, 'global_generic_payments_checkbox_callback'],
-                    'tpay-settings-admin',
-                    'tpay_settings_setting_section',
-                    [
-                            'id' => $id,
-                    ]
+                'global_generic_payments_'.$id,
+                __($channelNames[$id], 'tpay'),
+                [$this, 'global_generic_payments_checkbox_callback'],
+                'tpay-settings-admin',
+                'tpay_settings_setting_section',
+                [
+                    'id' => $id,
+                ]
             );
         }
 
         add_settings_field(
-                'global_generic_payments',
-                __('Easy ON-site', 'tpay'),
-                [$this, 'global_generic_payments_callback'],
-                'tpay-settings-admin',
-                'tpay_settings_setting_section',
-                [
-                        'id' => 'global_generic_payments',
-                        'description' => __('To select multiple items hold CTRL button', 'tpay'),
-                ]
+            'global_generic_payments',
+            __('Easy ON-site', 'tpay'),
+            [$this, 'global_generic_payments_callback'],
+            'tpay-settings-admin',
+            'tpay_settings_setting_section',
+            [
+                'id' => 'global_generic_payments',
+                'description' => __('To select multiple items hold CTRL button', 'tpay'),
+            ]
         );
 
         add_settings_field(
-                'global_generic_auto_cancel_enabled',
-                __('Automatic order cancellation', 'tpay'),
-                [$this, 'global_cancel_callback'],
-                'tpay-settings-admin',
-                'tpay_settings_setting_section',
-                [
-                        'id' => 'global_generic_auto_cancel_enabled',
-                        'description' => esc_html__(
-                                'When enabled once a day Your store will try to analyse orders in pending payment status and cancel those older than number of days specified in next configuration option',
-                                'tpay'
-                        ),
-                        'type' => 'checkbox',
-                ]
+            'global_generic_auto_cancel_enabled',
+            __('Automatic order cancellation', 'tpay'),
+            [$this, 'global_cancel_callback'],
+            'tpay-settings-admin',
+            'tpay_settings_setting_section',
+            [
+                'id' => 'global_generic_auto_cancel_enabled',
+                'description' => esc_html__(
+                    'When enabled once a day Your store will try to analyse orders in pending payment status and cancel those older than number of days specified in next configuration option',
+                    'tpay'
+                ),
+                'type' => 'checkbox',
+            ]
         );
     }
 
     public function global_generic_payments_checkbox_callback($args)
     {
-        $id = 'global_generic_payments_' . $args['id'];
+        $id = 'global_generic_payments_'.$args['id'];
         $channels = $this->transactions->channels();
         $checkedChannels = tpayOption('global_generic_payments') ?? [];
         if (!is_array($checkedChannels)) {
@@ -292,10 +294,10 @@ class TpaySettings
         }
         $id = $args['id'];
         printf(
-                '<input type="checkbox" class="regular-text" value="%s" name="tpay_settings_option_name[global_generic_payments][]" id="global_generic_payments_%s" %s/>',
-                $id,
-                $id,
-                $checked
+            '<input type="checkbox" class="regular-text" value="%s" name="tpay_settings_option_name[global_generic_payments][]" id="global_generic_payments_%s" %s/>',
+            $id,
+            $id,
+            $checked
         );
     }
 
@@ -314,14 +316,14 @@ class TpaySettings
         }
 
         printf(
-                '<input type="%s" step="%s" class="regular-text" value="%s" name="tpay_settings_option_name[%s]" id="%s" %s %s/>',
-                $type,
-                $step,
-                $value,
-                $id,
-                $id,
-                $required,
-                $checked
+            '<input type="%s" step="%s" class="regular-text" value="%s" name="tpay_settings_option_name[%s]" id="%s" %s %s/>',
+            $type,
+            $step,
+            $value,
+            $id,
+            $id,
+            $required,
+            $checked
         );
 
         if (isset($args['description']) && $args['description']) {
@@ -368,33 +370,33 @@ class TpaySettings
         }
 
         printf(
-                '<input type="checkbox" class="regular-text" value="1" name="tpay_settings_option_name[%s]" id="%s" %s onchange="document.getElementById(\'global_generic_auto_cancel_days\').disabled = !this.checked;"/>',
-                $id,
-                $id,
-                $checked
+            '<input type="checkbox" class="regular-text" value="1" name="tpay_settings_option_name[%s]" id="%s" %s onchange="document.getElementById(\'global_generic_auto_cancel_days\').disabled = !this.checked;"/>',
+            $id,
+            $id,
+            $checked
         );
 
-        echo ' ' . esc_html__('Enable', 'tpay');
+        echo ' '.esc_html__('Enable', 'tpay');
         if (isset($args['description']) && $args['description']) {
             echo "<span class='tpay-help-tip' aria-label='{$args['description']}'><strong>?</strong></span>";
         }
 
         echo '<br />';
 
-        echo esc_html__('Number of days', 'tpay') . ': ';
+        echo esc_html__('Number of days', 'tpay').': ';
 
         $id = 'global_generic_auto_cancel_days';
         $value = isset($this->tpay_settings_options[$id]) ? esc_attr(
-                $this->tpay_settings_options[$id]
+            $this->tpay_settings_options[$id]
         ) : self::CANCEL_DEFAULT_PERIOD;
         $disabled = empty($checked) ? 'disabled="disabled"' : '';
 
         printf(
-                '<input type="number" min="1" max="30" step="1" value="%s" name="tpay_settings_option_name[%s]" id="%s" %s/>',
-                $value,
-                $id,
-                $id,
-                $disabled,
+            '<input type="number" min="1" max="30" step="1" value="%s" name="tpay_settings_option_name[%s]" id="%s" %s/>',
+            $value,
+            $id,
+            $id,
+            $disabled,
         );
     }
 
@@ -406,14 +408,14 @@ class TpaySettings
     public function tpay_settings_sanitize($input)
     {
         foreach ($this->fields as $field => $desc) {
-            if (isset($input['global_' . $field])) {
-                $value = sanitize_text_field($input['global_' . $field]);
+            if (isset($input['global_'.$field])) {
+                $value = sanitize_text_field($input['global_'.$field]);
 
                 if (in_array($field, ['security_code', 'api_key', 'api_key_password'])) {
                     $value = preg_replace('/\s+/', '', $value);
                 }
 
-                $sanitary_values['global_' . $field] = $value;
+                $sanitary_values['global_'.$field] = $value;
             }
         }
 
@@ -428,13 +430,13 @@ class TpaySettings
 
         if (isset($input['global_default_on_hold_status'])) {
             $sanitary_values['global_default_on_hold_status'] = sanitize_text_field(
-                    $input['global_default_on_hold_status']
+                $input['global_default_on_hold_status']
             );
         }
 
         if (isset($input['global_default_virtual_product_on_hold_status'])) {
             $sanitary_values['global_default_virtual_product_on_hold_status'] = sanitize_text_field(
-                    $input['global_default_virtual_product_on_hold_status']
+                $input['global_default_virtual_product_on_hold_status']
             );
         }
 
@@ -444,13 +446,13 @@ class TpaySettings
 
         if (isset($input['global_amount_fee'])) {
             $sanitary_values['global_amount_fee'] = sanitize_text_field(
-                    str_replace(',', '.', $input['global_amount_fee'])
+                str_replace(',', '.', $input['global_amount_fee'])
             );
         }
 
         if (isset($input['global_percentage_fee'])) {
             $sanitary_values['global_percentage_fee'] = sanitize_text_field(
-                    str_replace(',', '.', $input['global_percentage_fee'])
+                str_replace(',', '.', $input['global_percentage_fee'])
             );
         }
 
@@ -464,7 +466,7 @@ class TpaySettings
 
         if (isset($input['global_tax_id_meta_field_name'])) {
             $sanitary_values['global_tax_id_meta_field_name'] = sanitize_text_field(
-                    $input['global_tax_id_meta_field_name']
+                $input['global_tax_id_meta_field_name']
             );
         }
 
@@ -473,11 +475,11 @@ class TpaySettings
         }
 
         if (isset($input['global_generic_auto_cancel_enabled'])) {
-            $sanitary_values['global_generic_auto_cancel_enabled'] = (int)$input['global_generic_auto_cancel_enabled'];
+            $sanitary_values['global_generic_auto_cancel_enabled'] = (int) $input['global_generic_auto_cancel_enabled'];
         }
 
         if (isset($input['global_generic_auto_cancel_days'])) {
-            $sanitary_values['global_generic_auto_cancel_days'] = abs((int)$input['global_generic_auto_cancel_days']);
+            $sanitary_values['global_generic_auto_cancel_days'] = abs((int) $input['global_generic_auto_cancel_days']);
         }
         if (empty($this->tpay_settings_options)) {
             $this->tpay_settings_options = tpayOption();
@@ -536,8 +538,8 @@ class TpaySettings
     public function global_change_environment_callback()
     {
         $options = [
-                'prod' => esc_html__('Production', 'tpay'),
-                'sandbox' => esc_html__('Sandbox', 'tpay'),
+            'prod' => esc_html__('Production', 'tpay'),
+            'sandbox' => esc_html__('Sandbox', 'tpay'),
         ];
         ?>
         <select class="regular-text" type="text" name="tpay_settings_option_name[global_tpay_environment]"
@@ -560,9 +562,9 @@ class TpaySettings
     public function global_enable_fee_callback_callback()
     {
         $options = [
-                'disabled' => esc_html__('Disabled', 'tpay'),
-                'amount' => esc_html__('Amount', 'tpay'),
-                'percentage' => esc_html__('Percentage', 'tpay'),
+            'disabled' => esc_html__('Disabled', 'tpay'),
+            'amount' => esc_html__('Amount', 'tpay'),
+            'percentage' => esc_html__('Percentage', 'tpay'),
         ];
         ?>
         <select class="regular-text" type="text" name="tpay_settings_option_name[global_enable_fee]"
@@ -585,8 +587,8 @@ class TpaySettings
     public function global_render_payment_type_callback()
     {
         $options = [
-                'tiles' => esc_html__('Tiles', 'tpay'),
-                'list' => esc_html__('Dropdown list', 'tpay'),
+            'tiles' => esc_html__('Tiles', 'tpay'),
+            'list' => esc_html__('Dropdown list', 'tpay'),
         ];
         ?>
         <select class="regular-text" type="text" name="tpay_settings_option_name[global_render_payment_type]"
