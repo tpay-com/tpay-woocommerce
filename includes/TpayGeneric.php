@@ -6,6 +6,8 @@ use WC_Order;
 
 class TpayGeneric extends TpayGateways
 {
+    const BLIK_BNPL = 84;
+
     /** @var null|int */
     protected $channelId;
 
@@ -14,6 +16,14 @@ class TpayGeneric extends TpayGateways
         parent::__construct($id);
 
         $this->channelId = $channelId;
+        if (self::BLIK_BNPL == $this->channelId) {
+            if (!trim($this->settings['description'])) {
+                $this->settings['description'] = '<small>BLIK Płacę Później to usługa płatności odroczonych dla transakcji od 30 zł do 4 000 zł.'
+                    .' Pieniądze za sprzedany towar dostaniesz od razu,'
+                    .' a Klient będzie miał 30 dni na płatność. '
+                    .'<a href="https://www.blik.com/place-pozniej" target="_blank">Dowiedz się więcej.</a></small>';
+            }
+        }
 
         add_filter('woocommerce_available_payment_gateways', [$this, 'unset_gateway']);
     }

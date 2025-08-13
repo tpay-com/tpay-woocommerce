@@ -11,12 +11,6 @@ class TpaySettings
     const CANCEL_DEFAULT_PERIOD = 30;
     const GENERICS_MOVED_OUTSIDE = [
         84, // BLIK BNPL
-        86,
-        85,
-        17,
-        20,
-        30,
-        90,
     ];
 
     private $tpay_settings_options;
@@ -234,8 +228,22 @@ class TpaySettings
         foreach ($channels as $channel) {
             $channelNames[$channel->id] = $channel->name;
         }
+
         foreach (self::GENERICS_MOVED_OUTSIDE as $id) {
             if (!isset($channelNames[$id])) {
+                if (TpayGeneric::BLIK_BNPL == $id) {
+                    add_settings_field(
+                        'global_generic_payments_DISABLED_'.$id,
+                        'BLIK Płacę Później',
+                        [$this, 'global_generic_payments_checkbox_disabled_callback'],
+                        'tpay-settings-admin',
+                        'tpay_settings_setting_section',
+                        [
+                            'id' => $id,
+                        ]
+                    );
+                }
+
                 continue;
             }
             add_settings_field(
@@ -299,6 +307,15 @@ class TpaySettings
             $id,
             $checked
         );
+    }
+
+    public function global_generic_payments_checkbox_disabled_callback($args)
+    {
+        echo '<input type="checkbox" disabled class="regular-text" name="" id=""/><br/>';
+        echo '<i>Nie możesz włączyć BLIK Płacę Póżniej?<br/>'
+                ."Zaloguj się do <a href='https://panel.tpay.com/' target='_blank'>Panelu Akceptanta Tpay</a>"
+                .' i sprawdź, czy masz aktywną płatność BLIK Płacę Później. <br/>'
+                .'Jeśli płatność nie jest włączona, aktywuj ją, a następnie uruchom ją ponownie w swoim sklepie. </i>';
     }
 
     /** @param array $args */
