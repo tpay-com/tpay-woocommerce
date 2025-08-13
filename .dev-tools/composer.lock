@@ -428,16 +428,16 @@
         },
         {
             "name": "tpay-com/coding-standards",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tpay-com/php-coding-standards.git",
-                "reference": "6a54d453d4322ac9f16b4d92166bd649b1fc3c54"
+                "reference": "5b0db4aea95f1e9e5c219ce00efa95645846d726"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tpay-com/php-coding-standards/zipball/6a54d453d4322ac9f16b4d92166bd649b1fc3c54",
-                "reference": "6a54d453d4322ac9f16b4d92166bd649b1fc3c54"
+                "url": "https://api.github.com/repos/tpay-com/php-coding-standards/zipball/5b0db4aea95f1e9e5c219ce00efa95645846d726",
+                "reference": "5b0db4aea95f1e9e5c219ce00efa95645846d726"
             },
             "require": {
                 "friendsofphp/php-cs-fixer": "^3.22",
