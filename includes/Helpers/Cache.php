@@ -14,7 +14,7 @@ class Cache extends \Tpay\OpenApi\Utilities\Cache
         return get_transient($key);
     }
 
-    public function set($key, $value, $ttl = 3_600)
+    public function set($key, $value, $ttl = 3600)
     {
         $key .= ':';
         $key .= tpayOption('global_tpay_environment');
