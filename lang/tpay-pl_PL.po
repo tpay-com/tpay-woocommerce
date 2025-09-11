@@ -552,7 +552,14 @@ msgstr "Administratorem danych osobowych jest Krajowy Integrator Płatności sp�
 msgid "Read the full content."
 msgstr "Czytaj więcej."
 
+msgid "What is BLIK Pay Later?"
+msgstr "Co to jest BLIK Płacę Później?"
 
+msgid "BLIK Pay Later is a deferred payment service for transactions ranging from 30 PLN to 4,000 PLN.<br/>You will receive the money for the sold goods immediately, while the Customer will have 30 days to make the payment.<br/><a href=\"https://www.blik.com/place-pozniej\" target=\"blank\">Learn more.</a>"
+msgstr "BLIK Płacę Później to usługa płatności odroczonych dla transakcji od 30 zł do 4 000 zł.<br/>Pieniądze za sprzedany towar dostaniesz od razu, a Klient będzie miał 30 dni na płatność.<br/><a href=\"https://www.blik.com/place-pozniej\" target=\"blank\">Dowiedz się więcej.</a>"
 
+msgid "Can't enable BLIK Pay Later?"
+msgstr "Nie możesz włączyć BLIK Płacę Póżniej?"
 
-
+msgid "Log in to the <a href=\"https://panet.tpay.com\" target=\"_blank\">Tpay Merchant Panel</a> and check if BLIK Pay Later is active.<br/>If the payment option is not enabled, activate it and then re-enable it in your store."
+msgstr "Zaloguj się do <a href=\"https://panet.tpay.com\" target=\"_blank\">Panelu Akceptanta Tpay</a> i sprawdź, czy masz aktywną płatność BLIK Płacę Później.<br/>Jeśli płatność nie jest włączona, aktywuj ją, a następnie uruchom ją ponownie w swoim sklepie. "

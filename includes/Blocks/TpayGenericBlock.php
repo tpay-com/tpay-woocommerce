@@ -98,9 +98,10 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
                 %s
                 <span class="tooltip-text">%s</span>
             </span
-        </div>
+        </div><small>%s</small>
 HTML,
-                        __('What is BLIK Pay Later?'),
+                        __('What is BLIK Pay Later?', 'tpay'),
+                        wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description']),
                         $fields
                     );
                 } else {
