@@ -47,7 +47,7 @@ msgid "Amount fee"
 msgstr "Dodatkowa kwota"
 
 msgid "Client ID"
-msgstr "ID Klienta"
+msgstr "Client ID"
 
 msgid "BLIK insufficient funds / user authorization error"
 msgstr "Niewystarczająca ilość środków na pokrycie transakcji"
@@ -71,7 +71,7 @@ msgstr "Znajdziesz w Panelu Akceptanta: Integracje -> API -> sekcja Klucze do no
 
 #: includes/TpaySettings.php:37 includes/TpaySettings.php:38
 msgid "Secret"
-msgstr "Sekret API"
+msgstr "Secret"
 
 #: includes/WC_TpayGateways.php:116
 msgid "Blik payment"
