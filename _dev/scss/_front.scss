@@ -403,7 +403,12 @@
   margin-left: 36px;
   text-decoration: underline;
   padding-bottom: 20px;
+
+  &.no-margin-left {
+    margin-left: 0;
+  }
 }
+
 
 .tooltip-text {
   visibility: hidden;

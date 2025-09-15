@@ -94,7 +94,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
                     $fieldsCopy = sprintf(
                         <<<HTML
             <div class="bottom">
-            <span class="show-blik-info">
+            <span class="show-blik-info no-margin-left">
                 %s
                 <span class="tooltip-text">%s</span>
             </span
