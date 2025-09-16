@@ -6,7 +6,7 @@
             <span class="show-blik-info no-margin-left">
                 <?php
                 echo __('What is BLIK Pay Later?', 'tpay') ?>
-                <span class="tooltip-text"><?php echo __('BLIK Płacę Później to usługa, która pozwala Ci kupować produkty od 30 zł do 4 000 zł i płacić za nie w ciągu 30 dni.', 'tpay') ?></span>
+                <span class="tooltip-text"><?php echo __('BLIK Pay Later is a service that allows you to purchase products from PLN 30 up to PLN 4,000 and pay for them within 30 days.', 'tpay') ?></span>
             </span>
     </div>
     <?php
