@@ -16,11 +16,6 @@ class TpayGeneric extends TpayGateways
         parent::__construct($id);
 
         $this->channelId = $channelId;
-        if (self::BLIK_BNPL == $this->channelId) {
-            if (!trim($this->settings['description'])) {
-                $this->settings['description'] = 'BLIK Płacę Później to usługa, która pozwala Ci kupować produkty od 30 zł do 4 000 zł i płacić za nie w ciągu 30 dni.';
-            }
-        }
 
         add_filter('woocommerce_available_payment_gateways', [$this, 'unset_gateway']);
     }
@@ -50,12 +45,16 @@ class TpayGeneric extends TpayGateways
     {
         $description = '';
         if ($this->description) {
-            $description =  wpautop(wp_kses_post($this->description));
+            $description = wpautop(wp_kses_post($this->description));
         }
 
         $agreements = $this->gateway_helper->agreements_field();
 
-        include plugin_dir_path(__FILE__) . '../views/html/blik-bnpl.php';
+        if ($this->channelId === self::BLIK_BNPL) {
+            include plugin_dir_path(__FILE__) . '../views/html/blik-bnpl.php';
+        } else {
+            include plugin_dir_path(__FILE__) . '../views/html/agreements.php';
+        }
     }
 
     public function process_payment($order_id): array

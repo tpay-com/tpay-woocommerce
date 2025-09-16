@@ -246,6 +246,7 @@ class TpaySettings
 
                 continue;
             }
+
             add_settings_field(
                 'global_generic_payments_' . $id,
                 __($channelNames[$id], 'tpay'),
@@ -308,7 +309,7 @@ class TpaySettings
             $checked
         );
         if (TpayGeneric::BLIK_BNPL === $id) {
-            echo '<br/><a href="javascript:jQuery(\'#what-is-blik\').toggle()">' . __(
+            echo '<a href="javascript:jQuery(\'#what-is-blik\').toggle()">' . __(
                     'What is BLIK Pay Later?',
                     'tpay'
                 ) . '</a><br/>'
@@ -322,7 +323,7 @@ class TpaySettings
 
     public function global_generic_payments_checkbox_disabled_callback($args)
     {
-        echo '<input type="checkbox" disabled class="regular-text" name="" id=""/><br/>';
+        echo '<input type="checkbox" disabled class="regular-text" name="" id=""/>';
         echo '<a href="javascript:jQuery(\'#blik-enable-info\').toggle()">' . __('Can\'t enable BLIK Pay Later?', 'tpay') . '</a><br/>'
             . '<span id="blik-enable-info" style="display:none;">'
             .__('Log in to the <a href="https://panet.tpay.com" target="_blank">Tpay Merchant Panel</a> and check if BLIK Pay Later is active.<br/>'

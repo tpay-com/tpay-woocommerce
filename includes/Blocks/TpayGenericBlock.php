@@ -93,15 +93,17 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
                 if (TpayGeneric::BLIK_BNPL === $channel->id) {
                     $fieldsCopy = sprintf(
                         <<<HTML
+            <small><p>%s</p></small>
             <div class="bottom">
             <span class="show-blik-info no-margin-left">
                 %s
                 <span class="tooltip-text">%s</span>
             </span
-        </div><small>%s</small>
+        </div><br/><small>%s</small>
 HTML,
-                        __('What is BLIK Pay Later?', 'tpay'),
                         wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description']),
+                        __('What is BLIK Pay Later?', 'tpay'),
+                        __('BLIK Pay Later is a service that allows you to purchase products from PLN 30 up to PLN 4,000 and pay for them within 30 days.', 'tpay'),
                         $fields
                     );
                 } else {
