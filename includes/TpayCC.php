@@ -12,7 +12,7 @@ class TpayCC extends TpayGateways
     {
         parent::__construct(TPAYCC_ID, TPAYCC);
         $this->has_terms_checkbox = true;
-        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__).'../views/img/card-visa-mc.svg');
+        $this->icon = $this->gateway_helper->get_groups_image_url(TPAYCC);
     }
 
     public function payment_fields()

@@ -18,7 +18,7 @@ class TpaySF extends TpayGateways
         parent::__construct(TPAYSF_ID, TPAYSF);
         $this->card_helper = new Helpers\CardHelper();
         $this->has_terms_checkbox = true;
-        $this->icon = apply_filters('woocommerce_tpay_icon', plugin_dir_url(__FILE__).'../views/img/card-visa-mc.svg');
+        $this->icon = $this->gateway_helper->get_groups_image_url(TPAYSF);
         $this->setSubscriptionsSupport();
         $channels = $this->channels();
         $has_sf = false;
