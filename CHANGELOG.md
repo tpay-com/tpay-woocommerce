@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.10.1]
 
 ### Changed
+- Update payer data
+- Increased callback urls length
+
+## [1.10.1]
+
+### Changed
 
 - Static icons to dynamic
 
