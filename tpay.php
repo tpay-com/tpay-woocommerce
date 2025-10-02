@@ -125,6 +125,9 @@ function init_gateway_tpay()
 
     add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
     $genericsSelected = tpayOption('global_generic_payments') ?? [];
+    if (!is_array($genericsSelected)) {
+        $genericsSelected = [];
+    }
 
     if (is_admin()) {
         add_action('init', function () {
@@ -138,7 +141,6 @@ function init_gateway_tpay()
                 public function __construct($id = null)
                 {
                     parent::__construct("tpaygeneric-{$id}", $id);
-
                     $channels = $this->channels();
 
                     foreach ($channels as $channel) {

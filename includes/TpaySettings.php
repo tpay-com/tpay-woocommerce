@@ -8,7 +8,10 @@ use Tpay\Helpers\Cache;
 
 class TpaySettings
 {
-    const CANCEL_DEFAULT_PERIOD = 30;
+    public const CANCEL_DEFAULT_PERIOD = 30;
+    public const GENERICS_MOVED_OUTSIDE = [
+        84, // BLIK BNPL
+    ];
 
     private $tpay_settings_options;
     private $fields;
@@ -220,6 +223,42 @@ class TpaySettings
             ]
         );
 
+        $channels = $this->transactions->channels();
+        $channelNames = [];
+        foreach ($channels as $channel) {
+            $channelNames[$channel->id] = $channel->name;
+        }
+
+        foreach (self::GENERICS_MOVED_OUTSIDE as $id) {
+            if (!isset($channelNames[$id])) {
+                if (TpayGeneric::BLIK_BNPL == $id) {
+                    add_settings_field(
+                        'global_generic_payments_DISABLED_'.$id,
+                        'BLIK Płacę Później',
+                        [$this, 'global_generic_payments_checkbox_disabled_callback'],
+                        'tpay-settings-admin',
+                        'tpay_settings_setting_section',
+                        [
+                            'id' => $id,
+                        ]
+                    );
+                }
+
+                continue;
+            }
+
+            add_settings_field(
+                'global_generic_payments_'.$id,
+                __($channelNames[$id], 'tpay'),
+                [$this, 'global_generic_payments_checkbox_callback'],
+                'tpay-settings-admin',
+                'tpay_settings_setting_section',
+                [
+                    'id' => $id,
+                ]
+            );
+        }
+
         add_settings_field(
             'global_generic_payments',
             __('Easy ON-site', 'tpay'),
@@ -240,10 +279,65 @@ class TpaySettings
             'tpay_settings_setting_section',
             [
                 'id' => 'global_generic_auto_cancel_enabled',
-                'description' => esc_html__('When enabled once a day Your store will try to analyse orders in pending payment status and cancel those older than number of days specified in next configuration option', 'tpay'),
+                'description' => esc_html__(
+                    'When enabled once a day Your store will try to analyse orders in pending payment status and cancel those older than number of days specified in next configuration option',
+                    'tpay'
+                ),
                 'type' => 'checkbox',
             ]
         );
+    }
+
+    public function global_generic_payments_checkbox_callback($args)
+    {
+        $id = 'global_generic_payments_'.$args['id'];
+        $channels = $this->transactions->channels();
+        $checkedChannels = tpayOption('global_generic_payments') ?? [];
+        if (!is_array($checkedChannels)) {
+            $checkedChannels = [];
+        }
+        $checked = '';
+
+        if (in_array($args['id'], $checkedChannels)) {
+            $checked = 'checked="checked"';
+        }
+        $id = $args['id'];
+        printf(
+            '<input type="checkbox" class="regular-text" value="%s" name="tpay_settings_option_name[global_generic_payments][]" id="global_generic_payments_%s" %s/>',
+            $id,
+            $id,
+            $checked
+        );
+        if (TpayGeneric::BLIK_BNPL === $id) {
+            echo '<a href="javascript:jQuery(\'#what-is-blik\').toggle()">'.__(
+                'What is BLIK Pay Later?',
+                'tpay'
+            ).'</a><br/>'
+                .'<span id="what-is-blik" style="display:none;">'
+                .__('BLIK Pay Later is a deferred payment service for transactions ranging from 30 PLN to 4,000 PLN.<br/>'
+                .'You will receive the money for the sold goods immediately, while the Customer will have 30 days to make the payment.<br/>'
+                .'<a href="https://www.blik.com/place-pozniej" target="blank">Learn more.</a>', 'tpay')
+                .'</span><br/>';
+        }
+    }
+
+    public function global_generic_payments_checkbox_disabled_callback($args)
+    {
+        echo '<input type="checkbox" disabled class="regular-text" name="" id=""/>';
+        echo '<a href="javascript:jQuery(\'#blik-enable-info\').toggle()">'.__('Can\'t enable BLIK Pay Later?', 'tpay').'</a><br/>'
+            .'<span id="blik-enable-info" style="display:none;">'
+            .__('Log in to the <a href="https://panet.tpay.com" target="_blank">Tpay Merchant Panel</a> and check if BLIK Pay Later is active.<br/>'
+                .'If the payment option is not enabled, activate it and then re-enable it in your store.', 'tpay')
+            .'<br/></span><br/>';
+        echo '<a href="javascript:jQuery(\'#what-is-blik\').toggle()">'.__(
+            'What is BLIK Pay Later?',
+            'tpay'
+        ).'</a><br/>'
+            .'<span id="what-is-blik" style="display:none;">'
+            .__('BLIK Pay Later is a deferred payment service for transactions ranging from 30 PLN to 4,000 PLN.<br/>'
+                .'You will receive the money for the sold goods immediately, while the Customer will have 30 days to make the payment.<br/>'
+                .'<a href="https://www.blik.com/place-pozniej" target="blank">Learn more.</a>', 'tpay')
+            .'</span><br/>';
     }
 
     /** @param array $args */
@@ -280,11 +374,18 @@ class TpaySettings
     {
         $channels = $this->transactions->channels();
         $checkedChannels = tpayOption('global_generic_payments') ?? [];
+        if (!is_array($checkedChannels)) {
+            $checkedChannels = [];
+        }
+
         ?>
         <select class="tpay-select" id="global_generic_payments" multiple
                 name="tpay_settings_option_name[global_generic_payments][]">
             <?php
             foreach ($channels as $channel) {
+                if (in_array($channel->id, self::GENERICS_MOVED_OUTSIDE)) {
+                    continue;
+                }
                 $checked = in_array($channel->id, $checkedChannels) ? 'selected' : '';
 
                 echo "<option {$checked} value='{$channel->id}'>{$channel->name}</option>";
@@ -324,7 +425,9 @@ class TpaySettings
         echo esc_html__('Number of days', 'tpay').': ';
 
         $id = 'global_generic_auto_cancel_days';
-        $value = isset($this->tpay_settings_options[$id]) ? esc_attr($this->tpay_settings_options[$id]) : self::CANCEL_DEFAULT_PERIOD;
+        $value = isset($this->tpay_settings_options[$id]) ? esc_attr(
+            $this->tpay_settings_options[$id]
+        ) : self::CANCEL_DEFAULT_PERIOD;
         $disabled = empty($checked) ? 'disabled="disabled"' : '';
 
         printf(
@@ -353,6 +456,11 @@ class TpaySettings
 
                 $sanitary_values['global_'.$field] = $value;
             }
+        }
+
+        $arrayToSearch = $input['generics'];
+        if (!is_array($arrayToSearch)) {
+            $arrayToSearch = [];
         }
 
         if (isset($input['global_merchant_email'])) {

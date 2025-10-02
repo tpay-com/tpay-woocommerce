@@ -73,15 +73,49 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         $channels = $this->gateway->channels();
         $generics = tpayOption('global_generic_payments');
+        if (!is_array($generics)) {
+            $generics = [];
+        }
+
+        $generics = array_unique($generics);
+
         $availablePayments = WC()->payment_gateways()->get_available_payment_gateways();
 
         foreach ($channels as $channel) {
-            if (in_array($channel->id, $generics) && in_array("tpaygeneric-{$channel->id}", array_keys($availablePayments))) {
+            if (in_array($channel->id, $generics) && in_array(
+                "tpaygeneric-{$channel->id}",
+                array_keys($availablePayments)
+            )) {
+                $fieldsCopy = wpautop(
+                    wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description'])
+                ).$fields;
+
+                if (TpayGeneric::BLIK_BNPL === $channel->id) {
+                    $fieldsCopy = sprintf(
+                        <<<'HTML'
+            <small><p>%s</p></small>
+            <div class="bottom">
+            <span class="show-blik-info no-margin-left">
+                %s
+                <span class="tooltip-text">%s</span>
+            </span
+        </div><br/><small>%s</small>
+HTML,
+                        wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description']),
+                        __('What is BLIK Pay Later?', 'tpay'),
+                        __('Shop now with BLIK Pay Later and settle your payment within 30 days – all in your bank\'s app.', 'tpay'),
+                        $fields
+                    );
+                } else {
+                    $fieldsCopy = '<small>'.$fieldsCopy.'</small>';
+                }
+
                 $config[$channel->id] = [
                     'id' => $channel->id,
-                    'title' => $channel->fullName,
+                    'title' => $availablePayments["tpaygeneric-{$channel->id}"]->title,
+                    'description' => '',
                     'icon' => $channel->image->url,
-                    'fields' => $fields,
+                    'fields' => $fieldsCopy,
                     'constraints' => $channel->constraints,
                     'total' => $this->gateway->getCartTotal(),
                 ];

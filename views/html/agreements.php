@@ -1,1 +1,3 @@
-<?php echo $agreements;
+<?php
+echo $description;
+echo $agreements;

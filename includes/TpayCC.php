@@ -6,7 +6,7 @@ use WC_Order;
 
 class TpayCC extends TpayGateways
 {
-    const CHANNEL_ID = 53;
+    public const CHANNEL_ID = 53;
 
     public function __construct()
     {

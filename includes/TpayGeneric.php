@@ -6,6 +6,8 @@ use WC_Order;
 
 class TpayGeneric extends TpayGateways
 {
+    public const BLIK_BNPL = 84;
+
     /** @var null|int */
     protected $channelId;
 
@@ -41,13 +43,18 @@ class TpayGeneric extends TpayGateways
 
     public function payment_fields()
     {
+        $description = '';
         if ($this->description) {
-            echo wpautop(wp_kses_post($this->description));
+            $description = wpautop(wp_kses_post($this->description));
         }
 
         $agreements = $this->gateway_helper->agreements_field();
 
-        include plugin_dir_path(__FILE__).'../views/html/agreements.php';
+        if (self::BLIK_BNPL === $this->channelId) {
+            include plugin_dir_path(__FILE__).'../views/html/blik-bnpl.php';
+        } else {
+            include plugin_dir_path(__FILE__).'../views/html/agreements.php';
+        }
     }
 
     public function process_payment($order_id): array
