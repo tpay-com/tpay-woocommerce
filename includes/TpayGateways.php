@@ -481,7 +481,6 @@ abstract class TpayGateways extends WC_Payment_Gateway
 
     public function unset_gateway(array $gateways): array
     {
-
         if ('PLN' !== get_woocommerce_currency()
             || false === $this->payment_gateway_is_enabled()
             || true === $this->try_disable_gateway_by_cart_total()

@@ -7,7 +7,7 @@ use WC_Order;
 
 class TpayBlik extends TpayGateways
 {
-    const CHANNEL_ID = 64;
+    public const CHANNEL_ID = 64;
 
     private $blik0_enabled;
     private $user_blik_alias;

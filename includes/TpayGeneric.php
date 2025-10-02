@@ -6,7 +6,7 @@ use WC_Order;
 
 class TpayGeneric extends TpayGateways
 {
-    const BLIK_BNPL = 84;
+    public const BLIK_BNPL = 84;
 
     /** @var null|int */
     protected $channelId;
@@ -50,10 +50,10 @@ class TpayGeneric extends TpayGateways
 
         $agreements = $this->gateway_helper->agreements_field();
 
-        if ($this->channelId === self::BLIK_BNPL) {
-            include plugin_dir_path(__FILE__) . '../views/html/blik-bnpl.php';
+        if (self::BLIK_BNPL === $this->channelId) {
+            include plugin_dir_path(__FILE__).'../views/html/blik-bnpl.php';
         } else {
-            include plugin_dir_path(__FILE__) . '../views/html/agreements.php';
+            include plugin_dir_path(__FILE__).'../views/html/agreements.php';
         }
     }
 
@@ -73,7 +73,7 @@ class TpayGeneric extends TpayGateways
         if ('success' == $result['result']) {
             if ($errors_list = $this->gateway_helper->tpay_has_errors($result)) {
                 $this->gateway_helper->tpay_logger(
-                    'Nieudana próba płatności- zwrócone następujące błędy: ' . implode(' ', $errors_list)
+                    'Nieudana próba płatności- zwrócone następujące błędy: '.implode(' ', $errors_list)
                 );
                 wc_add_notice(implode(' ', $errors_list), 'error');
 
@@ -83,7 +83,7 @@ class TpayGeneric extends TpayGateways
             $order->set_transaction_id($result['transactionId']);
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
             $md5 = md5(
-                $this->id_seller . $result['title'] . $this->payment_data['amount'] . $this->crc . $this->security_code
+                $this->id_seller.$result['title'].$this->payment_data['amount'].$this->crc.$this->security_code
             );
 
             $order->update_meta_data('md5_checksum', $md5);
@@ -112,7 +112,7 @@ class TpayGeneric extends TpayGateways
         }
 
         $this->payment_data = [
-            'description' => __('Order', 'tpay') . ' #' . $order->get_id(),
+            'description' => __('Order', 'tpay').' #'.$order->get_id(),
             'hiddenDescription' => $this->crc,
             'amount' => $order->get_total(),
             'payer' => $payer_data,

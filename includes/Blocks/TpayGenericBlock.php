@@ -39,7 +39,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_script_handles(): array
     {
-        $assetPath = plugin_dir_path(__FILE__) . 'views/assets/checkout.min.asset.php';
+        $assetPath = plugin_dir_path(__FILE__).'views/assets/checkout.min.asset.php';
         $dependencies = [];
         $version = TPAY_PLUGIN_VERSION;
 
@@ -51,7 +51,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         wp_register_script(
             'tpaygeneric',
-            plugin_dir_url(__DIR__) . '../views/assets/checkout-blocks.min.js',
+            plugin_dir_url(__DIR__).'../views/assets/checkout-blocks.min.js',
             $dependencies,
             $version,
             true
@@ -83,16 +83,16 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         foreach ($channels as $channel) {
             if (in_array($channel->id, $generics) && in_array(
-                    "tpaygeneric-{$channel->id}",
-                    array_keys($availablePayments)
-                )) {
+                "tpaygeneric-{$channel->id}",
+                array_keys($availablePayments)
+            )) {
                 $fieldsCopy = wpautop(
-                        wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description'])
-                    ) . $fields;
+                    wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description'])
+                ).$fields;
 
                 if (TpayGeneric::BLIK_BNPL === $channel->id) {
                     $fieldsCopy = sprintf(
-                        <<<HTML
+                        <<<'HTML'
             <small><p>%s</p></small>
             <div class="bottom">
             <span class="show-blik-info no-margin-left">
@@ -107,7 +107,7 @@ HTML,
                         $fields
                     );
                 } else {
-                    $fieldsCopy = '<small>' . $fieldsCopy . '</small>';
+                    $fieldsCopy = '<small>'.$fieldsCopy.'</small>';
                 }
 
                 $config[$channel->id] = [
