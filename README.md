@@ -3,7 +3,6 @@
 Contributors: tpay.com \
 Tags: tpay, tpay.com, payment, payment gateway, woocommerce \
 Tested up to: 6.2.2 \
-Stable tag: 1.8.5 \
 Requires PHP: 7.1 or higher \
 License: GPLv3 \
 Tpay is payment gateway for WooCommerce.
@@ -35,6 +34,7 @@ Accept online payments in a safe and fast way.**
 * Tpay banks list – payment shows a list of banks, depending on the selected type, the payer will be redirected to the
   bank.
 * Tpay BLIK – payer will be redirected to eBlik page or be able to type BLIK's code in the cart.
+* BLIK Pay Later
 * Tpay Credit Card Standard - a secure form for card data on Tpay panel.
 * Tpay Credit Card SF - a secure form for card data in the cart.
 * Tpay Google Pay - payer will be redirected to Google Pay payment.
