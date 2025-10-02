@@ -4,6 +4,9 @@ namespace Tpay\Helpers;
 
 class GatewayHelper
 {
+    public const PRODUCTION_PREFIX = 'https://secure.tpay.com';
+    public const SANDBOX_PREFIX = 'https://secure.sandbox.tpay.com';
+    public const IMAGE_URL_PATTERN = '%s/tpay/web/groups/%u/normal-white-bg.png';
     public const CONDITION_PL = 'https://secure.tpay.com/regulamin.pdf';
     public const CONDITION_EN = 'https://tpay.com/user/assets/files_for_download/payment-terms-and-conditions.pdf';
     public const PRIVACY_PL = 'https://tpay.com/user/assets/files_for_download/klauzula-informacyjna-platnik.pdf';
@@ -105,6 +108,8 @@ EOD,
         $paymentData = [
             'email' => $order->get_billing_email(),
             'name' => $order->get_billing_first_name().' '.$order->get_billing_last_name(),
+            'ip' => $order->get_customer_ip_address(),
+            'userAgent' => $order->get_customer_user_agent(),
         ];
 
         if ($order->get_billing_postcode()) {
@@ -142,6 +147,28 @@ EOD,
         }
 
         return false;
+    }
+
+    /** @return bool */
+    public function is_prod()
+    {
+        return 'sandbox' != tpayOption('global_tpay_environment');
+    }
+
+    /** @return string */
+    public function get_groups_image_url($group_id)
+    {
+        return sprintf(self::IMAGE_URL_PATTERN, $this->get_base_url(), $group_id);
+    }
+
+    /** @return string */
+    private function get_base_url()
+    {
+        if ($this->is_prod()) {
+            return self::PRODUCTION_PREFIX;
+        }
+
+        return self::SANDBOX_PREFIX;
     }
 
     private function sf_payment_data($post_data)
