@@ -93,7 +93,7 @@ $(document).ready(function () {
     }
 
     function getCleanBlikCode(blikCode) {
-        return (blikCode || '').replace(/[^0-9]/g, '');
+        return (blikCode || '').replace(/[^0-9]/g, '').substring(0, 6);
     }
 
     $('body').on('click', 'li.wc_payment_method > label:not([for="payment_method_tpaysf"])', function () {
@@ -159,8 +159,7 @@ $(document).ready(function () {
         $(this).find('[name="blik-type"]').prop('checked', 'checked');
 
         var blik0CodeInput = document.getElementById('blik0-code');
-        blik0CodeInput.addEventListener('keyup', onBlikCodeKeyUp);
-        blik0CodeInput.addEventListener('change', onBlikCodeKeyUp);
+        blik0CodeInput.addEventListener('input', onBlikCodeKeyUp);
 
         function onBlikCodeKeyUp() {
             const valueAsArray = getFormCleanBlikCode().split('');
@@ -171,7 +170,7 @@ $(document).ready(function () {
         }
 
         function getFormCleanBlikCode() {
-            return (blik0CodeInput.value || '').replace(/[^0-9]/g, '');
+            return (blik0CodeInput.value || '').replace(/[^0-9]/g, '').substring(0, 6);
         }
     });
     $('body').on('keyup', '.tpay-sf #card_number', function () {

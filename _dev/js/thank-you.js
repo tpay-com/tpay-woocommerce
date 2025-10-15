@@ -92,7 +92,7 @@ $(document).ready(function () {
     }
 
     function getCleanBlikCode() {
-        return (blikCodeInput.value || '').replaceAll(/[^0-9]/g, '');
+        return (blikCodeInput.value || '').replaceAll(/[^0-9]/g, '').substring(0,6);
     }
 
     function isBlik() {
@@ -219,7 +219,7 @@ $(document).ready(function () {
     }
 
     paymentButton.addEventListener('click', pay);
-    blikCodeInput.addEventListener('keyup', onBlikCodeKeyUp);
+    blikCodeInput.addEventListener('input', onBlikCodeKeyUp);
     paymentsInputs.forEach(function (input) {
         input.addEventListener('click', onPaymentInputClick)
     });
