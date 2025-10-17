@@ -215,6 +215,7 @@ class TpayBlik extends TpayGateways
 
             if ('code' == $this->request->get('blik-type') || empty($this->request->get('blik-type'))) {
                 if ($blik0 = $this->request->get('blik0')) {
+                    $blik0 = preg_replace('/[^0-9]/', '', $blik0);
                     $this->additional_payment_data['blikPaymentData'] = ['blikToken' => $blik0];
 
                     if ($this->user_blik_alias && !$this->user_has_saved_blik_alias) {
