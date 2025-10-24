@@ -561,8 +561,8 @@ msgstr "BLIK Płacę Później to usługa płatności odroczonych dla transakcji
 msgid "Can't enable BLIK Pay Later?"
 msgstr "Nie możesz włączyć BLIK Płacę Póżniej?"
 
-msgid "Log in to the <a href=\"https://panet.tpay.com\" target=\"_blank\">Tpay Merchant Panel</a> and check if BLIK Pay Later is active.<br/>If the payment option is not enabled, activate it and then re-enable it in your store."
-msgstr "Zaloguj się do <a href=\"https://panet.tpay.com\" target=\"_blank\">Panelu Akceptanta Tpay</a> <br/>i sprawdź, czy masz aktywną płatność BLIK Płacę Później.<br/>Jeśli płatność nie jest włączona, aktywuj ją,<br/>a następnie uruchom ją ponownie w swoim sklepie. "
+msgid "Log in to the <a href=\"https://panel.tpay.com\" target=\"_blank\">Tpay Merchant Panel</a> and check if BLIK Pay Later is active.<br/>If the payment option is not enabled, activate it and then re-enable it in your store."
+msgstr "Zaloguj się do <a href=\"https://panel.tpay.com\" target=\"_blank\">Panelu Akceptanta Tpay</a> <br/>i sprawdź, czy masz aktywną płatność BLIK Płacę Później.<br/>Jeśli płatność nie jest włączona, aktywuj ją,<br/>a następnie uruchom ją ponownie w swoim sklepie. "
 
 msgid "Shop now with BLIK Pay Later and settle your payment within 30 days – all in your bank's app."
 msgstr "Z BLIK Płacę Później kupujesz teraz, a płacisz w ciągu 30 dni w aplikacji Twojego banku."
