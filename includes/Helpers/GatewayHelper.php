@@ -109,7 +109,7 @@ EOD,
             'email' => $order->get_billing_email(),
             'name' => $order->get_billing_first_name().' '.$order->get_billing_last_name(),
             'ip' => $order->get_customer_ip_address(),
-            'userAgent' => $order->get_customer_user_agent(),
+            'userAgent' => substr($order->get_customer_user_agent(), 0, 255),
         ];
 
         if ($order->get_billing_postcode()) {
