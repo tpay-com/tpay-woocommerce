@@ -326,7 +326,7 @@ class TpaySettings
         echo '<input type="checkbox" disabled class="regular-text" name="" id=""/>';
         echo '<a href="javascript:jQuery(\'#blik-enable-info\').toggle()">'.__('Can\'t enable BLIK Pay Later?', 'tpay').'</a><br/>'
             .'<span id="blik-enable-info" style="display:none;">'
-            .__('Log in to the <a href="https://panet.tpay.com" target="_blank">Tpay Merchant Panel</a> and check if BLIK Pay Later is active.<br/>'
+            .__('Log in to the <a href="https://panel.tpay.com" target="_blank">Tpay Merchant Panel</a> and check if BLIK Pay Later is active.<br/>'
                 .'If the payment option is not enabled, activate it and then re-enable it in your store.', 'tpay')
             .'<br/></span><br/>';
         echo '<a href="javascript:jQuery(\'#what-is-blik\').toggle()">'.__(
