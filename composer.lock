@@ -385,16 +385,16 @@
         },
         {
             "name": "tpay-com/tpay-openapi-php",
-            "version": "2.0.3",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tpay-com/tpay-openapi-php.git",
-                "reference": "3187f00495ed13fbd4d509214c577d5d1eb1c65f"
+                "reference": "6757ea2c61897f418e3c0ecc5c21a17845ad0723"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tpay-com/tpay-openapi-php/zipball/3187f00495ed13fbd4d509214c577d5d1eb1c65f",
-                "reference": "3187f00495ed13fbd4d509214c577d5d1eb1c65f",
+                "url": "https://api.github.com/repos/tpay-com/tpay-openapi-php/zipball/6757ea2c61897f418e3c0ecc5c21a17845ad0723",
+                "reference": "6757ea2c61897f418e3c0ecc5c21a17845ad0723",
                 "shasum": ""
             },
             "require": {
@@ -440,9 +440,9 @@
                 "docs": "https://openapi.tpay.com",
                 "email": "support@tpay.com",
                 "issues": "https://github.com/tpay-com/tpay-openapi-php/issues",
-                "source": "https://github.com/tpay-com/tpay-openapi-php/tree/2.0.3"
+                "source": "https://github.com/tpay-com/tpay-openapi-php/tree/2.2.1"
             },
-            "time": "2025-09-29T07:51:07+00:00"
+            "time": "2025-11-03T10:32:41+00:00"
         }
     ],
     "packages-dev": [],
