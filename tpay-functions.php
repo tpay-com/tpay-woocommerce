@@ -7,196 +7,160 @@ use Tpay\TpayGateways;
 
 defined('ABSPATH') || exit();
 
-if (!function_exists('tpayOption')) {
-    /**
-     * @return mixed|null
-     */
-    function tpayOption(?string $optionName = null, string $optionScope = 'tpay_settings_option_name')
-    {
-        $options = get_option($optionScope);
+/**
+ * @return mixed|null
+ */
+function tpayOption(?string $optionName = null, string $optionScope = 'tpay_settings_option_name')
+{
+    $options = get_option($optionScope);
 
-        if (empty($options)) {
-            return null;
-        }
-
-        if ($optionName === null) {
-            return $options;
-        }
-
-        return $options[$optionName] ?? null;
+    if (empty($options)) {
+        return null;
     }
+
+    if ($optionName === null) {
+        return $options;
+    }
+
+    return $options[$optionName] ?? null;
 }
 
-if (!function_exists('tpay_add_checkout_fee_for_gateway')) {
-    function tpay_add_checkout_fee_for_gateway()
-    {
-        $chosen_gateway = WC()->session->get('chosen_payment_method');
-        $type = tpayOption('global_enable_fee');
+function tpay_add_checkout_fee_for_gateway()
+{
+    $chosen_gateway = WC()->session->get('chosen_payment_method');
+    $type = tpayOption('global_enable_fee');
 
-        if ($type == 'amount') {
-            $fee = tpayOption('global_amount_fee');
-        } else {
-            $percentage = tpayOption('global_percentage_fee');
-            $amount = WC()->cart->cart_contents_total + WC()->cart->shipping_total;
-            $fee = $percentage / 100 * $amount;
-        }
+    if ($type == 'amount') {
+        $fee = tpayOption('global_amount_fee');
+    } else {
+        $percentage = tpayOption('global_percentage_fee');
+        $amount = WC()->cart->cart_contents_total + WC()->cart->shipping_total;
+        $fee = $percentage / 100 * $amount;
+    }
 
-        if (is_numeric($fee)) {
-            $fee = round($fee, 2);
+    if (is_numeric($fee)) {
+        $fee = round($fee, 2);
 
-            if (array_key_exists($chosen_gateway, TpayGateways::gateways_list())) {
-                WC()->cart->add_fee(__('Transaction fee', 'tpay'), $fee);
-            }
+        if (array_key_exists($chosen_gateway, TpayGateways::gateways_list())) {
+            WC()->cart->add_fee(__('Transaction fee', 'tpay'), $fee);
         }
     }
 }
 
-if (!function_exists('displayChildPluginNotice')) {
-    function displayChildPluginNotice()
-    {
-        echo sprintf(
-            '<div class="error"><p>%s <a target="_blank" href="https://wordpress.org/plugins/woocommerce/">%s</a></p></div>',
-            __('Tpay requires a WooCommerce plugin,', 'tpay'),
-            __('download it', 'tpay')
-        );
-    }
+function displayChildPluginNotice()
+{
+    echo sprintf(
+        '<div class="error"><p>%s <a target="_blank" href="https://wordpress.org/plugins/woocommerce/">%s</a></p></div>',
+        __('Tpay requires a WooCommerce plugin,', 'tpay'),
+        __('download it', 'tpay')
+    );
 }
 
-if (!function_exists('childPluginHasParentPlugin')) {
-    function childPluginHasParentPlugin()
-    {
-        if (is_admin() && current_user_can('activate_plugins')) {
-            require_once(ABSPATH . 'wp-admin/includes/plugin.php');
-            add_action('admin_notices', 'displayChildPluginNotice');
-            deactivate_plugins(plugin_basename(__FILE__));
+function childPluginHasParentPlugin()
+{
+    if (is_admin() && current_user_can('activate_plugins')) {
+        require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        add_action('admin_notices', 'displayChildPluginNotice');
+        deactivate_plugins(plugin_basename(__FILE__));
 
-            if (filter_input(INPUT_GET, 'activate')) {
-                unset($_GET['activate']);
-            }
+        if (filter_input(INPUT_GET, 'activate')) {
+            unset($_GET['activate']);
         }
     }
 }
 
-if (!function_exists('enqueue_tpay_admin_assets')) {
-    function enqueue_tpay_admin_assets()
-    {
-        wp_enqueue_script('tpay_admin_js', plugin_dir_url(__FILE__) . 'views/assets/admin.min.js', [], time());
-        wp_enqueue_style('tpay_admin_css', plugin_dir_url(__FILE__) . 'views/assets/admin.css', [], TPAY_PLUGIN_VERSION);
-    }
+function enqueue_tpay_admin_assets()
+{
+    wp_enqueue_script('tpay_admin_js', plugin_dir_url(__FILE__) . 'views/assets/admin.min.js', [], time());
+    wp_enqueue_style('tpay_admin_css', plugin_dir_url(__FILE__) . 'views/assets/admin.css', [], TPAY_PLUGIN_VERSION);
 }
 
-if (!function_exists('buildInfo')) {
-    function buildInfo(): string
-    {
-        return sprintf(
-            'woocommerce:%s|wordpress:%s|tpay-woocommerce:%s|tpay-openapi-php:%s|PHP:%s',
-            WC()->version,
-            get_bloginfo('version'),
-            TPAY_PLUGIN_VERSION,
-            get_package_version(),
-            phpversion()
-        );
-    }
+function buildInfo(): string
+{
+    return sprintf(
+        'woocommerce:%s|wordpress:%s|tpay-woocommerce:%s|tpay-openapi-php:%s|PHP:%s',
+        WC()->version,
+        get_bloginfo('version'),
+        TPAY_PLUGIN_VERSION,
+        get_package_version(),
+        phpversion()
+    );
 }
 
-if (!function_exists('enqueue_tpay_gateway_assets')) {
-    function enqueue_tpay_gateway_assets(): void
-    {
-        $asset = require plugin_dir_path(__FILE__) . 'views/assets/main.min.asset.php';
+function enqueue_tpay_gateway_assets(): void
+{
+    $asset = require plugin_dir_path(__FILE__) . 'views/assets/main.min.asset.php';
+
+    wp_register_script(
+        'tpay_gateway_js',
+        plugin_dir_url(__FILE__) . 'views/assets/main.min.js',
+        $asset['dependencies'],
+        $asset['version'],
+        true
+    );
+    wp_localize_script('tpay_gateway_js', 'tpay', [
+        'merchantId' => tpayOption('global_api_key'),
+    ]);
+    wp_enqueue_script('tpay_gateway_js');
+
+    wp_enqueue_style('tpay_gateway_css', plugin_dir_url(__FILE__) . 'views/assets/main.css', [], time());
+
+    if (CartCheckoutUtils::is_checkout_block_default() || CartCheckoutUtils::is_cart_block_default()) {
+        $asset = require plugin_dir_path(__FILE__) . 'views/assets/installments-blocks.min.asset.php';
 
         wp_register_script(
-            'tpay_gateway_js',
-            plugin_dir_url(__FILE__) . 'views/assets/main.min.js',
+            'tpay-installments-blocks',
+            plugin_dir_url(__FILE__) . 'views/assets/installments-blocks.min.js',
             $asset['dependencies'],
             $asset['version'],
             true
         );
-        wp_localize_script('tpay_gateway_js', 'tpay', [
-            'merchantId' => tpayOption('global_api_key'),
-        ]);
-        wp_enqueue_script('tpay_gateway_js');
-
-        wp_enqueue_style('tpay_gateway_css', plugin_dir_url(__FILE__) . 'views/assets/main.css', [], time());
-
-        if (CartCheckoutUtils::is_checkout_block_default() || CartCheckoutUtils::is_cart_block_default()) {
-            $asset = require plugin_dir_path(__FILE__) . 'views/assets/installments-blocks.min.asset.php';
-
-            wp_register_script(
-                'tpay-installments-blocks',
-                plugin_dir_url(__FILE__) . 'views/assets/installments-blocks.min.js',
-                $asset['dependencies'],
-                $asset['version'],
-                true
-            );
-            wp_localize_script(
-                'tpay-installments-blocks',
-                'tpayInstallmentsBlocks',
-                [
-                    'merchantId' => tpayOption(
-                        'tpay_settings_installments_merchant_id',
+        wp_localize_script(
+            'tpay-installments-blocks',
+            'tpayInstallmentsBlocks',
+            [
+                'merchantId' => tpayOption(
+                    'tpay_settings_installments_merchant_id',
+                    'woocommerce_pekaoinstallments_settings'
+                ),
+                'installments' => [
+                    'cart' => tpayOption('tpay_settings_installments_cart', 'woocommerce_pekaoinstallments_settings'),
+                    'checkout' => tpayOption(
+                        'tpay_settings_installments_checkout',
                         'woocommerce_pekaoinstallments_settings'
                     ),
-                    'installments' => [
-                        'cart' => tpayOption('tpay_settings_installments_cart', 'woocommerce_pekaoinstallments_settings'),
-                        'checkout' => tpayOption(
-                            'tpay_settings_installments_checkout',
-                            'woocommerce_pekaoinstallments_settings'
-                        ),
-                    ],
-                    'translations' => [
-                        'button' => __('Calculate the installment!', 'tpay'),
-                    ],
-                ]
-            );
-            wp_enqueue_script('tpay-installments-blocks');
-        }
+                ],
+                'translations' => [
+                    'button' => __('Calculate the installment!', 'tpay'),
+                ],
+            ]
+        );
+        wp_enqueue_script('tpay-installments-blocks');
     }
 }
 
-if (!function_exists('add_tpay_gateways')) {
-    function add_tpay_gateways($gateways)
-    {
-        return array_merge($gateways, array_values(TPAY_CLASSMAP));
-    }
+function add_tpay_gateways($gateways)
+{
+    return array_merge($gateways, array_values(TPAY_CLASSMAP));
 }
 
-if (!function_exists('generate_random_string')) {
-    function generate_random_string($length = 10): string
-    {
-        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
+function generate_random_string($length = 10): string
+{
+    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
 
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-
-        return $randomString;
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
     }
+
+    return $randomString;
 }
 
-if (!function_exists('tpay_on_activate')) {
-    function tpay_on_activate()
-    {
-        $installed_version = get_option('tpay_plugin_version');
-        if ( $installed_version ) {
-            if ( version_compare( $installed_version, TPAY_PLUGIN_VERSION, '<' ) ) {
-                wp_die(
-                    sprintf('You already have an older version of the Tpay plugin installed (version: %s).<br>
-                 Please remove it before activating this one.', $installed_version)
-                );
-            }
-
-            wp_die(
-                sprintf('Another version of the Tpay plugin is already installed (version: %s).<br>
-             Please remove it before activating this one.', $installed_version)
-            );
-        }
-
-        update_option( 'tpay_plugin_version', TPAY_PLUGIN_VERSION );
-
-        global $wpdb;
-        $sql = 'CREATE TABLE if not exists `' . $wpdb->prefix . 'tpay_cards` (
+function tpay_on_activate()
+{
+    global $wpdb;
+    $sql = 'CREATE TABLE if not exists `' . $wpdb->prefix . 'tpay_cards` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `vendor` varchar(20) DEFAULT NULL,
@@ -208,68 +172,55 @@ if (!function_exists('tpay_on_activate')) {
   `valid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
-        $wpdb->get_results($sql);
-    }
+    $wpdb->get_results($sql);
 }
 
-if (!function_exists('tpay_refresh_checkout_on_payment_methods_change')) {
-    function tpay_refresh_checkout_on_payment_methods_change()
-    {
-        wc_enqueue_js(
-            "
+function tpay_refresh_checkout_on_payment_methods_change()
+{
+    wc_enqueue_js(
+        "
        $( 'form.checkout' ).on( 'change', 'input[name^=\'payment_method\']', function() {
            $('body').trigger('update_checkout');
         });
    "
-        );
-    }
+    );
 }
 
-if (!function_exists('get_package_version')) {
-    function get_package_version(): string
-    {
-        return \Tpay\Vendor\Composer\InstalledVersions::getPrettyVersion('tpay-com/tpay-openapi-php');
-    }
+function get_package_version(): string
+{
+    return \Tpay\Vendor\Composer\InstalledVersions::getPrettyVersion('tpay-com/tpay-openapi-php');
 }
 
-if (!function_exists('tpay_blik0_transaction_status')) {
-    function tpay_blik0_transaction_status()
-    {
-        check_ajax_referer('tpay-thank-you', 'nonce');
+function tpay_blik0_transaction_status()
+{
+    check_ajax_referer('tpay-thank-you', 'nonce');
 
-        $result = (new TpayBlik())->checkTransactionStatus(htmlspecialchars($_POST['transactionId']));
+    $result = (new TpayBlik())->checkTransactionStatus(htmlspecialchars($_POST['transactionId']));
 
-        wp_send_json($result);
-    }
+    wp_send_json($result);
 }
 
-if (!function_exists('tpay_pay_by_transfer')) {
-    function tpay_pay_by_transfer()
-    {
-        check_ajax_referer('tpay-thank-you', 'nonce');
-        $result = (new Tpay())->payByTransfer(htmlspecialchars($_POST['transactionId']), $_POST['orderId']);
-        wp_send_json($result);
-    }
+function tpay_pay_by_transfer()
+{
+    check_ajax_referer('tpay-thank-you', 'nonce');
+    $result = (new Tpay())->payByTransfer(htmlspecialchars($_POST['transactionId']), $_POST['orderId']);
+    wp_send_json($result);
 }
 
-if (!function_exists('tpay_blik0_repay')) {
-    function tpay_blik0_repay()
-    {
-        check_ajax_referer('tpay-thank-you', 'nonce');
-        $result = (new TpayBlik())->payBlikTransaction(htmlspecialchars($_POST['transactionId']), $_POST['blikCode'], $_POST['transactionCounter']);
-        wp_send_json($result);
-    }
+function tpay_blik0_repay()
+{
+    check_ajax_referer('tpay-thank-you', 'nonce');
+    $result = (new TpayBlik())->payBlikTransaction(htmlspecialchars($_POST['transactionId']), $_POST['blikCode'], $_POST['transactionCounter']);
+    wp_send_json($result);
 }
 
-if (!function_exists('tpay_lang')) {
-    function tpay_lang(): string
-    {
-        $locale = explode('_', get_locale());
+function tpay_lang(): string
+{
+    $locale = explode('_', get_locale());
 
-        if (false === in_array($locale[0], ['pl', 'en', 'uk'])) {
-            return 'en';
-        }
-
-        return $locale[0];
+    if (false === in_array($locale[0], ['pl', 'en', 'uk'])) {
+        return 'en';
     }
+
+    return $locale[0];
 }

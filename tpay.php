@@ -99,63 +99,61 @@ add_action('woocommerce_blocks_loaded', function () {
     );
 });
 
-if (!function_exists( 'init_gateway_tpay')) {
-    function init_gateway_tpay()
-    {
-        if (!class_exists('WC_Payment_Gateway')) {
-            childPluginHasParentPlugin();
+function init_gateway_tpay()
+{
+    if (!class_exists('WC_Payment_Gateway')) {
+        childPluginHasParentPlugin();
 
-            return;
+        return;
+    }
+
+    add_action('init', function () {
+        load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
+
+        if ( ! wp_next_scheduled( 'tpay_cancel_transactions' ) && ! wp_installing() ) {
+            wp_schedule_event( time(), 'hourly', 'tpay_cancel_transactions' );
         }
+    });
 
+    if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
+        die('Please download release version of module from: '
+            . '<a href="https://github.com/tpay-com/tpay-woocommerce/releases/latest">'
+            . 'https://github.com/tpay-com/tpay-woocommerce/releases/latest</a>');
+    }
+    require_once realpath(__DIR__ . '/vendor/autoload.php');
+    Logger::setLogger(new TpayLogger());
+
+    add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
+    $genericsSelected = tpayOption('global_generic_payments') ?? [];
+    if (!is_array($genericsSelected)) {
+        $genericsSelected = [];
+    }
+
+    if (is_admin()) {
         add_action('init', function () {
-            load_plugin_textdomain('tpay', false, dirname(plugin_basename(__FILE__)) . '/lang/');
-
-            if ( ! wp_next_scheduled( 'tpay_cancel_transactions' ) && ! wp_installing() ) {
-                wp_schedule_event( time(), 'hourly', 'tpay_cancel_transactions' );
-            }
-        });
-
-        if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
-            die('Please download release version of module from: '
-                . '<a href="https://github.com/tpay-com/tpay-woocommerce/releases/latest">'
-                . 'https://github.com/tpay-com/tpay-woocommerce/releases/latest</a>');
-        }
-        require_once realpath(__DIR__ . '/vendor/autoload.php');
-        Logger::setLogger(new TpayLogger());
-
-        add_filter('woocommerce_payment_gateways', 'add_tpay_gateways');
-        $genericsSelected = tpayOption('global_generic_payments') ?? [];
-        if (!is_array($genericsSelected)) {
-            $genericsSelected = [];
-        }
-
-        if (is_admin()) {
-            add_action('init', function () {
-                new TpaySettings();
-            });
-        }
-
-        add_filter('woocommerce_payment_gateways', function ($gateways) use ($genericsSelected) {
-            $generics = array_map(static function (int $id) {
-                return new class ($id) extends \Tpay\TpayGeneric {
-                    public function __construct($id = null)
-                    {
-                        parent::__construct("tpaygeneric-{$id}", $id);
-                        $channels = $this->channels();
-
-                        foreach ($channels as $channel) {
-                            if ($channel->id === $id) {
-                                $this->set_icon($channel->image->url);
-                            }
-                        }
-                    }
-                };
-            }, $genericsSelected);
-
-            return array_merge($gateways, $generics);
+            new TpaySettings();
         });
     }
+
+    add_filter('woocommerce_payment_gateways', function ($gateways) use ($genericsSelected) {
+        $generics = array_map(static function (int $id) {
+            return new class ($id) extends \Tpay\TpayGeneric {
+                public function __construct($id = null)
+                {
+                    parent::__construct("tpaygeneric-{$id}", $id);
+                    $channels = $this->channels();
+
+                    foreach ($channels as $channel) {
+                        if ($channel->id === $id) {
+                            $this->set_icon($channel->image->url);
+                        }
+                    }
+                }
+            };
+        }, $genericsSelected);
+
+        return array_merge($gateways, $generics);
+    });
 }
 
 if (is_admin()) {
