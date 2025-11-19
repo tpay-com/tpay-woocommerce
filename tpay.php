@@ -77,14 +77,14 @@ add_filter('upgrader_source_selection', function($source, $remote_source, $upgra
         if ($info['Name'] === 'Tpay Payment Gateway') {
             return new WP_Error(
                 'tpay_duplicate',
-                __('Tpay Payment Gateway is already installed. Remove it before installing another copy.', 'tpay')
+                __('Tpay Payment Gateway is already installed. Remove it before uploading a new version.', 'tpay')
             );
         }
 
         if (strpos($file, basename(__FILE__)) !== false) {
             return new WP_Error(
                 'tpay_duplicate',
-                __('Tpay Payment Gateway folder already exists. Remove it before uploading a new version.', 'tpay')
+                __('Tpay Payment Gateway is already installed. Remove it before uploading a new version.', 'tpay')
             );
         }
     }

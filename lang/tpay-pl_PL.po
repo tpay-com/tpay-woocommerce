@@ -567,5 +567,5 @@ msgstr "Zaloguj się do <a href=\"https://panel.tpay.com\" target=\"_blank\">Pan
 msgid "Shop now with BLIK Pay Later and settle your payment within 30 days – all in your bank's app."
 msgstr "Z BLIK Płacę Później kupujesz teraz, a płacisz w ciągu 30 dni w aplikacji Twojego banku."
 
-msgid "Tpay Payment Gateway is already installed. Remove it before installing another copy."
+msgid "pay Payment Gateway is already installed. Remove it before uploading a new version."
 msgstr "Plugin Płatności Tpay jest już zainstalowany. Usuń poprzednią wersję przed zainstalowaniem kolejnej."
