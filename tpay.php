@@ -62,6 +62,29 @@ const TPAY_CLASSMAP = [
     TPAYPEKAOINSTALLMENTS_ID => PekaoInstallments::class,
 ];
 
+add_filter('upgrader_source_selection', function($source, $remote_source, $upgrader, $hook_extra) {
+    if (!isset($hook_extra['type']) || $hook_extra['type'] !== 'plugin') {
+        return $source;
+    }
+
+    $folder = basename($source);
+    $target = WP_PLUGIN_DIR . '/' . $folder;
+    if (is_dir($target)) {
+        return $source;
+    }
+
+    $pluginData = get_plugin_data(__FILE__, false, false);
+    foreach (get_plugins() as $file => $info) {
+        if ($info['Name'] === $pluginData['Name']) {
+            return new WP_Error(
+                'tpay_duplicate',
+                __('Tpay Payment Gateway is already installed. Remove it before installing another copy.', 'tpay')
+            );
+        }
+    }
+    return $source;
+}, 10, 4);
+
 if ('disabled' != tpayOption('global_enable_fee')) {
     add_action('woocommerce_cart_calculate_fees', 'tpay_add_checkout_fee_for_gateway');
     add_action('woocommerce_after_checkout_form', 'tpay_refresh_checkout_on_payment_methods_change');
