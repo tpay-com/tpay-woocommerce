@@ -62,34 +62,34 @@ const TPAY_CLASSMAP = [
     TPAYPEKAOINSTALLMENTS_ID => PekaoInstallments::class,
 ];
 
-add_filter('upgrader_source_selection', function($source, $remote_source, $upgrader, $hook_extra) {
-    if (!isset($hook_extra['type']) || $hook_extra['type'] !== 'plugin') {
-        return $source;
+add_filter( 'upgrader_post_install', function( $response, $hook_extra, $result ) {
+    if ( empty( $hook_extra['type'] ) || $hook_extra['type'] !== 'plugin' ) {
+        return $response;
     }
 
-    $folder = basename($source);
-    $target = WP_PLUGIN_DIR . '/' . $folder;
-    if (is_dir($target)) {
-        return $source;
+    if (dirname(__FILE__) === rtrim($result['destination'], '/')) {
+        return $response;
     }
 
-    foreach (get_plugins() as $file => $info) {
-        if ($info['Name'] === 'Tpay Payment Gateway') {
-            return new WP_Error(
-                'tpay_duplicate',
-                __('Tpay Payment Gateway is already installed. Remove it before uploading a new version.', 'tpay')
-            );
+    $currentFile = basename(__FILE__);
+    if (in_array($currentFile, $result['source_files'])) { // check if tpay.php already exists
+        global $wp_filesystem;
+        if (!$wp_filesystem) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
         }
 
-        if (strpos($file, basename(__FILE__)) !== false) {
-            return new WP_Error(
-                'tpay_duplicate',
-                __('Tpay Payment Gateway is already installed. Remove it before uploading a new version.', 'tpay')
-            );
-        }
+        $plugin_folder_name = $result['destination'];
+        $wp_filesystem->delete($plugin_folder_name, true);
+
+        return new WP_Error(
+            'duplicate_plugin',
+            'Payment Gateway is already installed. Remove it before uploading a new version.'
+        );
     }
-    return $source;
-}, 10, 4);
+
+    return $response;
+}, 10, 3);
 
 if ('disabled' != tpayOption('global_enable_fee')) {
     add_action('woocommerce_cart_calculate_fees', 'tpay_add_checkout_fee_for_gateway');
