@@ -84,7 +84,7 @@ add_filter( 'upgrader_post_install', function( $response, $hook_extra, $result )
 
         return new WP_Error(
             'duplicate_plugin',
-            'Payment Gateway is already installed. Remove it before uploading a new version.'
+            __('Payment Gateway is already installed. Remove it before uploading a new version.', 'tpay')
         );
     }
 
