@@ -474,8 +474,25 @@ abstract class TpayGateways extends WC_Payment_Gateway
     /** @throws */
     public function gateway_ipn()
     {
-        $body = $_POST;
-        Ipn\IpnContext::chooseStrategy($body);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            wp_die(
+                'Not Found',
+                'Not Found',
+                ['response' => 404]
+            );
+        }
+
+        try {
+            $body = $_POST;
+            Ipn\IpnContext::chooseStrategy($body);
+        } catch (\Throwable $exception) {
+            wp_die(
+                'Bad Request',
+                'Bad Request',
+                ['response' => 400]
+            );
+        }
+
         wp_die();
     }
 
