@@ -496,7 +496,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             Ipn\IpnContext::chooseStrategy($body);
         } catch (Throwable $exception) {
             wp_die(
-                'False - ' . $exception->getMessage(),
+                'False - '.$exception->getMessage(),
                 'Bad Request',
                 ['response' => 400]
             );
