@@ -6,6 +6,7 @@ use Automattic\WooCommerce\Enums\OrderInternalStatus;
 use Exception;
 use Tpay\Helpers;
 use Tpay\OpenApi\Utilities\CacheCertificateProvider;
+use Tpay\OpenApi\Utilities\TpayException;
 use Tpay\OpenApi\Webhook\JWSVerifiedPaymentNotification;
 use Tpay\Repository\OrderRepository;
 use WC_Order;
@@ -30,17 +31,15 @@ class UpdateOrderStatus implements IpnInterface
         $order = $this->orderRepository->orderByCrc($response['tr_crc']);
 
         if (!$order) {
-            echo 'FALSE - no order found!';
-            exit();
+            throw new TpayException('Order not found');
         }
 
         $order_method = $order->get_payment_method();
         $class = TPAY_CLASSMAP[$order_method] ?? null;
 
         if (null === $class || !class_exists($class)) {
-            if (!str_starts_with($order_method, 'tpaygeneric-')) {
-                echo 'FALSE - unsupported payment method: '.$order_method;
-                exit();
+            if (strpos($order_method, 'tpaygeneric-') !== 0) {
+                throw new TpayException('Unsupported payment method: '.$order_method);
             }
             $order_method = str_replace('tpaygeneric-', '', $order_method);
             $gateway = new class ($order_method) extends \Tpay\TpayGeneric {
@@ -74,8 +73,7 @@ class UpdateOrderStatus implements IpnInterface
             $notificationData = $notification->getNotificationAssociative();
         } catch (Exception $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
-            echo sprintf('%s - %s', 'FALSE', $e->getMessage());
-            exit();
+            throw new TpayException($e->getMessage());
         }
 
         switch ($notificationData['tr_status']) {
@@ -90,6 +88,8 @@ class UpdateOrderStatus implements IpnInterface
             case 'FALSE':
                 $this->orderIsNotComplete($notificationData);
                 break;
+            default:
+                throw new TpayException('Unknown notification status: '.$notificationData['tr_status']);
         }
     }
 

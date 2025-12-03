@@ -483,12 +483,20 @@ abstract class TpayGateways extends WC_Payment_Gateway
             );
         }
 
+        $body = $_POST;
+
+        if (empty($body)) {
+            wp_die(
+                'False - Empty body received',
+                'Bad Request',
+                ['response' => 400]
+            );
+        }
         try {
-            $body = $_POST;
             Ipn\IpnContext::chooseStrategy($body);
         } catch (Throwable $exception) {
             wp_die(
-                'Bad Request',
+                'False - ' . $exception->getMessage(),
                 'Bad Request',
                 ['response' => 400]
             );
