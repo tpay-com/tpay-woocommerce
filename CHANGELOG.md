@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Removed restrictions on order statuses
+- Prevent duplicate Tpay plugin installations
 - Optimize loading performance in admin panel
 
 ## [1.12.5]
