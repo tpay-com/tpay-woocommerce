@@ -3,6 +3,7 @@
 namespace Tpay\Ipn;
 
 use Tpay\Helpers\GatewayHelper;
+use Tpay\OpenApi\Utilities\TpayException;
 
 class IpnContext
 {
@@ -15,6 +16,8 @@ class IpnContext
         } else {
             $text = json_encode($response);
             (new GatewayHelper())->tpay_logger('Mismatched strategy. Response content:  '.$text);
+
+            throw new TpayException('Mismatched strategy. Response content: '.$text);
         }
 
         return new ReceiveNotification($response, $strategy);
