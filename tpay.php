@@ -3,7 +3,7 @@
  * Plugin Name: Tpay Payment Gateway
  * Plugin URI: https://tpay.com
  * Description: Tpay payment gateway for WooCommerce
- * Version: 1.12.5
+ * Version: 1.13.0
  * Author: Krajowy Integrator Płatności S.A.
  * Author URI: http://www.tpay.com
  * License: LGPL 3.0
@@ -38,7 +38,7 @@ use Tpay\TpaySF;
 
 require_once 'tpay-functions.php';
 
-define('TPAY_PLUGIN_VERSION', '1.12.5');
+define('TPAY_PLUGIN_VERSION', '1.13.0');
 define('TPAY_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
 add_action('plugins_loaded', 'init_gateway_tpay');
 register_activation_hook(__FILE__, 'tpay_on_activate');
@@ -250,7 +250,25 @@ add_action('wp_ajax_nopriv_tpay_pay_by_transfer', 'tpay_pay_by_transfer');
 add_action('wp_ajax_tpay_blik0_repay', 'tpay_blik0_repay');
 add_action('wp_ajax_nopriv_tpay_blik0_repay', 'tpay_blik0_repay');
 
+function tpay_should_load_gateway_list() {
+    if (!is_admin()) {
+        return true;
+    }
+
+    $page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+    $tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : '';
+
+    return (
+        ($page === 'wc-settings' && $tab === 'checkout') ||
+        $page === 'tpay-settings'
+    );
+}
+
 add_filter('tpay_generic_gateway_list', function ($gateways) {
+    if (!tpay_should_load_gateway_list()) {
+        return false;
+    }
+
     $transactions = new Transactions(new Client(), new Cache());
     $channels = $transactions->channels();
     $genericGateways = [];
