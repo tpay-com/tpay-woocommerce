@@ -650,14 +650,11 @@ class TpaySettings
     public function before_payment_statuses(): array
     {
         $statuses = wc_get_order_statuses();
-        $isPaidStatuses = wc_get_is_paid_statuses();
         $available = [];
 
         foreach ($statuses as $key => $value) {
             $key = str_replace('wc-', '', $key);
-            if (in_array($key, $isPaidStatuses)) {
-                $available[$key] = $value;
-            }
+            $available[$key] = $value;
         }
 
         ksort($available);
