@@ -103,8 +103,8 @@ class UpdateOrderStatus implements IpnInterface
     public function orderIsComplete(WC_Order $order, array $response): void
     {
         $status = $this->getOrderStatus($order);
-        $order->update_status($status, sprintf('%s : %s. ', __('CRC number in Tpay', 'tpay'), $response['tr_crc']));
         $order->payment_complete($order->get_transaction_id());
+        $order->update_status($status, sprintf('%s : %s. ', __('CRC number in Tpay', 'tpay'), $response['tr_crc']));
         $this->gateway_helper->tpay_logger('Odebrano powiadomienie dla zamówienia: '.$order->get_id().', transakcja: '.$order->get_transaction_id());
 
         if (isset($response['card_token'])) {
@@ -146,13 +146,8 @@ class UpdateOrderStatus implements IpnInterface
     {
         $checkedStatus = 'global_default_virtual_product_on_hold_status';
 
-        foreach ($order->get_items() as $item) {
-            $product = $item->get_product();
-            if ($product && !$product->is_virtual()) {
-                $checkedStatus = 'global_default_on_hold_status';
-
-                break;
-            }
+        if ($order->needs_processing()) {
+            $checkedStatus = 'global_default_on_hold_status';
         }
 
         return tpayOption($checkedStatus) ?? OrderInternalStatus::PROCESSING;
