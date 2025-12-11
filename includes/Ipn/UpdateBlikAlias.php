@@ -2,6 +2,8 @@
 
 namespace Tpay\Ipn;
 
+use Tpay\OpenApi\Utilities\TpayException;
+
 class UpdateBlikAlias implements IpnInterface
 {
     public function parseNotification($response)
@@ -14,6 +16,8 @@ class UpdateBlikAlias implements IpnInterface
             case 'ALIAS_UNREGISTER':
                 $this->removeBlikAlias($uid);
                 break;
+            default:
+                throw new TpayException('Unknown event: '.$response['event']);
         }
     }
 

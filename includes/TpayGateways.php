@@ -4,6 +4,7 @@ namespace Tpay;
 
 use Error;
 use Exception;
+use Throwable;
 use Tpay\Api\Client;
 use Tpay\Api\Dtos\Channel;
 use Tpay\Api\Transactions;
@@ -474,8 +475,33 @@ abstract class TpayGateways extends WC_Payment_Gateway
     /** @throws */
     public function gateway_ipn()
     {
+        if ('POST' !== $_SERVER['REQUEST_METHOD']) {
+            wp_die(
+                'Not Found',
+                'Not Found',
+                ['response' => 404]
+            );
+        }
+
         $body = $_POST;
-        Ipn\IpnContext::chooseStrategy($body);
+
+        if (empty($body)) {
+            wp_die(
+                'False - Empty body received',
+                'Bad Request',
+                ['response' => 400]
+            );
+        }
+        try {
+            Ipn\IpnContext::chooseStrategy($body);
+        } catch (Throwable $exception) {
+            wp_die(
+                'False - '.$exception->getMessage(),
+                'Bad Request',
+                ['response' => 400]
+            );
+        }
+
         wp_die();
     }
 
