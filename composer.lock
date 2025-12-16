@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2aaed39302df4b13529e98d0c187ca7e",
+    "content-hash": "04126cac1f9c81ca92c56630c016f7f8",
     "packages": [
         {
             "name": "paragonie/constant_time_encoding",
@@ -1349,22 +1349,22 @@
         },
         {
             "name": "tpay-com/coding-standards",
-            "version": "1.1.1",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tpay-com/php-coding-standards.git",
-                "reference": "5b0db4aea95f1e9e5c219ce00efa95645846d726"
+                "reference": "9a924d5098f7623dfa64ab8f6c228418048e02b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tpay-com/php-coding-standards/zipball/5b0db4aea95f1e9e5c219ce00efa95645846d726",
-                "reference": "5b0db4aea95f1e9e5c219ce00efa95645846d726",
+                "url": "https://api.github.com/repos/tpay-com/php-coding-standards/zipball/9a924d5098f7623dfa64ab8f6c228418048e02b9",
+                "reference": "9a924d5098f7623dfa64ab8f6c228418048e02b9",
                 "shasum": ""
             },
             "require": {
-                "friendsofphp/php-cs-fixer": "^3.22",
                 "kubawerlos/php-cs-fixer-custom-fixers": "^3.16.2",
-                "php": "^7.4 || ^8.0"
+                "php": "^7.4 || ^8.0",
+                "php-cs-fixer/shim": "^3.22"
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.6.11",
@@ -1383,9 +1383,9 @@
             "description": "Tpay.com coding standards library",
             "support": {
                 "issues": "https://github.com/tpay-com/php-coding-standards/issues",
-                "source": "https://github.com/tpay-com/php-coding-standards/tree/1.1.1"
+                "source": "https://github.com/tpay-com/php-coding-standards/tree/1.0.1"
             },
-            "time": "2025-08-13T12:43:06+00:00"
+            "time": "2023-08-22T10:49:05+00:00"
         }
     ],
     "aliases": [],

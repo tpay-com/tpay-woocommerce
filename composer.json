@@ -37,7 +37,7 @@
         "cs:sniffer": "./vendor/bin/phpcs --standard=.phpcs.xml -n"
     },
     "require-dev": {
-        "tpay-com/coding-standards": "^1.1",
+        "tpay-com/coding-standards": "1.0.1",
         "php-cs-fixer/shim": "^3.92",
         "kubawerlos/php-cs-fixer-custom-fixers": "^3.35",
         "ergebnis/composer-normalize": "^2.48",
