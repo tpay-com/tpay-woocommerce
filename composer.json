@@ -37,11 +37,10 @@
         "cs:sniffer": "./vendor/bin/phpcs --standard=.phpcs.xml -n"
     },
     "require-dev": {
-        "tpay-com/coding-standards": "1.0.1",
-        "php-cs-fixer/shim": "^3.92",
-        "kubawerlos/php-cs-fixer-custom-fixers": "^3.35",
+        "tpay-com/coding-standards": "^1.0.1",
+        "php-cs-fixer/shim": "^3.23",
+        "kubawerlos/php-cs-fixer-custom-fixers": "^3.16.2",
         "ergebnis/composer-normalize": "^2.48",
-        "squizlabs/php_codesniffer": "*",
-        "php-stubs/wordpress-stubs": "^6.9"
+        "squizlabs/php_codesniffer": "*"
     }
 }
