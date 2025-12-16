@@ -26,7 +26,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "prepend-autoloader": false
+        "prepend-autoloader": false,
+        "platform": {
+          "php": "7.4.0"
+        }
     },
     "scripts": {
         "cs:fix:dry": "php-cs-fixer fix --vvv --dry-run --diff",
