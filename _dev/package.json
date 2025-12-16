@@ -23,7 +23,7 @@
     "@types/wordpress__blocks": "^12.5.14",
     "@typescript/lib-dom": "npm:@types/web@^0.0.147",
     "@woocommerce/dependency-extraction-webpack-plugin": "^3.0.1",
-    "@wordpress/scripts": "^28.3.0",
+    "@wordpress/scripts": "^31.1.0",
     "credit-card-type": "^10.0.0",
     "creditcard.js": "3.0.29",
     "css-loader": "^7.1.2",
