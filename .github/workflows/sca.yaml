@@ -19,8 +19,8 @@ jobs:
 
       - run: composer validate --strict
 
-      - working-directory: .dev-tools
-        run: composer install
+      - run: composer install
 
-      - working-directory: .dev-tools
-        run: ./vendor/bin/php-cs-fixer fix -vvv --diff --dry-run
+      - run: composer cs:fix:dry
+
+      - run: composer cs:sniffer

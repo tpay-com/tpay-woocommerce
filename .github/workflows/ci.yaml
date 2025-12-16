@@ -39,5 +39,3 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
 
       - run: composer update --no-progress --classmap-authoritative
-
-#      - run: ./vendor/bin/phpunit
