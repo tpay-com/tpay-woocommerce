@@ -25,10 +25,21 @@
     },
     "config": {
         "optimize-autoloader": true,
-        "platform": {
-            "php": "7.1"
-        },
         "preferred-install": "dist",
-        "prepend-autoloader": false
+        "prepend-autoloader": false,
+        "platform": {
+          "php": "7.4.0"
+        }
+    },
+    "scripts": {
+        "cs:fix:dry": "php-cs-fixer fix -vvv --dry-run --diff",
+        "cs:fix": "php-cs-fixer fix --diff",
+        "cs:sniffer": "./vendor/bin/phpcs --standard=.phpcs.xml -n"
+    },
+    "require-dev": {
+        "tpay-com/coding-standards": "^1.0.1",
+        "php-cs-fixer/shim": "^3.23",
+        "kubawerlos/php-cs-fixer-custom-fixers": "^3.16.2",
+        "squizlabs/php_codesniffer": "*"
     }
 }
