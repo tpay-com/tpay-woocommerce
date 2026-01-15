@@ -102,7 +102,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
                 array_keys($availablePayments)
             )) {
                 $fieldsCopy = wpautop(
-                    wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description'] ?? 'k')
+                    wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description'])
                 ).$fields;
 
                 if (TpayGeneric::BLIK_BNPL === $channel->id) {
