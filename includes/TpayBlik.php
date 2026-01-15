@@ -3,6 +3,7 @@
 namespace Tpay;
 
 use Error;
+use Exception;
 use WC_Order;
 
 class TpayBlik extends TpayGateways
@@ -159,8 +160,8 @@ class TpayBlik extends TpayGateways
                     $this->additional_payment_data,
                     $transaction['transactionId']
                 );
-            } catch (\Exception $e) {
-                wc_add_notice('Błąd podczas tworzenia płatności: '. $e->getMessage(), 'error');
+            } catch (Exception $e) {
+                wc_add_notice('Błąd podczas tworzenia płatności: '.$e->getMessage(), 'error');
 
                 return false;
             }
@@ -191,9 +192,9 @@ class TpayBlik extends TpayGateways
     {
         try {
             $transaction = $this->blik($transactionId, $blikCode);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->gateway_helper->tpay_logger(
-                'Nieudana inicjalizacja płatności BLIK, błąd: ' . $e->getMessage()
+                'Nieudana inicjalizacja płatności BLIK, błąd: '.$e->getMessage()
             );
 
             return [
@@ -204,7 +205,7 @@ class TpayBlik extends TpayGateways
         if ('success' == $transaction['result']) {
             try {
                 $result = $this->waitForBlikAccept($transaction['transactionId'], $transactionCounter);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->gateway_helper->tpay_logger(
                     'Nieudana płatność BLIK, błąd: '.$e->getMessage()
                 );

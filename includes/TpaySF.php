@@ -3,6 +3,7 @@
 namespace Tpay;
 
 use Error;
+use Throwable;
 use Tpay\Api\Dtos\Group;
 use Tpay\Helpers\DatabaseConnection;
 use WC_Data_Exception;
@@ -22,8 +23,8 @@ class TpaySF extends TpayGateways
         $this->setSubscriptionsSupport();
         try {
             $channels = $this->channels();
-        } catch (\Throwable $e) {
-            $this->gateway_helper->tpay_logger('Błąd podczas pobierania kanałów płatności: '. $e->getMessage());
+        } catch (Throwable $e) {
+            $this->gateway_helper->tpay_logger('Błąd podczas pobierania kanałów płatności: '.$e->getMessage());
             $channels = [];
         }
 
@@ -50,6 +51,7 @@ class TpaySF extends TpayGateways
     }
 
     /**
+     * @param mixed    $chargeAmount
      * @param WC_Order $order
      *
      * @throws WC_Data_Exception

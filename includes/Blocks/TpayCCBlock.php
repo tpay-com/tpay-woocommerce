@@ -3,6 +3,7 @@
 namespace Tpay\Blocks;
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
+use Throwable;
 use Tpay\TpayCC;
 
 final class TpayCCBlock extends AbstractPaymentMethodType
@@ -50,7 +51,7 @@ final class TpayCCBlock extends AbstractPaymentMethodType
 
         try {
             $channels = $this->gateway->channels();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->gateway->gateway_helper->tpay_logger('Błąd pobierania kanałów płatności: '.$e->getMessage());
             $channels = [];
         }

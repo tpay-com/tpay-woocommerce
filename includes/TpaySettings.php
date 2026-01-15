@@ -229,10 +229,10 @@ class TpaySettings
         } catch (\Exception $e) {
             if (is_admin()) {
                 @add_settings_error(
-                        'general',
-                        'settings_updated',
-                        __('Failed to load payment channels. Please try again.', 'tpay'),
-                        'error'
+                    'general',
+                    'settings_updated',
+                    __('Failed to load payment channels. Please try again.', 'tpay'),
+                    'error'
                 );
             }
         }
@@ -385,7 +385,7 @@ class TpaySettings
         try {
             $channels = $this->transactions->channels();
         } catch (\Exception $e) {
-            error_log('[Tpay] Unable to load channels in settings: ' . $e->getMessage());
+            error_log('[Tpay] Unable to load channels in settings: '.$e->getMessage());
             $channels = [];
         }
 
