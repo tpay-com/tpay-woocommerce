@@ -48,10 +48,17 @@ final class TpayCCBlock extends AbstractPaymentMethodType
         $this->gateway->payment_fields();
         $fields = ob_get_clean();
 
+        try {
+            $channels = $this->gateway->channels();
+        } catch (\Throwable $e) {
+            $this->gateway->gateway_helper->tpay_logger('Błąd pobierania kanałów płatności: '.$e->getMessage());
+            $channels = [];
+        }
+
         return [
             'title' => $this->gateway->title,
             'description' => $this->gateway->description,
-            'channels' => $this->gateway->channels(),
+            'channels' => $channels,
             'icon' => $this->gateway->icon,
             'cartTotal' => WC()->cart ? WC()->cart->get_cart_contents_total() : null,
             'fields' => $fields,

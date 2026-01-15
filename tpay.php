@@ -165,21 +165,29 @@ function init_gateway_tpay()
     }
 
     add_filter('woocommerce_payment_gateways', function ($gateways) use ($genericsSelected) {
-        $generics = array_map(static function (int $id) {
-            return new class ($id) extends \Tpay\TpayGeneric {
-                public function __construct($id = null)
-                {
-                    parent::__construct("tpaygeneric-{$id}", $id);
-                    $channels = $this->channels();
+        $generics = [];
+        try {
+            $generics = array_map(static function (int $id) {
+                return new class ($id) extends \Tpay\TpayGeneric {
+                    public function __construct($id = null)
+                    {
+                        parent::__construct("tpaygeneric-{$id}", $id);
+                        $channels = $this->channels();
 
-                    foreach ($channels as $channel) {
-                        if ($channel->id === $id) {
-                            $this->set_icon($channel->image->url);
+                        foreach ($channels as $channel) {
+                            if ($channel->id === $id) {
+                                $this->set_icon($channel->image->url);
+                            }
                         }
                     }
-                }
-            };
-        }, $genericsSelected);
+                };
+            }, $genericsSelected);
+        } catch (\Throwable $e) {
+            wc_get_logger()->notice(
+                'Failed to get Tpay gateways',
+                ['reason' => $e->getMessage()]
+            );
+        }
 
         return array_merge($gateways, $generics);
     });
@@ -201,7 +209,19 @@ add_action('woocommerce_before_thankyou', function ($orderId) {
     }
 
     if ('' === $order->get_meta('blik0')) {
-        $status = (new Tpay())->checkTransactionStatus(htmlspecialchars($order->get_transaction_id()));
+        $status = null;
+        try {
+            $status = (new Tpay())->checkTransactionStatus(htmlspecialchars($order->get_transaction_id()));
+        } catch (\Exception $e) {
+            wc_get_logger()->notice(
+                'Failed to check Tpay transaction status',
+                [
+                    'transaction_id' => $order->get_transaction_id() ?? null,
+                    'order_id' => $order->get_id(),
+                    'reason' => $e->getMessage()
+                ]
+            );
+        }
         wp_enqueue_style(
             'tpay-thank-you',
             plugin_dir_url(__FILE__) . 'views/assets/thank-you.css',
@@ -250,37 +270,10 @@ add_action('wp_ajax_nopriv_tpay_pay_by_transfer', 'tpay_pay_by_transfer');
 add_action('wp_ajax_tpay_blik0_repay', 'tpay_blik0_repay');
 add_action('wp_ajax_nopriv_tpay_blik0_repay', 'tpay_blik0_repay');
 
-function tpay_should_load_gateway_list() {
-    if (!is_admin()) {
-        return true;
-    }
-
-    $page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
-    $tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : '';
-
-    return (
-        ($page === 'wc-settings' && $tab === 'checkout') ||
-        $page === 'tpay-settings'
-    );
-}
-
 add_filter('tpay_generic_gateway_list', function ($gateways) {
-    if (!tpay_should_load_gateway_list()) {
-        return false;
-    }
-
-    $transactions = new Transactions(new Client(), new Cache());
-    $channels = $transactions->channels();
-    $genericGateways = [];
-
-    foreach ($channels as $channel) {
-        $genericGateways["tpaygeneric-{$channel->id}"] = [
-            'name' => $channel->name,
-            'front_name' => $channel->fullName,
-            'default_description' => '',
-            'api' => 'tpaygeneric-' . $channel->id,
-            'group_id' => null,
-        ];
+    $genericGateways = tpay_get_cached_generic_gateways();
+    if (empty($genericGateways)) {
+        return $gateways;
     }
 
     return array_merge($gateways, $genericGateways);

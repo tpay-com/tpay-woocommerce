@@ -7,6 +7,40 @@ use Tpay\TpayGateways;
 
 defined('ABSPATH') || exit();
 
+function tpay_get_cached_generic_gateways() {
+    $cache_key = 'tpay_generic_gateways';
+    $cached = get_transient($cache_key);
+
+    if ($cached !== false && is_array($cached)) {
+        return $cached;
+    }
+
+    try {
+        $transactions = new Transactions(new Client(), new Cache());
+        $channels = $transactions->channels();
+
+        $gateways = [];
+
+        foreach ($channels as $channel) {
+            $gateways["tpaygeneric-{$channel->id}"] = [
+                'name' => $channel->name,
+                'front_name' => $channel->fullName,
+                'default_description' => '',
+                'api' => 'tpaygeneric-' . $channel->id,
+                'group_id' => null,
+            ];
+        }
+
+        set_transient($cache_key, $gateways, MINUTE_IN_SECONDS);
+
+        return $gateways;
+    } catch (\Throwable $e) {
+        error_log('[Tpay] Failed to load generic gateways: ' . $e->getMessage());
+
+        return [];
+    }
+}
+
 /**
  * @return mixed|null
  */

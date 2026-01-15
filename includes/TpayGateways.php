@@ -661,7 +661,14 @@ abstract class TpayGateways extends WC_Payment_Gateway
 
         $lookedId = array_flip($valuesNames)[$id];
 
-        foreach ($this->channels() as $channel) {
+        $channels = [];
+        try {
+            $channels = $this->channels();
+        } catch (\Exception $e) {
+            $this->gateway_helper->tpay_logger('Błąd podczas pobierania kanałów płatności: '. $e->getMessage());
+        }
+
+        foreach ($channels as $channel) {
             $groupId = !empty($channel->groups) ? $channel->groups[0]->id : null;
 
             if ($groupId === $lookedId && isset($channel->constraints[1]->value)) {
@@ -678,8 +685,16 @@ abstract class TpayGateways extends WC_Payment_Gateway
     private function get_generic_constraints(): array
     {
         $genericPayments = tpayOption('global_generic_payments') ?? [];
+
+        $channels = [];
+        try {
+            $channels = $this->channels();
+        } catch (\Exception $e) {
+            $this->gateway_helper->tpay_logger('Błąd podczas pobierania kanałów płatności: '. $e->getMessage());
+        }
+
         $values = [];
-        foreach ($this->channels() as $channel) {
+        foreach ($channels as $channel) {
             if (in_array($channel->id, $genericPayments) && isset($channel->constraints[1]->value)) {
                 $values['tpaygeneric-'.$channel->id] = [
                     'min' => (float) $channel->constraints[0]->value,

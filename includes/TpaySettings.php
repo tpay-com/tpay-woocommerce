@@ -223,7 +223,19 @@ class TpaySettings
             ]
         );
 
-        $channels = $this->transactions->channels();
+        $channels = [];
+        try {
+            $channels = $this->transactions->channels();
+        } catch (\Exception $e) {
+            if (is_admin()) {
+                @add_settings_error(
+                        'general',
+                        'settings_updated',
+                        __('Failed to load payment channels. Please try again.', 'tpay'),
+                        'error'
+                );
+            }
+        }
         $channelNames = [];
         foreach ($channels as $channel) {
             $channelNames[$channel->id] = $channel->name;
@@ -290,8 +302,6 @@ class TpaySettings
 
     public function global_generic_payments_checkbox_callback($args)
     {
-        $id = 'global_generic_payments_'.$args['id'];
-        $channels = $this->transactions->channels();
         $checkedChannels = tpayOption('global_generic_payments') ?? [];
         if (!is_array($checkedChannels)) {
             $checkedChannels = [];
@@ -372,7 +382,13 @@ class TpaySettings
 
     public function global_generic_payments_callback($args)
     {
-        $channels = $this->transactions->channels();
+        try {
+            $channels = $this->transactions->channels();
+        } catch (\Exception $e) {
+            error_log('[Tpay] Unable to load channels in settings: ' . $e->getMessage());
+            $channels = [];
+        }
+
         $checkedChannels = tpayOption('global_generic_payments') ?? [];
         if (!is_array($checkedChannels)) {
             $checkedChannels = [];

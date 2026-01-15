@@ -20,8 +20,12 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
             public function __construct($id = null)
             {
                 parent::__construct('tpaygeneric-1');
-
-                $channels = $this->channels();
+                try {
+                    $channels = $this->channels();
+                } catch (\Throwable $e) {
+                    $this->gateway_helper->tpay_logger('Błąd pobierania kanałów płatności: '.$e->getMessage());
+                    $channels = [];
+                }
 
                 foreach ($channels as $channel) {
                     if ($channel->id === $id) {
@@ -71,7 +75,12 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
         $fields = ob_get_clean();
         $config = [];
 
-        $channels = $this->gateway->channels();
+        try {
+            $channels = $this->gateway->channels();
+        } catch (\Exception $e) {
+            $this->gateway->gateway_helper->tpay_logger('Błąd pobierania kanałów płatności: '.$e->getMessage());
+            $channels = [];
+        }
         $generics = tpayOption('global_generic_payments');
         if (!is_array($generics)) {
             $generics = [];
@@ -79,7 +88,12 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         $generics = array_unique($generics);
 
-        $availablePayments = WC()->payment_gateways()->get_available_payment_gateways();
+        try {
+            $availablePayments = WC()->payment_gateways()->get_available_payment_gateways();
+        } catch (\Exception $e) {
+            $this->gateway->gateway_helper->tpay_logger('Błąd podczas pobierania metod płatności: '. $e->getMessage());
+            $availablePayments = [];
+        }
 
         foreach ($channels as $channel) {
             if (in_array($channel->id, $generics) && in_array(
@@ -87,7 +101,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
                 array_keys($availablePayments)
             )) {
                 $fieldsCopy = wpautop(
-                    wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description'])
+                    wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description'] ?? 'k')
                 ).$fields;
 
                 if (TpayGeneric::BLIK_BNPL === $channel->id) {
