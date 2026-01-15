@@ -569,3 +569,6 @@ msgstr "Z BLIK Płacę Później kupujesz teraz, a płacisz w ciągu 30 dni w ap
 
 msgid "Payment Gateway is already installed. Remove it before uploading a new version."
 msgstr "Plugin Płatności Tpay jest już zainstalowany. Usuń poprzednią wersję przed zainstalowaniem kolejnej."
+
+msgid "Failed to load payment channels. Please try again."
+msgstr "Błąd podczas pobierania kanałów płatności. Spróbuj ponownie."
