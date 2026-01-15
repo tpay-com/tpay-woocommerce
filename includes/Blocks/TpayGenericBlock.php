@@ -3,7 +3,6 @@
 namespace Tpay\Blocks;
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
-use Exception;
 use Throwable;
 use Tpay\TpayGeneric;
 
@@ -79,7 +78,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         try {
             $channels = $this->gateway->channels();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->gateway->gateway_helper->tpay_logger('Błąd pobierania kanałów płatności: '.$e->getMessage());
             $channels = [];
         }
@@ -92,7 +91,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
         try {
             $availablePayments = WC()->payment_gateways()->get_available_payment_gateways();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->gateway->gateway_helper->tpay_logger('Błąd podczas pobierania metod płatności: '.$e->getMessage());
             $availablePayments = [];
         }
