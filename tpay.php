@@ -17,14 +17,12 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
 use Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use Tpay\Api\Client;
-use Tpay\Api\Transactions;
 use Tpay\Blocks\PekaoInstallmentsBlock;
 use Tpay\Blocks\TpayBlikBlock;
 use Tpay\Blocks\TpayBlock;
 use Tpay\Blocks\TpayCCBlock;
 use Tpay\Blocks\TpayGenericBlock;
 use Tpay\Blocks\TpaySFBlock;
-use Tpay\Helpers\Cache;
 use Tpay\Helpers\CancelService;
 use Tpay\OpenApi\Utilities\Logger;
 use Tpay\PekaoInstallments;

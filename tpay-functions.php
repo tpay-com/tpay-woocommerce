@@ -1,7 +1,10 @@
 <?php
 
 use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
+use Tpay\Api\Transactions;
 use Tpay\Tpay;
+use Tpay\Api\Client;
+use Tpay\Helpers\Cache;
 use Tpay\TpayBlik;
 use Tpay\TpayGateways;
 
