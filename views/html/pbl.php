@@ -2,8 +2,13 @@
 
 $renderType = tpayOption('global_render_payment_type');
 /** @var \Tpay\Api\Dtos\Channel[] $list */
-$list = $this->channels();
-$availableGateways = WC()->payment_gateways()->get_available_payment_gateways();
+try {
+    $list = $this->channels();
+    $availableGateways = WC()->payment_gateways()->get_available_payment_gateways();
+} catch (\Throwable $e) {
+    $list = [];
+    $availableGateways = false;
+}
 
 if ($availableGateways) {
     foreach ($availableGateways as $available_gateway => $data) {
@@ -41,8 +46,12 @@ if ($customOrderString) {
 }
 
 $generics = tpayOption('global_generic_payments') ?? [];
-$availablePayments = WC()->payment_gateways()->get_available_payment_gateways();
 
+try {
+    $availablePayments = WC()->payment_gateways()->get_available_payment_gateways();
+} catch (\Throwable $e) {
+    $availablePayments = [];
+}
 $list = array_filter($list, function (\Tpay\Api\Dtos\Channel $channel) use ($generics, $availablePayments) {
     foreach ($channel->groups as $group) {
         if (in_array($group->id, $this->unset_banks)) {

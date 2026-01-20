@@ -2,6 +2,7 @@
 
 namespace Tpay;
 
+use Throwable;
 use Tpay\Api\Dtos\Channel;
 use WC_Order;
 
@@ -65,7 +66,13 @@ class PekaoInstallments extends TpayGateways
             $agreements = $this->gateway_helper->agreements_field();
         }
 
-        $channels = $this->channels();
+        try {
+            $channels = $this->channels();
+        } catch (Throwable $e) {
+            $this->gateway_helper->tpay_logger('Błąd pobierania kanałów płatności: '.$e->getMessage());
+            $channels = [];
+        }
+
         $cartTotal = $this->getCartTotal();
 
         $list = $this->filter_out_constraints(array_filter($channels, function (Channel $channel) {

@@ -3,6 +3,7 @@
 namespace Tpay;
 
 use Error;
+use Throwable;
 use Tpay\Api\Dtos\Group;
 use Tpay\Helpers\DatabaseConnection;
 use WC_Data_Exception;
@@ -20,7 +21,13 @@ class TpaySF extends TpayGateways
         $this->has_terms_checkbox = true;
         $this->icon = $this->gateway_helper->get_groups_image_url(TPAYSF);
         $this->setSubscriptionsSupport();
-        $channels = $this->channels();
+        try {
+            $channels = $this->channels();
+        } catch (Throwable $e) {
+            $this->gateway_helper->tpay_logger('Błąd podczas pobierania kanałów płatności: '.$e->getMessage());
+            $channels = [];
+        }
+
         $has_sf = false;
 
         foreach ($channels as $channel) {

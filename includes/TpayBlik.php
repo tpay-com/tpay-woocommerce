@@ -3,6 +3,7 @@
 namespace Tpay;
 
 use Error;
+use Exception;
 use WC_Order;
 
 class TpayBlik extends TpayGateways
@@ -39,6 +40,7 @@ class TpayBlik extends TpayGateways
             echo wpautop(wp_kses_post($this->description));
         }
 
+        $description = $this->description ?? '';
         $agreements = '';
         $alias = false;
 
@@ -153,10 +155,16 @@ class TpayBlik extends TpayGateways
 
         if ($this->blik0_is_active()) {
             $this->additional_payment_data = apply_filters('tpay_transport_before_pay', $this->additional_payment_data, $order);
-            $this->tpay_api()->transactions()->createInstantPaymentByTransactionId(
-                $this->additional_payment_data,
-                $transaction['transactionId']
-            );
+            try {
+                $this->tpay_api()->transactions()->createInstantPaymentByTransactionId(
+                    $this->additional_payment_data,
+                    $transaction['transactionId']
+                );
+            } catch (Exception $e) {
+                wc_add_notice('Błąd podczas tworzenia płatności: '.$e->getMessage(), 'error');
+
+                return false;
+            }
 
             return $transaction;
         }
@@ -182,10 +190,27 @@ class TpayBlik extends TpayGateways
 
     public function payBlikTransaction($transactionId, $blikCode, $transactionCounter)
     {
-        $transaction = $this->blik($transactionId, $blikCode, null);
+        try {
+            $transaction = $this->blik($transactionId, $blikCode);
+        } catch (Exception $e) {
+            $this->gateway_helper->tpay_logger(
+                'Nieudana inicjalizacja płatności BLIK, błąd: '.$e->getMessage()
+            );
+
+            return [
+                'result' => 'error',
+            ];
+        }
 
         if ('success' == $transaction['result']) {
-            $result = $this->waitForBlikAccept($transaction['transactionId'], $transactionCounter);
+            try {
+                $result = $this->waitForBlikAccept($transaction['transactionId'], $transactionCounter);
+            } catch (Exception $e) {
+                $this->gateway_helper->tpay_logger(
+                    'Nieudana płatność BLIK, błąd: '.$e->getMessage()
+                );
+                $result['status'] = 'error';
+            }
         } else {
             $result['status'] = 'error';
         }
