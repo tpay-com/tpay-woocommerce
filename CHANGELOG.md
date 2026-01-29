@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Doubled Blik description
+
+## [1.13.2]
+
+### Fixed
+
 - Catch Api exceptions
 - Uncaught TypeError during refund
 - Undefined variable $description
