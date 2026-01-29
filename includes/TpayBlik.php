@@ -40,7 +40,6 @@ class TpayBlik extends TpayGateways
             echo wpautop(wp_kses_post($this->description));
         }
 
-        $description = $this->description ?? '';
         $agreements = '';
         $alias = false;
 
