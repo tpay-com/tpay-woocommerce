@@ -89,7 +89,7 @@ add_filter( 'upgrader_post_install', function( $response, $hook_extra, $result )
     return $response;
 }, 10, 3);
 
-if ('disabled' != tpayOption('global_enable_fee')) {
+if (in_array(tpayOption('global_enable_fee'), ['amount', 'percentage'], true)) {
     add_action('woocommerce_cart_calculate_fees', 'tpay_add_checkout_fee_for_gateway');
     add_action('woocommerce_after_checkout_form', 'tpay_refresh_checkout_on_payment_methods_change');
 }
