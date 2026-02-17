@@ -67,15 +67,18 @@ function tpay_add_checkout_fee_for_gateway()
     $chosen_gateway = WC()->session->get('chosen_payment_method');
     $type = tpayOption('global_enable_fee');
 
-    if ($type == 'amount') {
-        $fee = tpayOption('global_amount_fee');
-    } else {
-        $percentage = tpayOption('global_percentage_fee');
-        $amount = WC()->cart->cart_contents_total + WC()->cart->shipping_total;
-        $fee = $percentage / 100 * $amount;
+    switch ($type) {
+        case 'amount':
+            $fee = tpayOption('global_amount_fee');
+            break;
+        case 'percentage':
+            $percentage = tpayOption('global_percentage_fee');
+            $amount = WC()->cart->cart_contents_total + WC()->cart->shipping_total;
+            $fee = $percentage / 100 * $amount;
+            break;
     }
 
-    if (is_numeric($fee)) {
+    if (is_numeric($fee) && $fee > 0) {
         $fee = round($fee, 2);
 
         if (array_key_exists($chosen_gateway, TpayGateways::gateways_list())) {
