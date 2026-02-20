@@ -114,10 +114,18 @@ EOD,
 
         if ($order->get_billing_postcode()) {
             $paymentData['code'] = $order->get_billing_postcode();
-            $paymentData['address'] = $order->get_billing_address_1().', '.$order->get_billing_address_2();
             $paymentData['city'] = $order->get_billing_city();
             $paymentData['country'] = $order->get_billing_country();
             $paymentData['phone'] = $order->get_billing_phone();
+
+            $addressParts = array_filter([
+                $order->get_billing_address_1(),
+                $order->get_billing_address_2(),
+            ]);
+
+            if (!empty($addressParts)) {
+                $paymentData['address'] = implode(', ', $addressParts);
+            }
         }
 
         if ($taxIdField) {
