@@ -112,21 +112,21 @@ EOD,
             'userAgent' => substr($order->get_customer_user_agent(), 0, 255),
         ];
 
-        if ($order->get_billing_postcode()) {
-            $paymentData['code'] = $order->get_billing_postcode();
-            $paymentData['city'] = $order->get_billing_city();
-            $paymentData['country'] = $order->get_billing_country();
-            $paymentData['phone'] = $order->get_billing_phone();
+        $addressParts = array_filter([
+            $order->get_billing_address_1(),
+            $order->get_billing_address_2(),
+        ]);
 
-            $addressParts = array_filter([
-                $order->get_billing_address_1(),
-                $order->get_billing_address_2(),
-            ]);
-
-            if (!empty($addressParts)) {
-                $paymentData['address'] = implode(', ', $addressParts);
-            }
+        if (!empty($addressParts)) {
+            $paymentData['address'] = implode(', ', $addressParts);
         }
+
+        $paymentData += array_filter([
+            'code' => $order->get_billing_postcode(),
+            'city' => $order->get_billing_city(),
+            'country' => $order->get_billing_country(),
+            'phone' => $order->get_billing_phone(),
+        ]);
 
         if ($taxIdField) {
             $taxId = $order->get_meta($taxIdField);
