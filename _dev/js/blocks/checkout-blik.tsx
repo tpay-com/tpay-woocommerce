@@ -84,8 +84,8 @@ const Content = (props) => {
 let Label = () => {
     return (
         <>
-            <span>
-                {decodeEntities(settings.title || 'tpayblik')} <img class="tpay-inline" src={settings.icon} />
+            <span className="payment-label">
+                <div>{decodeEntities(settings.title || 'tpayblik')}</div> <img alt={settings.title} src={settings.icon}/>
             </span>
         </>
     )

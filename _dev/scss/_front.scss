@@ -51,10 +51,12 @@
   }
 }
 .tpay-accept-conditions{
-  font-size: 13px;
-  color: #676986;
+  font-size: 12px;
+  color: #072653;
+  font-weight: 400;
+  line-height: 150%;
   a{
-    color: #1B2257;
+    color: #072653;
     text-decoration: underline;
   }
 }
@@ -343,27 +345,28 @@
 .tpay-pbl-container {
   background: #fff;
   max-width: 750px;
-  padding: 0;
+  border-color: #D50000 !important;
+  padding: 0 10px;
+
   .tpay-pbl {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 -10px 10px;
+    display: grid;
+    width: 100%;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    padding-bottom: 10px;
 
     .tpay-item {
-      //padding: 5px;
-      width: 48%;
       margin: 0;
-      @include lg {
-        width: 31%;
-      }
+      width: 100%;
       input{
         display: none;
         &:checked{
           +div{
             >div{
-              border: 1px solid #6dac97;
+              border: 2px solid #2953C6;
+              border-radius: 8px;
               -webkit-box-shadow: 0px 0px 15px 5px rgba(41,83,198,0.15);
-              box-shadow: 0px 0px 15px 5px rgba(41,83,198,0.15);
+              box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.10);
             }
           }
         }
@@ -384,10 +387,11 @@
             }
           }
           .name{
-            color: #808080;
+            color: #072653;
             text-align: center;
             display: block;
-            font-size: 13px;
+            font-size: 12px;
+            font-weight: 400;
           }
         }
       }
@@ -488,4 +492,55 @@ img.tpay-inline
 {
   position: absolute;
   margin: 0 8px 0 8px;
+}
+
+span.payment-label {
+  width: 100%;
+  font-size: 18px;
+  color: #072653;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-top: 3px;
+}
+
+/* Remove all default borders for checked accordion and radio option */
+.wc-block-components-radio-control,
+.wc-block-components-radio-control-accordion-option,
+.wc-block-components-radio-control-accordion-content,
+.wc-block-components-radio-control__option-checked {
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+
+/* Apply blue border only to the selected payment method and selected radio option*/
+.wc-block-components-radio-control-accordion-option--checked-option-highlighted,
+.wc-block-components-radio-control__option--checked-option-highlighted {
+  border: 2px solid #2953C6 !important;
+  border-radius: 8px !important;
+}
+
+/* Apply radio circle border color when options is not selected */
+.wc-block-components-radio-control .wc-block-components-radio-control__input {
+  background-color: transparent !important;
+  border-color: #D8D8D8 !important;
+}
+/* Apply radio circle border color when option is selected */
+.wc-block-components-radio-control__input:checked {
+  background-color: transparent !important;
+  border-color: #2953C6 !important;
+}
+
+/* Apply radio circle dot color when option is selected */
+.wc-block-components-radio-control__input:checked:before {
+  background-color: #2953C6 !important;
+}
+
+.wc-block-components-radio-control-accordion-content {
+  p {
+    color: #072653;
+    font-weight: 400;
+    font-size: 14px;
+  }
 }
