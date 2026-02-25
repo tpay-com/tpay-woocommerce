@@ -537,6 +537,14 @@ span.payment-label {
   background-color: #2953C6 !important;
 }
 
+/* Apply styles to the payment options title */
+.wc-block-components-checkout-step__title {
+  color: #072653;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+}
+
+/* Apply styles to the payment options subtitle */
 .wc-block-components-radio-control-accordion-content {
   p {
     color: #072653;
