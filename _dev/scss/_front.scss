@@ -23,8 +23,6 @@
 }
 
 .tpay-blik0{
-  //padding: 20px 0;
-  //font-family: "Lato";
   font-weight: 400;
   color: #072653;
 
@@ -75,14 +73,13 @@
 .tpay-sf{
   background: #fff;
   max-width: 750px;
-  padding: 30px 0;
+  padding: 0 0 10px 0;
   .tpay-sf-form{
     max-width: 600px;
-    background: linear-gradient(280deg, #dfe3ea, #cbd1dd);
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    padding: 15px;
+    padding: 0 15px 15px 0;
     img{
       width: 50px;
       height: auto;
@@ -93,6 +90,7 @@
       padding: 0 10px;
       width: calc(100% - 30px);
       margin: 0;
+      font-size: 14px;
     }
     .card-container {
       display: flex;
@@ -109,10 +107,13 @@
         }
         &.cvc-container{
           margin-left: auto;
+          display: flex;
         }
       }
       label {
         font-size: 14px;
+        font-weight: 500;
+        color: #072653;
         @include flexcenter;
         flex-direction: column;
         align-items: flex-start;
@@ -144,9 +145,10 @@
       }
     }
     .save-card{
-      padding: 12px 0;
+      padding-top: 12px;
       display: flex;
       align-items: center;
+      color: #072653;
       input{
         margin-right: 8px;
         top: unset;
@@ -237,31 +239,31 @@
   .tpay_blik-payment-form {
     cursor: pointer;
     //max-width: 620px;
-    margin: 5px;
+    margin: 5px 0;
     min-width: 350px;
-    border-radius: 8px;
+    //border-radius: 8px;
     display: flex;
     flex-direction: column;
     padding: 0;
-    border: 1px solid #D8D8D8;
+    //border: 1px solid #D8D8D8;
     font-family: inherit;
     min-height: 64px;
 
     &.active {
-      border: 2px solid #2953C6;
+      //border: 2px solid #2953C6;
       background: none;
 
       .bottom {
         display: block;
         //padding: 0 24px 16px;
-        margin-left: 60px;
+        margin-left: 30px;
       }
     }
 
     .top {
       display: flex;
       align-items: center;
-      padding: 19px 24px 0 24px;
+      padding: 0 24px;
       position: relative;
 
       .spacer {
@@ -280,7 +282,7 @@
         .blik-label {
           font-size: 18px;
           font-weight: 700;
-          margin-left: 12px;
+          margin-left: 6px;
           color: inherit;
         }
       }
@@ -316,14 +318,14 @@
         margin: 0 auto 8px auto;
         border: 1px solid #2953C6;
         border-radius: 4px;
-        font-weight: 400;
-        font-size: 18px;
-        line-height: 24px;
+        font-weight: 600;
+        font-size: 20px;
+        line-height: normal;
         color: #072653;
         text-align: left;
 
         &::placeholder {
-          color: #EEEDF0;
+          color: #B9B9BB;
         }
 
         &:focus {
@@ -551,4 +553,80 @@ span.payment-label {
     font-weight: 400;
     font-size: 14px;
   }
+}
+
+.separator {
+  height: 1px;
+  width: 100%;
+  background-color: #EEEDF0;
+  margin-bottom: 20px;
+}
+
+.select-bank {
+  margin-left: 8px;
+}
+
+/* Apply styles to the "Powered by Tpay" */
+.powered-by-tpay {
+  font-size: 14px;
+  color: #072653;
+  display: flex;
+  gap: 6px;
+}
+
+/* Apply styles to the cards tooltip */
+.show-info:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.show-info {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 13px;
+  margin-top: 30px;
+
+  &.no-margin-left {
+    margin-left: 0;
+  }
+  img {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
+
+/* Apply styles to the combined icons*/
+.combined-icons {
+  display: flex;
+  gap: 4px;
+  img:first-child {
+    margin-top: 4px;
+    margin-right: 4px;
+    width: 28px !important;
+    height: 18px !important;
+    max-width: 28px;
+  }
+  img {
+    width: 44px !important;
+    height: 24px !important;
+    max-width: 44px;
+  }
+
+  .icon-separator {
+    width: 1px;
+    height: 100%;
+    background-color: black;
+  }
+
+}
+
+.card-description-container {
+  .card-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #072653;
+  }
+  display: flex;
+  flex-direction: column;
 }

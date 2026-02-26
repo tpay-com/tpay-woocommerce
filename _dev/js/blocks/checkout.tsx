@@ -38,7 +38,7 @@ let Content = (props) => {
         emitResponse.responseTypes.SUCCESS,
         onPaymentSetup,
     ]);
-    const modifiedFields = settings.fields.replace( '<p>Choose payment method.</p>', `<p>${settings.channelNotSelectedMessage ?? 'Select a bank'}</p>` );
+    const modifiedFields = settings.fields.replace( '<p>Choose payment method.</p>', `<p class="select-bank">${settings.channelNotSelectedMessage ?? 'Select a bank'}</p>` );
     return (
         <>
             <div dangerouslySetInnerHTML={{__html: modifiedFields}}></div>
