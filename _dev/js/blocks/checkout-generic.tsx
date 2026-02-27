@@ -29,7 +29,6 @@ function checkConstraints(constraints, total) {
 
 Object.entries(settings).forEach((channelSetting) => {
     let setting = channelSetting[1]
-
     if (checkConstraints(setting.constraints, setting.total)) {
         return;
     }
@@ -69,8 +68,8 @@ Object.entries(settings).forEach((channelSetting) => {
     let Label = () => {
         return (
             <>
-                <span>
-                    {setting.title} <img class="tpay-inline" src={setting.icon} />
+                <span className="payment-label">
+                    <div>{setting.title}</div> <img alt={settings.title} src={setting.icon} />
                 </span>
             </>
         )

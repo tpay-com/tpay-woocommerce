@@ -12,7 +12,6 @@ let Content = (props) => {
             const data = {};
             const paymentMethodIdInput: HTMLInputElement = document.querySelector('input[name="tpay-channel-id"]:checked') ?? document.querySelector('select[name="tpay-channel-id"] option:checked');
             const paymentMethodId = paymentMethodIdInput ? paymentMethodIdInput.value : false;
-
             if (paymentMethodId === false && settings.tpayDirect === false) {
                 return {
                     type: emitResponse.responseTypes.ERROR,
@@ -24,7 +23,6 @@ let Content = (props) => {
                 data['tpay-channel-id'] = paymentMethodId;
 
             }
-
             return {
                 type: emitResponse.responseTypes.SUCCESS,
                 meta: {
@@ -40,9 +38,10 @@ let Content = (props) => {
         emitResponse.responseTypes.SUCCESS,
         onPaymentSetup,
     ]);
+    const modifiedFields = settings.fields.replace( '<p>Choose payment method.</p>', `<p class="select-bank">${settings.channelNotSelectedMessage ?? 'Select a bank'}</p>` );
     return (
         <>
-            <div dangerouslySetInnerHTML={{__html: settings.fields}}></div>
+            <div dangerouslySetInnerHTML={{__html: modifiedFields}}></div>
         </>
     )
 };
@@ -50,8 +49,8 @@ let Content = (props) => {
 let Label = () => {
     return (
         <>
-            <span>
-                {settings.title} <img class="tpay-inline" src={settings.icon} />
+            <span class="payment-label">
+                <div>{settings.title}</div> <img alt={settings.title} src={settings.icon} />
             </span>
         </>
     )

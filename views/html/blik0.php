@@ -29,17 +29,13 @@
         <li><?php esc_html_e('Enter Blik code', 'tpay') ?></li>
     </ul>
     <div class="tpay_blik-payment-form <?php echo esc_attr($blikform) ?>">
+        <div class="separator"></div>
         <div class="top">
             <?php if(!$alias): ?>
-                <span class="spacer">&nbsp;</span>
             <?php endif; ?>
             <label>
                 <?php if($alias): ?>
                     <input type="radio" name="blik-type" value="code" <?php if($blikform_checked) echo 'checked="checked"' ?> />
-                <?php endif; ?>
-                <span class="blik-label"><?php esc_html_e('Pay with BLIK code', 'tpay') ?></span>
-                <?php if(!$alias): ?>
-                    <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
                 <?php endif; ?>
             </label>
         </div>
@@ -56,6 +52,11 @@
             />
         </div>
     </div>
+    <div class="separator"></div>
     <?php echo $agreements ?>
+    <div class="powered-by-tpay">
+        <p><?php esc_html_e('Powered by', 'tpay') ?></p>
+        <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
+    </div>
 </div>
 

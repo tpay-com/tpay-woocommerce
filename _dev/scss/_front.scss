@@ -23,8 +23,6 @@
 }
 
 .tpay-blik0{
-  //padding: 20px 0;
-  //font-family: "Lato";
   font-weight: 400;
   color: #072653;
 
@@ -51,10 +49,12 @@
   }
 }
 .tpay-accept-conditions{
-  font-size: 13px;
-  color: #676986;
+  font-size: 12px;
+  color: #072653;
+  font-weight: 400;
+  line-height: 150%;
   a{
-    color: #1B2257;
+    color: #072653;
     text-decoration: underline;
   }
 }
@@ -73,52 +73,52 @@
 .tpay-sf{
   background: #fff;
   max-width: 750px;
-  padding: 30px 0;
+  padding: 0 0 10px 0;
   .tpay-sf-form{
     max-width: 600px;
-    background: linear-gradient(280deg, #dfe3ea, #cbd1dd);
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    padding: 15px;
+    padding: 0 15px 15px 0;
     img{
       width: 50px;
       height: auto;
-      margin-left: auto;
     }
     input:not([type="checkbox"]):not([type="radio"]){
       height: 40px;
       padding: 0 10px;
       width: calc(100% - 30px);
       margin: 0;
+      font-size: 14px;
     }
     .card-container {
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      //margin: 0 -15px 0;
-      >div{
-        width: 45%;
-        //padding: 10px 15px 0;
-        &.card-number-container{
+      flex-direction: column;
+      width: 100%;
+        .card-number-container{
           width: 100%;
           padding-top: 0;
           margin-bottom: 10px;
         }
-        &.cvc-container{
-          margin-left: auto;
+        .cvc-container{
+          margin-left: 10px;
+          display: flex;
         }
-      }
-      label {
+
+        .card-row {
+          display: flex;
+        }
+
+      .new-card-container label {
         font-size: 14px;
+        font-weight: 500;
+        color: #072653;
         @include flexcenter;
         flex-direction: column;
         align-items: flex-start;
         width: 100%;
         margin: 0;
         input {
-          width: 100%;
-          margin: 6px auto 0;
           border: 1px solid #dfdede;
           border-radius: 5px;
           outline: 0;
@@ -142,29 +142,44 @@
       }
     }
     .save-card{
-      padding: 12px 0;
+      padding-top: 12px;
       display: flex;
       align-items: center;
+      color: #072653;
       input{
         margin-right: 8px;
         top: unset;
       }
     }
-    .saved-cards{
+    .saved-cards {
       .saved-cards-title{
-        padding: 12px 0;
+        padding: 0 0 12px 0;
         margin: 0;
       }
-      label{
+      .saved-card-label {
         display: flex;
-        align-items: center;
-        input{
-          margin-right: 8px;
-          top: unset;
+        flex-direction: row !important;
+        justify-content: start;
+        gap: 4px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #072653;
+        span {
+          margin-top: 8px;
+          margin-left: 16px;
         }
-        input[type="radio"]{
-          display: block !important;
+        label{
+          display: flex;
+          align-items: start;
+          input[type="radio"]{
+            display: block !important;
+          }
         }
+      }
+      .another-card-label {
+        font-size: 18px;
+        font-weight: 700;
+        color: #072653;
       }
     }
   }
@@ -235,31 +250,31 @@
   .tpay_blik-payment-form {
     cursor: pointer;
     //max-width: 620px;
-    margin: 5px;
+    margin: 5px 0;
     min-width: 350px;
-    border-radius: 8px;
+    //border-radius: 8px;
     display: flex;
     flex-direction: column;
     padding: 0;
-    border: 1px solid #D8D8D8;
+    //border: 1px solid #D8D8D8;
     font-family: inherit;
     min-height: 64px;
 
     &.active {
-      border: 2px solid #2953C6;
+      //border: 2px solid #2953C6;
       background: none;
 
       .bottom {
         display: block;
         //padding: 0 24px 16px;
-        margin-left: 60px;
+        margin-left: 30px;
       }
     }
 
     .top {
       display: flex;
       align-items: center;
-      padding: 19px 24px 0 24px;
+      padding: 0 24px;
       position: relative;
 
       .spacer {
@@ -278,7 +293,7 @@
         .blik-label {
           font-size: 18px;
           font-weight: 700;
-          margin-left: 12px;
+          margin-left: 6px;
           color: inherit;
         }
       }
@@ -314,14 +329,14 @@
         margin: 0 auto 8px auto;
         border: 1px solid #2953C6;
         border-radius: 4px;
-        font-weight: 400;
-        font-size: 18px;
-        line-height: 24px;
+        font-weight: 600;
+        font-size: 20px;
+        line-height: normal;
         color: #072653;
         text-align: left;
 
         &::placeholder {
-          color: #EEEDF0;
+          color: #B9B9BB;
         }
 
         &:focus {
@@ -343,27 +358,28 @@
 .tpay-pbl-container {
   background: #fff;
   max-width: 750px;
-  padding: 0;
+  border-color: #D50000 !important;
+  padding: 0 10px;
+
   .tpay-pbl {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 -10px 10px;
+    display: grid;
+    width: 100%;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    padding-bottom: 10px;
 
     .tpay-item {
-      //padding: 5px;
-      width: 48%;
       margin: 0;
-      @include lg {
-        width: 31%;
-      }
+      width: 100%;
       input{
         display: none;
         &:checked{
           +div{
             >div{
-              border: 1px solid #6dac97;
+              border: 2px solid #2953C6;
+              border-radius: 8px;
               -webkit-box-shadow: 0px 0px 15px 5px rgba(41,83,198,0.15);
-              box-shadow: 0px 0px 15px 5px rgba(41,83,198,0.15);
+              box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.10);
             }
           }
         }
@@ -384,10 +400,11 @@
             }
           }
           .name{
-            color: #808080;
+            color: #072653;
             text-align: center;
             display: block;
-            font-size: 13px;
+            font-size: 12px;
+            font-weight: 400;
           }
         }
       }
@@ -488,4 +505,137 @@ img.tpay-inline
 {
   position: absolute;
   margin: 0 8px 0 8px;
+}
+
+span.payment-label {
+  width: 100%;
+  font-size: 18px;
+  color: #072653;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-top: 3px;
+}
+
+/* Remove all default borders for checked accordion and radio option */
+.wc-block-components-radio-control:has(
+    label[for*="tpay"]
+),
+.wc-block-components-radio-control-accordion-option:has(
+    label[for*="tpay"]
+),
+.wc-block-components-radio-control-accordion-content:has(
+    label[for*="tpay"]
+) {
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+
+/* Apply blue border only to the selected payment method and selected radio option*/
+.wc-block-components-radio-control-accordion-option--checked-option-highlighted:has( label[for*="tpay"] ).wc-block-components-radio-control-accordion-option--checked-option-highlighted {
+  border-radius: 8px;
+  border: 2px solid #2953C6 !important;
+}
+
+/* Apply radio circle border color when options is not selected */
+label[for*="tpay"] .wc-block-components-radio-control__input {
+  background-color: transparent;
+  border-color: #D8D8D8 !important;
+}
+
+/* Apply radio circle border color when option is selected */
+label[for*="tpay"] .wc-block-components-radio-control__input:checked {
+  background-color: transparent;
+  border-color: #2953C6 !important;
+}
+
+/* Apply radio circle dot color when option is selected */
+label[for*="tpay"] .wc-block-components-radio-control__input:checked:before {
+  background-color: #2953C6;
+}
+
+/* Apply styles to the payment options subtitle */
+label[for*="tpay"] .wc-block-components-radio-control-accordion-content {
+  p {
+    color: #072653;
+    font-weight: 400;
+    font-size: 14px;
+  }
+}
+
+.separator {
+  height: 1px;
+  width: 100%;
+  background-color: #EEEDF0;
+  margin-bottom: 20px;
+}
+
+.select-bank {
+  margin-left: 8px;
+}
+
+/* Apply styles to the "Powered by Tpay" */
+.powered-by-tpay {
+  font-size: 14px;
+  color: #072653;
+  display: flex;
+  gap: 6px;
+}
+
+/* Apply styles to the cards tooltip */
+.show-info:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.show-info {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 13px;
+  margin-top: 30px;
+
+  &.no-margin-left {
+    margin-left: 0;
+  }
+  img {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
+
+/* Apply styles to the combined icons*/
+.combined-icons {
+  display: flex;
+  gap: 4px;
+  img:first-child {
+    margin-top: 4px;
+    margin-right: 4px;
+    width: 28px !important;
+    height: 18px !important;
+    max-width: 28px;
+  }
+  img {
+    width: 44px !important;
+    height: 24px !important;
+    max-width: 44px;
+  }
+
+  .icon-separator {
+    width: 1px;
+    height: 100%;
+    background-color: black;
+  }
+
+}
+
+.card-description-container {
+  .card-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #072653;
+  }
+  display: flex;
+  flex-direction: column;
 }

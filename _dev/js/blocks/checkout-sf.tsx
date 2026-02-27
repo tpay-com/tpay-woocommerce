@@ -3,6 +3,7 @@ import {getSetting} from '@woocommerce/settings';
 import {registerPaymentMethod} from '@woocommerce/blocks-registry';
 import {useEffect} from '@wordpress/element';
 import {getCreditCardNameByNumber} from 'creditcard.js'
+import c2pIcon from "../../../views/img/c2p-icon.svg"
 
 let settings = getSetting('tpaysf_data');
 
@@ -10,6 +11,7 @@ type CardData = {
     'saved-card'?: number
     carddata?: string
 }
+
 
 function hashAsync(algo: AlgorithmIdentifier, str: string) {
     return crypto.subtle.digest(algo, new TextEncoder("utf-8").encode(str)).then(buf => {
@@ -94,8 +96,13 @@ const Content = (props) => {
 let Label = () => {
     return (
         <>
-            <span>
-                {settings.title} <img class="tpay-inline" src={settings.icon}/>
+            <span className="payment-label">
+                <div>{settings.title}</div>
+                <div className="combined-icons">
+                    <img src={c2pIcon} />
+                    <div className="icon-separator"></div>
+                    <img alt={settings.title} src={settings.icon}/>
+                </div>
             </span>
         </>
     )
