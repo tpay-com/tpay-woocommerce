@@ -83,7 +83,6 @@
     img{
       width: 50px;
       height: auto;
-      margin-left: auto;
     }
     input:not([type="checkbox"]):not([type="radio"]){
       height: 40px;
@@ -94,23 +93,23 @@
     }
     .card-container {
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      //margin: 0 -15px 0;
-      >div{
-        width: 45%;
-        //padding: 10px 15px 0;
-        &.card-number-container{
+      flex-direction: column;
+      width: 100%;
+        .card-number-container{
           width: 100%;
           padding-top: 0;
           margin-bottom: 10px;
         }
-        &.cvc-container{
-          margin-left: auto;
+        .cvc-container{
+          margin-left: 10px;
           display: flex;
         }
-      }
-      label {
+
+        .card-row {
+          display: flex;
+        }
+
+      .new-card-container label {
         font-size: 14px;
         font-weight: 500;
         color: #072653;
@@ -120,8 +119,6 @@
         width: 100%;
         margin: 0;
         input {
-          width: 100%;
-          margin: 6px auto 0;
           border: 1px solid #dfdede;
           border-radius: 5px;
           outline: 0;
@@ -154,21 +151,35 @@
         top: unset;
       }
     }
-    .saved-cards{
+    .saved-cards {
       .saved-cards-title{
-        padding: 12px 0;
+        padding: 0 0 12px 0;
         margin: 0;
       }
-      label{
+      .saved-card-label {
         display: flex;
-        align-items: center;
-        input{
-          margin-right: 8px;
-          top: unset;
+        flex-direction: row !important;
+        justify-content: start;
+        gap: 4px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #072653;
+        span {
+          margin-top: 8px;
+          margin-left: 16px;
         }
-        input[type="radio"]{
-          display: block !important;
+        label{
+          display: flex;
+          align-items: start;
+          input[type="radio"]{
+            display: block !important;
+          }
         }
+      }
+      .another-card-label {
+        font-size: 18px;
+        font-weight: 700;
+        color: #072653;
       }
     }
   }
@@ -508,46 +519,44 @@ span.payment-label {
 }
 
 /* Remove all default borders for checked accordion and radio option */
-.wc-block-components-radio-control,
-.wc-block-components-radio-control-accordion-option,
-.wc-block-components-radio-control-accordion-content,
-.wc-block-components-radio-control__option-checked {
+.wc-block-components-radio-control:has(
+    label[for*="tpay"]
+),
+.wc-block-components-radio-control-accordion-option:has(
+    label[for*="tpay"]
+),
+.wc-block-components-radio-control-accordion-content:has(
+    label[for*="tpay"]
+) {
   border: 1px solid transparent !important;
   box-shadow: none !important;
 }
 
 /* Apply blue border only to the selected payment method and selected radio option*/
-.wc-block-components-radio-control-accordion-option--checked-option-highlighted,
-.wc-block-components-radio-control__option--checked-option-highlighted {
+.wc-block-components-radio-control-accordion-option--checked-option-highlighted:has( label[for*="tpay"] ).wc-block-components-radio-control-accordion-option--checked-option-highlighted {
+  border-radius: 8px;
   border: 2px solid #2953C6 !important;
-  border-radius: 8px !important;
 }
 
 /* Apply radio circle border color when options is not selected */
-.wc-block-components-radio-control .wc-block-components-radio-control__input {
-  background-color: transparent !important;
+label[for*="tpay"] .wc-block-components-radio-control__input {
+  background-color: transparent;
   border-color: #D8D8D8 !important;
 }
+
 /* Apply radio circle border color when option is selected */
-.wc-block-components-radio-control__input:checked {
-  background-color: transparent !important;
+label[for*="tpay"] .wc-block-components-radio-control__input:checked {
+  background-color: transparent;
   border-color: #2953C6 !important;
 }
 
 /* Apply radio circle dot color when option is selected */
-.wc-block-components-radio-control__input:checked:before {
-  background-color: #2953C6 !important;
-}
-
-/* Apply styles to the payment options title */
-.wc-block-components-checkout-step__title {
-  color: #072653;
-  font-size: 20px !important;
-  font-weight: 700 !important;
+label[for*="tpay"] .wc-block-components-radio-control__input:checked:before {
+  background-color: #2953C6;
 }
 
 /* Apply styles to the payment options subtitle */
-.wc-block-components-radio-control-accordion-content {
+label[for*="tpay"] .wc-block-components-radio-control-accordion-content {
   p {
     color: #072653;
     font-weight: 400;

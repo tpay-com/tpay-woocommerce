@@ -106,19 +106,25 @@ $(document).ready(function () {
         $('#place_order').removeClass('stop_propagation');
         $('.card-container .wrong').removeClass('wrong');
     });
-    $('body').on('click', '.saved-cards input', function () {
-        if ($(this).prop('checked') === true) {
-            $('.saved-cards input').not($(this)).prop('checked', false);
-            $('.saved-cards input').not($(this)).attr('name', 'saved-card-unchecked');
-            $(this).attr('name', 'saved-card');
-            clear_card_fields();
-            $('.card-container').find('input').attr('readonly', true);
-        } else {
-            $(this).attr('name', 'saved-card-unchecked');
-            $('.card-container').find('input').attr('readonly', false);
-        }
 
+    $('body').on('click', '.saved-card-label input, .another-card-label input', function () {
+
+        const isAnother = $(this).closest('.another-card-label').length > 0;
+
+        $('.saved-card-label input, .another-card-label input')
+            .not(this)
+            .prop('checked', false);
+
+        if (isAnother) {
+            $('#another-card-form').show();
+        } else {
+            $('#another-card-form').hide();
+            clear_card_fields();
+        }
     });
+
+
+
 
     function clear_card_fields() {
         $("#carddata").val('');
