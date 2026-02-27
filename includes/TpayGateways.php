@@ -8,6 +8,8 @@ use Throwable;
 use Tpay\Api\Client;
 use Tpay\Api\Dtos\Channel;
 use Tpay\Api\Transactions;
+use Tpay\Helpers\GatewayHelper;
+use Tpay\Ipn\IpnContext;
 use Tpay\OpenApi\Api\TpayApi;
 use WC_Order;
 use WC_Payment_Gateway;
@@ -483,18 +485,14 @@ abstract class TpayGateways extends WC_Payment_Gateway
             );
         }
 
-        $body = $_POST;
-
-        if (empty($body)) {
-            wp_die(
-                'False - Empty body received',
-                'Bad Request',
-                ['response' => 400]
-            );
-        }
         try {
-            Ipn\IpnContext::chooseStrategy($body);
+            $context = new IpnContext();
+            $context->handle($this->get_config());
+
+            wp_die('TRUE', 'OK', ['response' => 200]);
         } catch (Throwable $exception) {
+            $this->gateway_helper->tpay_logger('IPN error: '.$exception->getMessage());
+
             wp_die(
                 'False - '.$exception->getMessage(),
                 'Bad Request',

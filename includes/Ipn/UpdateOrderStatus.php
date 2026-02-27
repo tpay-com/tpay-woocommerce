@@ -3,11 +3,9 @@
 namespace Tpay\Ipn;
 
 use Automattic\WooCommerce\Enums\OrderInternalStatus;
-use Exception;
 use Tpay\Helpers;
-use Tpay\OpenApi\Utilities\CacheCertificateProvider;
+use Tpay\OpenApi\Model\Objects\NotificationBody\BasicPayment;
 use Tpay\OpenApi\Utilities\TpayException;
-use Tpay\OpenApi\Webhook\JWSVerifiedPaymentNotification;
 use Tpay\Repository\OrderRepository;
 use WC_Order;
 
@@ -16,100 +14,72 @@ class UpdateOrderStatus implements IpnInterface
     private $gateway_helper;
     private $card_helper;
     private $orderRepository;
-    private $certificateProvider;
 
     public function __construct()
     {
         $this->gateway_helper = new Helpers\GatewayHelper();
         $this->card_helper = new Helpers\CardHelper();
         $this->orderRepository = new OrderRepository();
-        $this->certificateProvider = new CacheCertificateProvider(new Helpers\Cache());
     }
 
-    public function parseNotification($response)
+    public function handle($notification): void
     {
-        $order = $this->orderRepository->orderByCrc($response['tr_crc']);
+        if (!$notification instanceof BasicPayment) {
+            throw new TpayException('Invalid notification object for payment strategy');
+        }
+
+        $crc = $notification->tr_crc->getValue();
+        $status = $notification->tr_status->getValue();
+
+        $order = $this->orderRepository->orderByCrc($crc);
 
         if (!$order) {
             throw new TpayException('Order not found');
         }
 
-        $order_method = $order->get_payment_method();
-        $class = TPAY_CLASSMAP[$order_method] ?? null;
-
-        if (null === $class || !class_exists($class)) {
-            if (0 !== strpos($order_method, 'tpaygeneric-')) {
-                throw new TpayException('Unsupported payment method: '.$order_method);
-            }
-            $order_method = str_replace('tpaygeneric-', '', $order_method);
-            $gateway = new class ($order_method) extends \Tpay\TpayGeneric {
-                public function __construct($id = null)
-                {
-                    parent::__construct("tpaygeneric-{$id}", (int) $id);
-
-                    $channels = $this->channels();
-
-                    foreach ($channels as $channel) {
-                        if ($channel->id === $id) {
-                            $this->set_icon($channel->image->url);
-                        }
-                    }
-                }
-            };
-        } else {
-            $gateway = new $class();
-        }
-
-        $config = (new Helpers\ConfigProvider())->get_config($gateway);
-
-        $isProd = 'sandbox' != tpayOption('global_tpay_environment');
-        try {
-            $NotificationWebhook = new JWSVerifiedPaymentNotification(
-                $this->certificateProvider,
-                $config['security_code'],
-                $isProd
-            );
-            $notification = $NotificationWebhook->getNotification();
-            $notificationData = $notification->getNotificationAssociative();
-        } catch (Exception $e) {
-            $this->gateway_helper->tpay_logger($e->getMessage());
-            throw new TpayException($e->getMessage());
-        }
-
-        switch ($notificationData['tr_status']) {
+        switch ($status) {
             case 'TRUE':
             case 'PAID':
-                $this->orderIsComplete($order, $notificationData);
+                $this->completeOrder($order, $notification);
                 break;
             case 'CHARGEBACK':
                 $order->update_status('refunded');
-                $this->orderIsRefunded();
                 break;
             case 'FALSE':
-                $this->orderIsNotComplete($notificationData);
+                $this->gateway_helper->tpay_logger(
+                    'Przyjęto zgłoszenie z bramki Tpay, że płatność za zamówienie nie powiodło się. Zrzut: '.print_r($notification->getNotificationAssociative(), 1)
+                );
                 break;
             default:
-                throw new TpayException('Unknown notification status: '.$notificationData['tr_status']);
+                throw new TpayException('Unknown notification status: ' . $status);
         }
     }
 
-    public function orderIsRefunded()
+    public function completeOrder(WC_Order $order, BasicPayment $notification): void
     {
-        header('HTTP/1.1 200 OK');
-        echo 'TRUE';
-        exit();
-    }
+        $order->payment_complete($notification->tr_id->getValue());
 
-    public function orderIsComplete(WC_Order $order, array $response): void
-    {
         $status = $this->getOrderStatus($order);
-        $order->payment_complete($order->get_transaction_id());
-        $order->update_status($status, sprintf('%s : %s. ', __('CRC number in Tpay', 'tpay'), $response['tr_crc']));
-        $this->gateway_helper->tpay_logger('Odebrano powiadomienie dla zamówienia: '.$order->get_id().', transakcja: '.$order->get_transaction_id());
+        $crc = $notification->tr_crc->getValue();
+        $order->update_status(
+            $status,
+            sprintf(
+                '%s : %s. ',
+                __('CRC number in Tpay', 'tpay'),
+                $crc
+            )
+        );
 
-        if (isset($response['card_token'])) {
-            $this->gateway_helper->tpay_logger('Powiadomienie do: '.$order->get_transaction_id().' zawiera stokenizowaną kartę.');
-            $this->saveUserCard($response);
+        $this->gateway_helper->tpay_logger(
+            'Odebrano powiadomienie dla zamówienia: '.$order->get_id().', transakcja: '.$order->get_transaction_id()
+        );
+
+        $cardToken = $notification->card_token->getValue();
+        if ($cardToken !== null) {
+            $this->gateway_helper->tpay_logger(
+                'Powiadomienie do: '.$order->get_transaction_id().' zawiera stokenizowaną kartę.'
+            );
+            $this->saveUserCard($crc, $cardToken);
         }
 
         header('HTTP/1.1 200 OK');
@@ -117,26 +87,14 @@ class UpdateOrderStatus implements IpnInterface
         exit();
     }
 
-    public function orderIsNotComplete($response)
+    public function saveUserCard(string $crc, string $token)
     {
-        $this->gateway_helper->tpay_logger(
-            'Przyjęto zgłoszenie z bramki Tpay, że płatność za zamówienie nie powiodło się. Zrzut: '.print_r($response, 1)
-        );
-        header('HTTP/1.1 200 OK');
-        echo 'FALSE';
-        exit();
-    }
-
-    public function saveUserCard($response)
-    {
-        $crc = $response['tr_crc'];
-
-        if ($order = $this->orderRepository->orderByCrc($response['tr_crc'])) {
+        if ($order = $this->orderRepository->orderByCrc($crc)) {
             $this->gateway_helper->tpay_logger('Zapisanie tokenu karty');
             $this->card_helper->update_card_token(
                 $order->get_customer_id(),
                 $crc,
-                $response['card_token'],
+                $token,
                 $order->get_id()
             );
         }
