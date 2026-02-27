@@ -38,12 +38,12 @@ class IpnContext
         }
 
         if (
-            $notification instanceof BlikAliasRegister ||
-            $notification instanceof BlikAliasUnregister
+            $notification instanceof BlikAliasRegister
+            || $notification instanceof BlikAliasUnregister
         ) {
             return new UpdateBlikAlias();
         }
 
-        throw new TpayException('Unsupported notification type: ' . get_class($notification));
+        throw new TpayException('Unsupported notification type: '.get_class($notification));
     }
 }

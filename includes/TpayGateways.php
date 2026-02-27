@@ -8,7 +8,6 @@ use Throwable;
 use Tpay\Api\Client;
 use Tpay\Api\Dtos\Channel;
 use Tpay\Api\Transactions;
-use Tpay\Helpers\GatewayHelper;
 use Tpay\Ipn\IpnContext;
 use Tpay\OpenApi\Api\TpayApi;
 use WC_Order;

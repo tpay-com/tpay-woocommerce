@@ -15,10 +15,12 @@ class UpdateBlikAlias implements IpnInterface
 
         if ($notification instanceof BlikAliasRegister) {
             update_user_meta($uid, 'tpay_alias_blik', $alias);
+
             return;
         }
         if ($notification instanceof BlikAliasUnregister) {
             delete_user_meta($uid, 'tpay_alias_blik');
+
             return;
         }
 

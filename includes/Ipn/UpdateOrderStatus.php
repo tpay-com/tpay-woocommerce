@@ -51,7 +51,7 @@ class UpdateOrderStatus implements IpnInterface
                 );
                 break;
             default:
-                throw new TpayException('Unknown notification status: ' . $status);
+                throw new TpayException('Unknown notification status: '.$status);
         }
     }
 
@@ -75,7 +75,7 @@ class UpdateOrderStatus implements IpnInterface
         );
 
         $cardToken = $notification->card_token->getValue();
-        if ($cardToken !== null) {
+        if (null !== $cardToken) {
             $this->gateway_helper->tpay_logger(
                 'Powiadomienie do: '.$order->get_transaction_id().' zawiera stokenizowaną kartę.'
             );
