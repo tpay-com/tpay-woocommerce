@@ -298,7 +298,7 @@ class TpaySF extends TpayGateways
         $this->additional_payment_data['channelId'] = $this->payment_data['pay']['channelId'];
         $this->additional_payment_data['method'] = $this->payment_data['pay']['method'];
 
-        $order = wc_get_order( $order_id );
+        $order = wc_get_order($order_id);
         $userId = $order->get_user_id();
 
         if ($card_id = $this->request->get('saved-card')) {
