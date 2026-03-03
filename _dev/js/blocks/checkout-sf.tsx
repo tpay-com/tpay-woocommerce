@@ -11,12 +11,6 @@ type CardData = {
     carddata?: string
 }
 
-function hashAsync(algo: AlgorithmIdentifier, str: string) {
-    return crypto.subtle.digest(algo, new TextEncoder("utf-8").encode(str)).then(buf => {
-        return Array.prototype.map.call(new Uint8Array(buf), (x: number) => (('00' + x.toString(16)).slice(-2))).join('');
-    });
-}
-
 function tokenize_card(pubkey: string) {
     var numberInput: HTMLInputElement = document.querySelector('#card_number'),
         expiryInput: HTMLInputElement = document.querySelector('#expiry_date'),
@@ -31,7 +25,6 @@ function tokenize_card(pubkey: string) {
     document.querySelector('#carddata').value = encrypted;
     document.querySelector('#card_vendor').value = getCreditCardNameByNumber(cardNumber);
     document.querySelector('#card_short_code').value = cardNumber.substr(-4);
-    hashAsync("SHA-256", cardNumber).then(outputHash => document.querySelector('#card_hash').value = outputHash);
     numberInput.value = '';
     expiryInput.value = '';
     cvcInput.value = '';
@@ -53,7 +46,6 @@ const Content = (props) => {
 
                 data.carddata = document.querySelector('#carddata').value;
                 data.card_vendor = document.querySelector('#card_vendor').value;
-                data.card_hash = document.querySelector('#card_hash').value;
                 data.card_short_code = document.querySelector('#card_short_code').value;
 
                 if (saveCard) {

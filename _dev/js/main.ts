@@ -191,12 +191,6 @@ $(document).ready(function () {
     });
 });
 
-function hashAsync(algo, str) {
-    return crypto.subtle.digest(algo, new TextEncoder("utf-8").encode(str)).then(buf => {
-        return Array.prototype.map.call(new Uint8Array(buf), x => (('00' + x.toString(16)).slice(-2))).join('');
-    });
-}
-
 function tokenize_card(pubkey) {
     var numberInput = $('#card_number'),
         expiryInput = $('#expiry_date'),
@@ -212,7 +206,6 @@ function tokenize_card(pubkey) {
     $("#carddata").val(encrypted);
     $("#card_vendor").val(getCreditCardNameByNumber(cardNumber));
     $("#card_short_code").val(cardNumber.substr(-4));
-    hashAsync("SHA-256", cardNumber).then(outputHash => $("#card_hash").val(outputHash));
     numberInput.val('');
     expiryInput.val('');
     cvcInput.val('');

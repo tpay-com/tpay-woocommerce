@@ -29,10 +29,11 @@ if ($this->valid_mid) {
                 </label>
             </div>
         </div>
-        <?php if(get_current_user_id() && WC()->cart->cart_contents_total >= 1): ?>
         <label class="save-card">
             <input type="checkbox" value="save" name="save-card" /> <?php esc_html_e('Save card', 'tpay') ?>
         </label>
+        <?php if(!get_current_user_id()): ?>
+            <div class="saved-card-notice"><?php esc_html_e('In order to use saved card on future orders You will have to be logged in.', 'tpay') ?></div>
         <?php endif ?>
         <?php if($cards): ?>
             <div class="saved-cards">
