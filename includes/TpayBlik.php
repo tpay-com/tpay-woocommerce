@@ -159,6 +159,7 @@ class TpayBlik extends TpayGateways
                     $this->additional_payment_data,
                     $transaction['transactionId']
                 );
+                apply_filters('tpay_transport_after_transaction', $transaction, $order);
             } catch (Exception $e) {
                 wc_add_notice('Błąd podczas tworzenia płatności: '.$e->getMessage(), 'error');
 

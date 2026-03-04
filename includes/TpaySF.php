@@ -102,6 +102,7 @@ class TpaySF extends TpayGateways
             $payment_data = apply_filters('tpay_transport_before_transaction', $payment_data, $order);
             try {
                 $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($payment_data);
+                apply_filters('tpay_transport_after_transaction', $transaction, $order);
             } catch (Error $e) {
                 $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia '.$order->get_id());
 
