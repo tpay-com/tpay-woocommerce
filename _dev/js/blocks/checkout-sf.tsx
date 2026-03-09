@@ -7,7 +7,7 @@ import {getCreditCardNameByNumber} from 'creditcard.js'
 let settings = getSetting('tpaysf_data');
 
 type CardData = {
-    'saved-card'?: number
+    'saved-card'?: string
     carddata?: string
 }
 
@@ -39,7 +39,7 @@ const Content = (props) => {
             const savedCard: HTMLInputElement = document.querySelector('input[name="saved-card"]:checked');
 
             if (savedCard) {
-                data['saved-card'] = Number(savedCard.value);
+                data['saved-card'] = String(savedCard.value);
             } else {
                 const saveCard: HTMLInputElement = document.querySelector('input[name="save-card"]:checked')
                 tokenize_card(document.querySelector('.tpay-sf').getAttribute('data-pubkey'))
