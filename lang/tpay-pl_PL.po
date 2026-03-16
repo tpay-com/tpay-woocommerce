@@ -572,3 +572,6 @@ msgstr "Plugin Płatności Tpay jest już zainstalowany. Usuń poprzednią wersj
 
 msgid "Failed to load payment channels. Please try again."
 msgstr "Błąd podczas pobierania kanałów płatności. Spróbuj ponownie."
+
+msgid "In order to use saved card on future orders You will have to be logged in."
+msgstr "Aby użyć zapisanej karty w kolejnych zamówieniach, należy być zalogowanym"
