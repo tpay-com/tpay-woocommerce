@@ -379,6 +379,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $this->payment_data = apply_filters('tpay_transport_before_transaction', $this->payment_data, $order);
         try {
             $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
+            apply_filters('tpay_transport_after_transaction', $transaction, $order);
         } catch (Error $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
 
