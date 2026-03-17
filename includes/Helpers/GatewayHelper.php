@@ -195,7 +195,6 @@ EOD,
             if ($post_data['save-card']) {
                 $save_card = [
                     'card_vendor' => $post_data['card_vendor'],
-                    'card_hash' => $post_data['card_hash'],
                     'card_short_code' => $post_data['card_short_code'],
                     'crc' => $this->crc,
                 ];

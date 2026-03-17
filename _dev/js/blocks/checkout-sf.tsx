@@ -7,14 +7,8 @@ import {getCreditCardNameByNumber} from 'creditcard.js'
 let settings = getSetting('tpaysf_data');
 
 type CardData = {
-    'saved-card'?: number
+    'saved-card'?: string
     carddata?: string
-}
-
-function hashAsync(algo: AlgorithmIdentifier, str: string) {
-    return crypto.subtle.digest(algo, new TextEncoder("utf-8").encode(str)).then(buf => {
-        return Array.prototype.map.call(new Uint8Array(buf), (x: number) => (('00' + x.toString(16)).slice(-2))).join('');
-    });
 }
 
 function tokenize_card(pubkey: string) {
@@ -31,7 +25,6 @@ function tokenize_card(pubkey: string) {
     document.querySelector('#carddata').value = encrypted;
     document.querySelector('#card_vendor').value = getCreditCardNameByNumber(cardNumber);
     document.querySelector('#card_short_code').value = cardNumber.substr(-4);
-    hashAsync("SHA-256", cardNumber).then(outputHash => document.querySelector('#card_hash').value = outputHash);
     numberInput.value = '';
     expiryInput.value = '';
     cvcInput.value = '';
@@ -46,14 +39,13 @@ const Content = (props) => {
             const savedCard: HTMLInputElement = document.querySelector('input[name="saved-card"]:checked');
 
             if (savedCard) {
-                data['saved-card'] = Number(savedCard.value);
+                data['saved-card'] = String(savedCard.value);
             } else {
                 const saveCard: HTMLInputElement = document.querySelector('input[name="save-card"]:checked')
                 tokenize_card(document.querySelector('.tpay-sf').getAttribute('data-pubkey'))
 
                 data.carddata = document.querySelector('#carddata').value;
                 data.card_vendor = document.querySelector('#card_vendor').value;
-                data.card_hash = document.querySelector('#card_hash').value;
                 data.card_short_code = document.querySelector('#card_short_code').value;
 
                 if (saveCard) {
