@@ -55,7 +55,7 @@ class UpdateOrderStatus implements IpnInterface
                 )
             );
 
-            throw new RuntimeException('Niezgodna kwota zamówienia');
+            throw new RuntimeException('Order amount mismatch');
         }
 
         switch ($status) {
