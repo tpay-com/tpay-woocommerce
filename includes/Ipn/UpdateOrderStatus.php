@@ -130,7 +130,7 @@ class UpdateOrderStatus implements IpnInterface
 
     private function validateAmount(WC_Order $order, BasicPayment $notification): bool
     {
-        return number_format((float) $order->get_total(), 2, '.', '') ===
-            number_format((float) $notification->tr_amount->getValue(), 2, '.', '');
+        return number_format((float) $order->get_total(), 2, '.', '')
+            === number_format((float) $notification->tr_amount->getValue(), 2, '.', '');
     }
 }
