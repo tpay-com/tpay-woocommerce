@@ -3,6 +3,7 @@
 namespace Tpay\Ipn;
 
 use Automattic\WooCommerce\Enums\OrderInternalStatus;
+use RuntimeException;
 use Tpay\Helpers;
 use Tpay\OpenApi\Model\Objects\NotificationBody\BasicPayment;
 use Tpay\OpenApi\Utilities\TpayException;
@@ -28,6 +29,14 @@ class UpdateOrderStatus implements IpnInterface
             throw new TpayException('Invalid notification object for payment strategy');
         }
 
+        if ($notification->isTestNotification()) {
+            $this->gateway_helper->tpay_logger(
+                'Odebrano testowe powiadomienie: '.print_r($notification->getNotificationAssociative(), 1)
+            );
+
+            return;
+        }
+
         $crc = $notification->tr_crc->getValue();
         $status = $notification->tr_status->getValue();
 
@@ -35,6 +44,18 @@ class UpdateOrderStatus implements IpnInterface
 
         if (!$order) {
             throw new TpayException('Order not found');
+        }
+
+        if (!$this->validateAmount($order, $notification)) {
+            $this->gateway_helper->tpay_logger(
+                sprintf(
+                    'Niezgodna kwota zamówienia: order=%s, notification=%s',
+                    $order->get_total(),
+                    $notification->tr_amount->getValue()
+                )
+            );
+
+            throw new RuntimeException('Order amount mismatch');
         }
 
         switch ($status) {
@@ -81,10 +102,6 @@ class UpdateOrderStatus implements IpnInterface
             );
             $this->saveUserCard($crc, $cardToken);
         }
-
-        header('HTTP/1.1 200 OK');
-        echo 'TRUE';
-        exit();
     }
 
     public function saveUserCard(string $crc, string $token)
@@ -109,5 +126,11 @@ class UpdateOrderStatus implements IpnInterface
         }
 
         return tpayOption($checkedStatus) ?? OrderInternalStatus::PROCESSING;
+    }
+
+    private function validateAmount(WC_Order $order, BasicPayment $notification): bool
+    {
+        return number_format((float) $order->get_total(), 2, '.', '')
+            === number_format((float) $notification->tr_amount->getValue(), 2, '.', '');
     }
 }
