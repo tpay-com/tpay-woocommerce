@@ -105,6 +105,10 @@ EOD,
 
     public function payer_data($order, $taxIdField = null): array
     {
+        if (!$order->has_billing_address() && $order->get_parent_id()) {
+            $order = wc_get_order($order->get_parent_id());
+        }
+
         $paymentData = [
             'email' => $order->get_billing_email(),
             'name' => $order->get_billing_first_name().' '.$order->get_billing_last_name(),
