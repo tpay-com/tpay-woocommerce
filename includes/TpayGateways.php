@@ -493,11 +493,9 @@ abstract class TpayGateways extends WC_Payment_Gateway
         } catch (Throwable $exception) {
             $this->gateway_helper->tpay_logger('IPN error: '.$exception->getMessage());
 
-            wp_die(
-                'False - '.$exception->getMessage(),
-                'Bad Request',
-                ['response' => 400]
-            );
+            header('HTTP/1.1 400 Bad Request');
+            echo 'False - '.$exception->getMessage();
+            exit();
         }
 
         wp_die();
