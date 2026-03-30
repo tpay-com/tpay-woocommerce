@@ -102,6 +102,10 @@ class UpdateOrderStatus implements IpnInterface
             );
             $this->saveUserCard($crc, $cardToken);
         }
+
+        header('HTTP/1.1 200 OK');
+        echo 'TRUE';
+        exit();
     }
 
     public function saveUserCard(string $crc, string $token)
