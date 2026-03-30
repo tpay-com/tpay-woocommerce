@@ -478,18 +478,18 @@ abstract class TpayGateways extends WC_Payment_Gateway
     public function gateway_ipn()
     {
         if ('POST' !== $_SERVER['REQUEST_METHOD']) {
-            wp_die(
-                'Not Found',
-                'Not Found',
-                ['response' => 404]
-            );
+            header('HTTP/1.1 404 Not Found');
+            echo 'Not Found';
+            exit();
         }
 
         try {
             $context = new IpnContext();
             $context->handle($this->get_config());
 
-            wp_die('TRUE', 'OK', ['response' => 200]);
+            header('HTTP/1.1 200 OK');
+            echo 'TRUE';
+            exit();
         } catch (Throwable $exception) {
             $this->gateway_helper->tpay_logger('IPN error: '.$exception->getMessage());
 
@@ -498,7 +498,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             exit();
         }
 
-        wp_die();
+        exit();
     }
 
     public function unset_gateway(array $gateways): array
