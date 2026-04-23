@@ -11,7 +11,7 @@
     "require": {
         "php": ">=7.1",
         "ext-json": "*",
-        "tpay-com/tpay-openapi-php": "^2.0"
+        "tpay-com/tpay-openapi-php": "dev-sanitize_path_params"
     },
     "minimum-stability": "stable",
     "autoload": {
