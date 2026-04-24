@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1dbf4a6abdac6f457bc94223f2aa7660",
+    "content-hash": "b72ed7f9871fe5c6f7014662e9694a5e",
     "packages": [
         {
             "name": "paragonie/constant_time_encoding",
@@ -385,16 +385,16 @@
         },
         {
             "name": "tpay-com/tpay-openapi-php",
-            "version": "dev-sanitize_path_params",
+            "version": "2.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tpay-com/tpay-openapi-php.git",
-                "reference": "34c399377b48d6b1f63cdb2db04bb907cf2cffff"
+                "reference": "8df1add1de1df6fc018a574d21281cd3e9b98ceb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tpay-com/tpay-openapi-php/zipball/34c399377b48d6b1f63cdb2db04bb907cf2cffff",
-                "reference": "34c399377b48d6b1f63cdb2db04bb907cf2cffff",
+                "url": "https://api.github.com/repos/tpay-com/tpay-openapi-php/zipball/8df1add1de1df6fc018a574d21281cd3e9b98ceb",
+                "reference": "8df1add1de1df6fc018a574d21281cd3e9b98ceb",
                 "shasum": ""
             },
             "require": {
@@ -440,9 +440,9 @@
                 "docs": "https://openapi.tpay.com",
                 "email": "support@tpay.com",
                 "issues": "https://github.com/tpay-com/tpay-openapi-php/issues",
-                "source": "https://github.com/tpay-com/tpay-openapi-php/tree/sanitize_path_params"
+                "source": "https://github.com/tpay-com/tpay-openapi-php/tree/2.4.4"
             },
-            "time": "2026-04-23T08:50:34+00:00"
+            "time": "2026-04-24T07:17:34+00:00"
         }
     ],
     "packages-dev": [
@@ -666,9 +666,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "tpay-com/tpay-openapi-php": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
