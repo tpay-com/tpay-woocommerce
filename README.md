@@ -74,6 +74,12 @@ Contains payload for transaction payment API request. (`POST /transaction/{trans
 
 `WC_Order` instance or `null` (for subsequent BLIK payment attempts) passed as second parameter.
 
+#### `tpay_transport_after_transaction`
+
+Contains payload from transaction payment API response. (`POST /transaction/{transactionId}/pay`)
+
+`WC_Order` instance or `null` (for subsequent BLIK payment attempts) passed as second parameter.
+
 ### Frequently Asked Questions
 
 #### What do I need to use the plugin:

@@ -8,6 +8,7 @@ use Throwable;
 use Tpay\Api\Client;
 use Tpay\Api\Dtos\Channel;
 use Tpay\Api\Transactions;
+use Tpay\Ipn\IpnContext;
 use Tpay\OpenApi\Api\TpayApi;
 use WC_Order;
 use WC_Payment_Gateway;
@@ -379,6 +380,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         $this->payment_data = apply_filters('tpay_transport_before_transaction', $this->payment_data, $order);
         try {
             $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($this->payment_data);
+            apply_filters('tpay_transport_after_transaction', $transaction, $order);
         } catch (Error $e) {
             $this->gateway_helper->tpay_logger($e->getMessage());
 
@@ -476,33 +478,27 @@ abstract class TpayGateways extends WC_Payment_Gateway
     public function gateway_ipn()
     {
         if ('POST' !== $_SERVER['REQUEST_METHOD']) {
-            wp_die(
-                'Not Found',
-                'Not Found',
-                ['response' => 404]
-            );
+            header('HTTP/1.1 404 Not Found');
+            echo 'Not Found';
+            exit();
         }
 
-        $body = $_POST;
-
-        if (empty($body)) {
-            wp_die(
-                'False - Empty body received',
-                'Bad Request',
-                ['response' => 400]
-            );
-        }
         try {
-            Ipn\IpnContext::chooseStrategy($body);
+            $context = new IpnContext();
+            $context->handle($this->get_config());
+
+            header('HTTP/1.1 200 OK');
+            echo 'TRUE';
+            exit();
         } catch (Throwable $exception) {
-            wp_die(
-                'False - '.$exception->getMessage(),
-                'Bad Request',
-                ['response' => 400]
-            );
+            $this->gateway_helper->tpay_logger('IPN error: '.$exception->getMessage());
+
+            header('HTTP/1.1 400 Bad Request');
+            echo 'False - '.$exception->getMessage();
+            exit();
         }
 
-        wp_die();
+        exit();
     }
 
     public function unset_gateway(array $gateways): array

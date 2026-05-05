@@ -4,5 +4,5 @@ namespace Tpay\Ipn;
 
 interface IpnInterface
 {
-    public function parseNotification($response);
+    public function handle($notification): void;
 }

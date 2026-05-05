@@ -102,6 +102,7 @@ class TpaySF extends TpayGateways
             $payment_data = apply_filters('tpay_transport_before_transaction', $payment_data, $order);
             try {
                 $transaction = $this->tpay_api()->transactions()->createTransactionWithInstantRedirection($payment_data);
+                apply_filters('tpay_transport_after_transaction', $transaction, $order);
             } catch (Error $e) {
                 $this->gateway_helper->tpay_logger('Nieudana próba utworzenia transakcji kartą dla zamówienia '.$order->get_id());
 
@@ -298,6 +299,9 @@ class TpaySF extends TpayGateways
         $this->additional_payment_data['channelId'] = $this->payment_data['pay']['channelId'];
         $this->additional_payment_data['method'] = $this->payment_data['pay']['method'];
 
+        $order = wc_get_order($order_id);
+        $userId = $order->get_user_id();
+
         if ($card_id = $this->request->get('saved-card')) {
             $card = $this->card_helper->get_card_by_id($card_id);
 
@@ -310,12 +314,11 @@ class TpaySF extends TpayGateways
             if ($this->request->get('save-card')) {
                 $save_card = [
                     'card_vendor' => $this->request->get('card_vendor'),
-                    'card_hash' => $this->request->get('card_hash'),
                     'card_short_code' => $this->request->get('card_short_code'),
                     'crc' => $this->crc,
                 ];
 
-                if ($this->card_helper->save_card($save_card)) {
+                if ($this->card_helper->save_card($save_card, $userId)) {
                     $this->additional_payment_data['cardPaymentData']['save'] = true;
                 }
             }

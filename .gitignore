@@ -2,3 +2,5 @@ cache/*
 _dev/node_modules
 vendor
 *.js.map
+.idea/*
+.php-cs-fixer.cache
