@@ -77,7 +77,7 @@ class GatewayHelper
 EOD,
             __('By paying,', 'tpay'),
             $this->get_condition_url(),
-            __('you accept the terms and conditions', 'tpay'),
+            __('you accept the terms and conditions.', 'tpay'),
             __('The administrator of the personal data is Krajowy Integrator Płatności S.A., headquartered in Poznań.', 'tpay'),
             $this->get_privacy_policy_url(),
             __('Read the full text.', 'tpay')

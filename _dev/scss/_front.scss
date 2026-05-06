@@ -95,6 +95,7 @@
       display: flex;
       flex-direction: column;
       width: 100%;
+
         .card-number-container{
           width: 100%;
           padding-top: 0;
@@ -118,6 +119,7 @@
         align-items: flex-start;
         width: 100%;
         margin: 0;
+
         input {
           border: 1px solid #dfdede;
           border-radius: 5px;
@@ -465,7 +467,8 @@
 
 .saved-card-notice {
   font-size: small;
-  font-style: italic;
+  color: #59585B;
+  margin-left: 24px;
 }
 
 .pbl-error, .blik0-error {

@@ -107,6 +107,16 @@ $(document).ready(function () {
         $('.card-container .wrong').removeClass('wrong');
     });
 
+    function toggleAnotherCardForm(show) {
+        if (show) {
+            $('#another-card-form').show();
+        } else {
+            $('#another-card-form').hide();
+            clear_card_fields();
+        }
+    }
+
+    // Click handler
     $('body').on('click', '.saved-card-label input, .another-card-label input', function () {
 
         const isAnother = $(this).closest('.another-card-label').length > 0;
@@ -115,16 +125,14 @@ $(document).ready(function () {
             .not(this)
             .prop('checked', false);
 
-        if (isAnother) {
-            $('#another-card-form').show();
-        } else {
-            $('#another-card-form').hide();
-            clear_card_fields();
-        }
+        toggleAnotherCardForm(isAnother);
     });
 
-
-
+    // Initial state
+    const hasSavedCards = $('.saved-card-label').length > 0;
+    if (!hasSavedCards) {
+        toggleAnotherCardForm(true);
+    }
 
     function clear_card_fields() {
         $("#carddata").val('');
@@ -135,29 +143,6 @@ $(document).ready(function () {
         $('#cvc').val('');
         $('.card-container .wrong').removeClass('wrong');
     }
-
-    // $('body').on('click', '.saved-cards > label', function(){
-    //     if($(this).find('input').hasClass('active-sc')){
-    //         $(this).find('input').prop('checked', false);
-    //         $(this).find('input').removeClass('active-sc');
-    //         $("#card_short_code").attr('readonly', false);
-    //         $('#card_number').attr('readonly', false);
-    //         $('#expiry_date').attr('readonly', false);
-    //     }
-    //     else{
-    //         $(this).find('input').prop('checked', true);
-    //         $(this).find('input').addClass('active-sc');
-    //         $("#card_short_code").attr('readonly', true);
-    //         $('#card_number').attr('readonly', true);
-    //         $('#expiry_date').attr('readonly', true);
-    //     }
-    //     // var th = $(this);
-    //     // $('.saved-cards > label').each(function(){
-    //     //     if($(this) != th){
-    //     //         $(this).find('input').removeClass('active-sc');
-    //     //     }
-    //     // })
-    // })
 
     $('body').on('click', '[class*="tpay_blik-payment-"]', function () {
         $('[class*="tpay_blik-payment-"]').removeClass('active');

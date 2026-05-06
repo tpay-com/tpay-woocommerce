@@ -25,7 +25,7 @@ if ($this->valid_mid) {
                     </label>
                 </div>
             <?php endif ?>
-            <div id="another-card-form" style="display:none;">
+            <div id="another-card-form" style="<?php echo empty($cards) ? 'display:block;' : 'display:none;'; ?>">
                 <div class="card-description-container">
                     <p class="card-label">
                         <?php esc_html_e('Enter your payment card details below', 'tpay') ?>
@@ -60,10 +60,11 @@ if ($this->valid_mid) {
                         </div>
                     </div>
                 </div>
-                <?php if(get_current_user_id() && WC()->cart->cart_contents_total >= 1): ?>
-                    <label class="save-card">
-                        <input type="checkbox" value="save" name="save-card" /> <?php esc_html_e('Save card', 'tpay') ?>
-                    </label>
+                <label class="save-card">
+                    <input type="checkbox" value="save" name="save-card" /> <?php esc_html_e('Save card', 'tpay') ?>
+                </label>
+                <?php if(get_current_user_id()): ?>
+                    <div class="saved-card-notice"><?php esc_html_e('In order to use saved card on future orders You will have to be logged in.', 'tpay') ?></div>
                 <?php endif ?>
             </div>
         </div>

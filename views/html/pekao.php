@@ -14,6 +14,6 @@
                 </div>
             </label>
         <?php endforeach; ?>
-        <?php echo $agreements ?>
     </div>
+    <?php echo $agreements ?>
 </div>
