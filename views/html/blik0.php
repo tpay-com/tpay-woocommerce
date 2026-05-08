@@ -4,13 +4,13 @@
     $blikform_checked = false;
     if($alias): ?>
     <div class="tpay_blik-payment-alias active">
+        <div class="separator blik-code"></div>
         <div class="top">
             <label>
                 <input type="radio" name="blik-type" value="alias" checked="checked" />
                 <span class="blik-label">
                     <?php esc_html_e('I pay with BLIK from saved account', 'tpay') ?>
                 </span>
-                <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
             </label>
         </div>
         <div class="bottom">
@@ -19,6 +19,7 @@
                 <span class="tooltip-text"> <?php esc_html_e('You do not need to enter the BLIK code, because you linked your account to this device during one of the previous payments. The payment still requires confirmation in the app.', 'tpay') ?> </span>
             </span>
         </div>
+        <div class="separator"></div>
     </div>
     <?php else:
         $blikform = 'active';
@@ -29,26 +30,29 @@
         <li><?php esc_html_e('Enter Blik code', 'tpay') ?></li>
     </ul>
     <div class="tpay_blik-payment-form <?php echo esc_attr($blikform) ?>">
-        <div class="separator"></div>
-        <div class="top">
-            <?php if(!$alias): ?>
-            <?php endif; ?>
-            <label>
-                <?php if($alias): ?>
+        <?php if(!$alias): ?>
+            <div class="separator blik-code"></div>
+        <?php endif; ?>
+        <?php if($alias): ?>
+            <div class="top">
+                <label>
                     <input type="radio" name="blik-type" value="code" <?php if($blikform_checked) echo 'checked="checked"' ?> />
-                <?php endif; ?>
-            </label>
-        </div>
+                    <span class="blik-label">
+                        <?php esc_html_e('Pay with BLIK code', 'tpay') ?>
+                    </span>
+                </label>
+            </div>
+        <?php endif; ?>
         <div class="bottom">
             <div><?php esc_html_e('Enter Blik code', 'tpay') ?></div>
             <input
-                    name="blik0"
-                    id="blik0-code"
-                    required
-                    type="text"
-                    maxlength="7"
-                    placeholder="000 000"
-                    pattern="\d*"
+                name="blik0"
+                id="blik0-code"
+                required
+                type="text"
+                maxlength="7"
+                placeholder="000 000"
+                pattern="\d*"
             />
         </div>
     </div>

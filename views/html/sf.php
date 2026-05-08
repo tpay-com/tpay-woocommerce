@@ -37,15 +37,35 @@ if ($this->valid_mid) {
                 <div class="new-card-container">
                     <div class="card-number-container">
                         <label class="card-number"><?php esc_html_e('Card number', 'tpay'); ?>
-                            <input id="card_number" type="text" pattern="\d*" autocompletetype="cc-number" size="30"
-                                   type="tel" autocomplete="off" maxlength="23" placeholder="0000 0000 0000 0000" tabindex="1" value=""  style="" class="soft-wrong" />
+                            <input
+                                id="card_number"
+                                type="text"
+                                inputmode="numeric"
+                                pattern="[0-9 ]*"
+                                autocomplete="cc-number"
+                                maxlength="23"
+                                placeholder="0000 0000 0000 0000"
+                                oninput="this.value = this.value.replace(/[^0-9 ]/g, '')"
+                            />
                         </label>
                     </div>
                     <div class="card-row">
                         <div class="date-container">
                             <label class="card-expiry"><?php esc_html_e('Expiry date', 'tpay') ?>
-                                <input id="expiry_date" type="text" placeholder="00 / 0000" autocomplete="off"
-                                       autocompletetype="cc-exp" tabindex="2" value="" style="" class="soft-wrong" />
+                                <input
+                                    id="expiry_date"
+                                    type="text"
+                                    placeholder="00/00"
+                                    maxlength="5"
+                                    inputmode="numeric"
+                                    oninput="
+                                        let v = this.value.replace(/\D/g, '').slice(0,4);
+                                        if (v.length >= 3) {
+                                          v = v.slice(0,2) + '/' + v.slice(2);
+                                        }
+                                        this.value = v;
+                                    "
+                                />
                             </label>
                         </div>
                         <div class="cvc-container">
