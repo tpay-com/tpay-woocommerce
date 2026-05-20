@@ -368,11 +368,23 @@
     .tpay-item {
       margin: 0;
       width: 100%;
-      input{
-        display: none;
-        &:checked{
-          +div{
-            >div{
+      position: relative;
+      cursor: pointer;
+
+      input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        border: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+
+        &:checked {
+          + div {
+            > div {
               border: 2px solid #2953C6;
               border-radius: 8px;
               -webkit-box-shadow: 0px 0px 15px 5px rgba(41,83,198,0.15);
@@ -380,23 +392,36 @@
             }
           }
         }
+
+        &:focus-visible {
+          + div {
+            > div {
+              border: 4px solid #2953C6;
+            }
+          }
+        }
       }
 
       > div {
         padding: 5px;
-        >div{
+
+        > div {
           border: 1px solid #e5e5e5;
           border-radius: 5px;
           padding: 10px 0;
-          .tpay-group-logo-holder{
+          transition: 0.2s ease;
+
+          .tpay-group-logo-holder {
             height: 70px;
             @include flexcenter;
-            img{
+
+            img {
               width: 90px;
               height: auto;
             }
           }
-          .name{
+
+          .name {
             color: #072653;
             text-align: center;
             display: block;
@@ -541,12 +566,6 @@ span.payment-label {
   border: 2px solid #2953C6 !important;
 }
 
-/* Apply radio circle border color when options is not selected */
-label[for*="tpay"] .wc-block-components-radio-control__input {
-  background-color: transparent;
-  border-color: #D8D8D8 !important;
-}
-
 /* Apply radio circle border color when option is selected */
 label[for*="tpay"] .wc-block-components-radio-control__input:checked {
   background-color: transparent;
@@ -579,6 +598,7 @@ label[for*="tpay"] .wc-block-components-radio-control-accordion-content {
 
 .select-bank {
   margin-left: 8px;
+  color: #072653;
 }
 
 /* Apply styles to the "Powered by Tpay" */

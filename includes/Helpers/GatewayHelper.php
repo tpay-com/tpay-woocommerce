@@ -70,17 +70,25 @@ class GatewayHelper
     {
         return sprintf(
             <<<'EOD'
+            <div>
                 <div class="tpay-accept-conditions">
                     <p>%s <a href="%s" target="_blank">%s</a></p>
                     <p>%s <a href="%s" target="_blank">%s</a></p>
                 </div>
+                    <div class="powered-by-tpay">
+                    <p>%s</p>
+                    <img src="%s" alt="tpay"/>
+                </div>
+            </div>
 EOD,
             __('By paying,', 'tpay'),
             $this->get_condition_url(),
             __('you accept the terms and conditions.', 'tpay'),
             __('The administrator of the personal data is Krajowy Integrator Płatności S.A., headquartered in Poznań.', 'tpay'),
             $this->get_privacy_policy_url(),
-            __('Read the full text.', 'tpay')
+            __('Read the full text.', 'tpay'),
+            __('Powered by', 'tpay'),
+            esc_url(plugin_dir_url(__FILE__) . '../../views/img/tpay-small.svg')
         );
     }
 

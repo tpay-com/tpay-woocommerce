@@ -58,9 +58,5 @@
     </div>
     <div class="separator"></div>
     <?php echo $agreements ?>
-    <div class="powered-by-tpay">
-        <p><?php esc_html_e('Powered by', 'tpay') ?></p>
-        <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
-    </div>
 </div>
 

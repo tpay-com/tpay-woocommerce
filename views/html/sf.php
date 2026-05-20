@@ -41,11 +41,14 @@ if ($this->valid_mid) {
                                 id="card_number"
                                 type="text"
                                 inputmode="numeric"
-                                pattern="[0-9 ]*"
                                 autocomplete="cc-number"
-                                maxlength="23"
+                                maxlength="19"
                                 placeholder="0000 0000 0000 0000"
-                                oninput="this.value = this.value.replace(/[^0-9 ]/g, '')"
+                                oninput="
+                                    let v = this.value.replace(/\D/g, '').substring(0,16);
+                                    this.value = v.replace(/(.{4})/g, '$1 ').trim();
+                                    console.log(value)
+                                "
                             />
                         </label>
                     </div>
@@ -55,7 +58,7 @@ if ($this->valid_mid) {
                                 <input
                                     id="expiry_date"
                                     type="text"
-                                    placeholder="00/00"
+                                    placeholder="MM/RR"
                                     maxlength="5"
                                     inputmode="numeric"
                                     oninput="
@@ -70,8 +73,16 @@ if ($this->valid_mid) {
                         </div>
                         <div class="cvc-container">
                             <label class="card-cvc"><?php esc_html_e('CVV2/CVC2', 'tpay') ?>
-                                <input id="cvc" type="text" placeholder="000" autocomplete="off" autocompletetype="cc-cvc"
-                                       tabindex="3" value=""  style="" class="soft-wrong" />
+                                <input
+                                    id="cvc"
+                                    type="text"
+                                    inputmode="numeric"
+                                    placeholder="123"
+                                    autocomplete="cc-csc"
+                                    maxlength="4"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                    class="soft-wrong"
+                                />
                             </label>
                             <span class="show-info">
                                 <img src="<?php echo esc_html_e(plugin_dir_url(__FILE__) . '../img/info-icon.svg') ?>"/>
@@ -95,9 +106,5 @@ if ($this->valid_mid) {
     </div>
     <div class="separator"></div>
     <?php echo $agreements ?>
-    <div class="powered-by-tpay">
-        <p><?php esc_html_e('Powered by', 'tpay') ?></p>
-        <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
-    </div>
 </div>
 <?php endif ?>
