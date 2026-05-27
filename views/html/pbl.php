@@ -90,7 +90,7 @@ $list = array_filter($list, function (\Tpay\Api\Dtos\Channel $channel) use ($gen
                         <div class="tpay-group-logo-holder">
                             <img src="<?php echo esc_url($item->image->url) ?>"
                                  class="tpay-group-logo"
-                                 alt="<?php echo esc_attr($item->name) ?>">
+                                 alt="<?php echo esc_attr($item->fullName) ?>">
                         </div>
                         <span class="name"><?php echo esc_html($item->fullName) ?></span>
                     </div>

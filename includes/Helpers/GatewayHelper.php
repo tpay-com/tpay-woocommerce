@@ -70,16 +70,17 @@ class GatewayHelper
     {
         return sprintf(
             <<<'EOD'
-            <div>
-                <div class="tpay-accept-conditions">
-                    <p>%s <a href="%s" target="_blank">%s</a></p>
-                    <p>%s <a href="%s" target="_blank">%s</a></p>
-                </div>
-                    <div class="powered-by-tpay">
-                    <p>%s</p>
-                    <img src="%s" alt="tpay"/>
-                </div>
-            </div>
+<div>
+    <div class="tpay-accept-conditions">
+        <p>%s <a href="%s" target="_blank">%s</a></p>
+        <p>%s <a href="%s" target="_blank">%s</a></p>
+    </div>
+
+    <div class="powered-by-tpay">
+        <p>%s</p>
+        <img src="%s" alt="tpay"/>
+    </div>
+</div>
 EOD,
             __('By paying,', 'tpay'),
             $this->get_condition_url(),
