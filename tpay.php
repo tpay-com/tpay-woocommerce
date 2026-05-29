@@ -248,9 +248,9 @@ add_action('woocommerce_before_thankyou', function ($orderId) {
         'tpayThankYou',
         [
             'url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('tpay-thank-you'),
-            'transactionId' => $order->get_transaction_id(),
+            'nonce' => wp_create_nonce(tpay_ajax_order_nonce_action($order)),
             'orderId' => $order->get_id(),
+            'orderKey' => $order->get_order_key(),
         ]
     );
     wp_enqueue_script('tpay-thank-you');
