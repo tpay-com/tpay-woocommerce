@@ -160,7 +160,6 @@ class UpdateOrderStatus implements IpnInterface
             if ('' === $notificationCurrency) {
                 $notificationCurrency = null;
             }
-
         }
 
         if (null === $notificationCurrency) {
