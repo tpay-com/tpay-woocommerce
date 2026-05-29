@@ -55,7 +55,7 @@ class UpdateOrderStatus implements IpnInterface
                 )
             );
 
-            throw new RuntimeException('Order amount mismatch');
+            throw new RuntimeException('Order currency mismatch');
         }
 
         if (!$this->validateAmount($order, $notification)) {
@@ -156,6 +156,11 @@ class UpdateOrderStatus implements IpnInterface
 
         if (isset($notification->tr_currency) && $notification->tr_currency) {
             $notificationCurrency = strtoupper(trim($notification->tr_currency->getValue()));
+
+            if ($notificationCurrency === '') {
+                $notificationCurrency = null;
+            }
+
         }
 
         if (null === $notificationCurrency) {
