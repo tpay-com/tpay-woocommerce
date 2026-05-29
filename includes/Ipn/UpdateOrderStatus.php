@@ -157,7 +157,7 @@ class UpdateOrderStatus implements IpnInterface
         if (isset($notification->tr_currency) && $notification->tr_currency) {
             $notificationCurrency = strtoupper(trim($notification->tr_currency->getValue()));
 
-            if ($notificationCurrency === '') {
+            if ('' === $notificationCurrency) {
                 $notificationCurrency = null;
             }
 
