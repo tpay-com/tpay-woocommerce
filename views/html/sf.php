@@ -47,7 +47,6 @@ if ($this->valid_mid) {
                                 oninput="
                                     let v = this.value.replace(/\D/g, '').substring(0,16);
                                     this.value = v.replace(/(.{4})/g, '$1 ').trim();
-                                    console.log(value)
                                 "
                             />
                         </label>
