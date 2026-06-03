@@ -125,6 +125,9 @@ $(document).ready(function () {
             .not(this)
             .prop('checked', false);
 
+        $('.saved-cards input').not($(this)).attr('name', 'saved-card-unchecked');
+        $(this).attr('name', 'saved-card');
+
         toggleAnotherCardForm(isAnother);
     });
 
