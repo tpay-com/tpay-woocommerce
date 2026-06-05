@@ -51,7 +51,6 @@ class TpaySF extends TpayGateways
     }
 
     /**
-     * @param mixed    $chargeAmount
      * @param WC_Order $order
      *
      * @throws WC_Data_Exception
