@@ -185,7 +185,9 @@ class TpaySF extends TpayGateways
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności kartą na stronie sklepu- zwrócone następujące błędy: '.implode(' ', $errors_list));
                 wc_add_notice(implode(' ', $errors_list), 'error');
 
-                return false;
+                return [
+                    'result' => 'failure',
+                ];
             }
 
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
@@ -205,8 +207,9 @@ class TpaySF extends TpayGateways
             ];
         }
         wc_add_notice(__('Payment error', 'tpay'), 'error');
-
-        return false;
+        return [
+            'result' => 'failure',
+        ];
     }
 
     public function process_transaction(WC_Order $order)
