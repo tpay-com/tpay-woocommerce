@@ -253,7 +253,10 @@ abstract class TpayGateways extends WC_Payment_Gateway
     }
 
     /**
-     * @param bool $custom_order
+     * @param bool  $custom_order
+     * @param mixed $blik0
+     * @param mixed $sf
+     * @param mixed $installments
      */
     public function tpay_init_form_fields($custom_order = false, $blik0 = false, $sf = false, $installments = false)
     {

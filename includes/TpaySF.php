@@ -51,6 +51,7 @@ class TpaySF extends TpayGateways
     }
 
     /**
+     * @param mixed    $chargeAmount
      * @param WC_Order $order
      *
      * @throws WC_Data_Exception
@@ -207,6 +208,7 @@ class TpaySF extends TpayGateways
             ];
         }
         wc_add_notice(__('Payment error', 'tpay'), 'error');
+
         return [
             'result' => 'failure',
         ];

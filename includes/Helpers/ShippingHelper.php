@@ -117,7 +117,8 @@ class ShippingHelper
     /**
      * Indicates whether a rate exists in an array of canonically-formatted rate IDs that activates this gateway.
      *
-     * @param array $rate_ids rate ids to check
+     * @param array $rate_ids            rate ids to check
+     * @param mixed $enable_for_shipping
      *
      * @return array
      */
