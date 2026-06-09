@@ -89,7 +89,7 @@ EOD,
             $this->get_privacy_policy_url(),
             __('Read the full text.', 'tpay'),
             __('Powered by', 'tpay'),
-            esc_url(plugin_dir_url(__FILE__) . '../../views/img/tpay-small.svg')
+            esc_url(plugin_dir_url(__FILE__).'../../views/img/tpay-small.svg')
         );
     }
 

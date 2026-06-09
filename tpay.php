@@ -205,6 +205,9 @@ add_action('woocommerce_before_thankyou', function ($orderId) {
     if (!$tpayFound) {
         return;
     }
+    if (TPAYSF_ID === $order->get_payment_method()) {
+        return;
+    }
 
     if ('' === $order->get_meta('blik0')) {
         $status = null;
