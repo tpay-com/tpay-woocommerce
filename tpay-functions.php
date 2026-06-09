@@ -231,11 +231,44 @@ function get_package_version(): string
     return \Tpay\Vendor\Composer\InstalledVersions::getPrettyVersion('tpay-com/tpay-openapi-php');
 }
 
+function tpay_ajax_order_nonce_action(\WC_Order $order): string
+{
+    return 'tpay-thank-you-' . $order->get_id() . '-' . $order->get_order_key();
+}
+
+function tpay_get_authorized_ajax_order(): \WC_Order
+{
+    $orderId = isset($_POST['orderId']) ? absint(wp_unslash($_POST['orderId'])) : 0;
+    $orderKey = isset($_POST['orderKey']) ? sanitize_text_field(wp_unslash($_POST['orderKey'])) : '';
+
+    if (!$orderId || !$orderKey) {
+        wp_send_json(['status' => 'error', 'result' => 'error'], 403);
+    }
+
+    $order = wc_get_order($orderId);
+
+    if (!$order instanceof \WC_Order || !hash_equals($order->get_order_key(), $orderKey)) {
+        wp_send_json(['status' => 'error', 'result' => 'error'], 403);
+    }
+
+    if (false === check_ajax_referer(tpay_ajax_order_nonce_action($order), 'nonce', false)) {
+        wp_send_json(['status' => 'error', 'result' => 'error'], 403);
+    }
+
+    $customerId = (int) $order->get_customer_id();
+
+    if ($customerId && (!is_user_logged_in() || $customerId !== get_current_user_id())) {
+        wp_send_json(['status' => 'error', 'result' => 'error'], 403);
+    }
+
+    return $order;
+}
+
 function tpay_blik0_transaction_status()
 {
-    check_ajax_referer('tpay-thank-you', 'nonce');
+    $order = tpay_get_authorized_ajax_order();
 
-    $result = (new TpayBlik())->checkTransactionStatus(htmlspecialchars($_POST['transactionId']));
+    $result = (new TpayBlik())->checkTransactionStatus($order->get_transaction_id());
 
     $response = ['status' => $result['status']];
     wp_send_json($response);
@@ -243,17 +276,19 @@ function tpay_blik0_transaction_status()
 
 function tpay_pay_by_transfer()
 {
-    check_ajax_referer('tpay-thank-you', 'nonce');
-    $result = (new Tpay())->payByTransfer(htmlspecialchars($_POST['transactionId']), $_POST['orderId']);
+    $order = tpay_get_authorized_ajax_order();
+    $result = (new Tpay())->payByTransfer($order);
 
-    $response = ['status' => $result['status'], 'payment_url' => $result['payment_url']];
+    $response = ['status' => $result['status'], 'payment_url' => $result['payment_url'] ?? null];
     wp_send_json($response);
 }
 
 function tpay_blik0_repay()
 {
-    check_ajax_referer('tpay-thank-you', 'nonce');
-    $result = (new TpayBlik())->payBlikTransaction(htmlspecialchars($_POST['transactionId']), $_POST['blikCode'], $_POST['transactionCounter']);
+    $order = tpay_get_authorized_ajax_order();
+    $blikCode = isset($_POST['blikCode']) ? sanitize_text_field(wp_unslash($_POST['blikCode'])) : '';
+    $transactionCounter = isset($_POST['transactionCounter']) ? absint(wp_unslash($_POST['transactionCounter'])) : 0;
+    $result = (new TpayBlik())->payBlikTransaction($order->get_transaction_id(), $blikCode, $transactionCounter);
 
     $response = ['result' => $result['result']];
     wp_send_json($response);
