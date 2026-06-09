@@ -15,7 +15,7 @@ if ($this->valid_mid) {
                     <?php foreach($cards as $key => $card): ?>
                         <label class="saved-card-label">
                             <input type="radio" name="saved-card-unchecked" value="<?php echo esc_attr($key) ?>" />
-                            <img src="<?php echo esc_url( plugin_dir_url(__FILE__) . '../img/' . esc_attr( strtolower($card['vendor']) ) . '-card-icon.svg' ); ?>" />
+                            <img src="<?php echo esc_url( plugin_dir_url(__FILE__) . '../img/' . esc_attr( strtolower($card['vendor']) ) . '-card-icon.png' ); ?>" />
                             <span><?php echo esc_html(strtoupper(' * * * '.$card['short_code'])) ?></span>
                         </label>
                         <div class="separator"></div>
