@@ -47,11 +47,13 @@ class UpdateOrderStatus implements IpnInterface
         }
 
         if (!$this->validateCurrency($order, $notification)) {
+            $notificationCurrency = $notification->tr_currency ? $notification->tr_currency->getValue() : null;
+
             $this->gateway_helper->tpay_logger(
                 sprintf(
                     'Niezgodna waluta zamówienia: order=%s, notification=%s',
                     $order->get_currency(),
-                    $notification->tr_currency ? $notification->tr_currency->getValue() : 'null'
+                    var_export($notificationCurrency, true)
                 )
             );
 
@@ -152,19 +154,17 @@ class UpdateOrderStatus implements IpnInterface
 
     private function validateCurrency(WC_Order $order, BasicPayment $notification): bool
     {
-        $notificationCurrency = null;
+        $value = null;
 
         if (isset($notification->tr_currency) && $notification->tr_currency) {
-            $notificationCurrency = strtoupper(trim($notification->tr_currency->getValue()));
-
-            if ('' === $notificationCurrency) {
-                $notificationCurrency = null;
-            }
+            $value = $notification->tr_currency->getValue();
         }
 
-        if (null === $notificationCurrency) {
+        if (!is_string($value) || trim($value) === '') {
             return true;
         }
+
+        $notificationCurrency = strtoupper(trim($value));
 
         $orderCurrency = strtoupper(trim($order->get_currency()));
 
