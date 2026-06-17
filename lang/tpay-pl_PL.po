@@ -152,11 +152,11 @@ msgstr "Włącz dla podanych metod dostawy"
 msgid "Enable Tpay payment method"
 msgstr "Włącz płatność Tpay"
 
-#: views/html/blik0.php:27
+#: views/html/blik0.php:30
 msgid "Enter BLIK code"
 msgstr "Wpisz kod BLIK"
 
-#: views/html/blik0.php:33
+#: views/html/blik0.php:41
 msgid "Pay with BLIK code"
 msgstr "Płatność kodem BLIK"
 
@@ -167,6 +167,14 @@ msgstr "Wpisz kod BLIK"
 #: views/html/sf.php:12
 msgid "Expiry date"
 msgstr "Data ważności"
+
+#: views/html/sf.php:31
+msgid "Enter your payment card details below"
+msgstr "Wpisz poniżej dane swojej karty płatniczej"
+
+#: views/html/sf.php:58
+msgid "The CVV2/CVC2 code is a 3-digit number located on the back of Mastercard and Visa cards."
+msgstr "Kod CVV2/CVC2 to 3-cyfrowy numer znajdujący się na odwrocie kart Mastercard i Visa."
 
 #: includes/WC_TpayGateways.php:122
 msgid "Google Pay"
@@ -418,8 +426,8 @@ msgid "By paying,"
 msgstr "Płacąc,"
 
 #: includes/helpers/GatewayHelper.php:151
-msgid "you accept the terms and conditions"
-msgstr "akceptujesz warunki i postanowienia"
+msgid "you accept the terms and conditions."
+msgstr "akceptujesz warunki i postanowienia."
 
 #: includes/helpers/GatewayHelper.php:152
 msgid "The administrator of the personal data is Krajowy Integrator Płatności S.A., headquartered in Poznań."
