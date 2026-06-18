@@ -8,48 +8,102 @@ if ($this->valid_mid) {
 <?php if ($sf_rsa): ?>
 <div class="tpay-sf" data-pubkey="<?php echo $sf_rsa ?>">
     <div class="tpay-sf-form">
-        <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '../img/tpay-small.svg') ?>"/>
         <div class="card-container">
-            <div class="card-number-container">
-                <label class="card-number"><?php esc_html_e('Card number', 'tpay'); ?>
-                    <input id="card_number" type="text" pattern="\d*" autocompletetype="cc-number" size="30"
-                           type="tel" autocomplete="off" maxlength="23" placeholder="0000 0000 0000 0000" tabindex="1" value=""  style="" class="soft-wrong" />
+            <?php if($cards): ?>
+                <div class="saved-cards">
+                    <div class="separator"></div>
+                    <?php foreach($cards as $key => $card): ?>
+                        <label class="saved-card-label">
+                            <input type="radio" name="saved-card-unchecked" value="<?php echo esc_attr($key) ?>" />
+                            <img src="<?php echo esc_url( plugin_dir_url(__FILE__) . '../img/' . esc_attr( strtolower($card['vendor']) ) . '-card-icon.png' ); ?>" />
+                            <span><?php echo esc_html(strtoupper(' * * * '.$card['short_code'])) ?></span>
+                        </label>
+                        <div class="separator"></div>
+                    <?php endforeach ?>
+                    <label class="another-card-label">
+                        <input type="radio" name="another-card" value="another-card" /> <?php echo esc_html_e('Pay with another card', 'tpay') ?>
+                    </label>
+                </div>
+            <?php endif ?>
+            <div id="another-card-form" style="<?php echo empty($cards) ? 'display:block;' : 'display:none;'; ?>">
+                <div class="card-description-container">
+                    <p class="card-label">
+                        <?php esc_html_e('Enter your payment card details below', 'tpay') ?>
+                    </p>
+                    <?php if(!$cards): ?>
+                    <div class="separator"></div>
+                    <?php endif ?>
+                </div>
+                <div class="new-card-container">
+                    <div class="card-number-container">
+                        <label class="card-number"><?php esc_html_e('Card number', 'tpay'); ?>
+                            <input
+                                id="card_number"
+                                type="text"
+                                inputmode="numeric"
+                                autocomplete="cc-number"
+                                maxlength="19"
+                                placeholder="0000 0000 0000 0000"
+                                oninput="
+                                    let v = this.value.replace(/\D/g, '').substring(0,16);
+                                    this.value = v.replace(/(.{4})/g, '$1 ').trim();
+                                "
+                            />
+                        </label>
+                    </div>
+                    <div class="card-row">
+                        <div class="date-container">
+                            <label class="card-expiry"><?php esc_html_e('Expiry date', 'tpay') ?>
+                                <input
+                                    id="expiry_date"
+                                    type="text"
+                                    placeholder="MM/RR"
+                                    maxlength="5"
+                                    inputmode="numeric"
+                                    oninput="
+                                        let v = this.value.replace(/\D/g, '').slice(0,4);
+                                        if (v.length >= 3) {
+                                          v = v.slice(0,2) + '/' + v.slice(2);
+                                        }
+                                        this.value = v;
+                                    "
+                                />
+                            </label>
+                        </div>
+                        <div class="cvc-container">
+                            <label class="card-cvc"><?php esc_html_e('CVV2/CVC2', 'tpay') ?>
+                                <input
+                                    id="cvc"
+                                    type="text"
+                                    inputmode="numeric"
+                                    placeholder="123"
+                                    autocomplete="cc-csc"
+                                    maxlength="4"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                    class="soft-wrong"
+                                />
+                            </label>
+                            <span class="show-info">
+                                <img src="<?php echo esc_html_e(plugin_dir_url(__FILE__) . '../img/info-icon.svg') ?>"/>
+                                <span class="tooltip-text"> <?php esc_html_e('The CVV2/CVC2 code is a 3-digit number located on the back of Mastercard and Visa cards.', 'tpay') ?> </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <label class="save-card">
+                    <input type="checkbox" value="save" name="save-card" /> <?php esc_html_e('Save card', 'tpay') ?>
                 </label>
-            </div>
-            <div class="date-container">
-                <label class="card-expiry"><?php esc_html_e('Expiry date', 'tpay') ?>
-                    <input id="expiry_date" type="text" placeholder="00 / 0000" autocomplete="off"
-                           autocompletetype="cc-exp" tabindex="2" value="" style="" class="soft-wrong" />
-                </label>
-            </div>
-            <div class="cvc-container">
-                <label class="card-cvc"><?php esc_html_e('CVC', 'tpay') ?>
-                    <input id="cvc" type="text" placeholder="000" autocomplete="off" autocompletetype="cc-cvc"
-                           tabindex="3" value=""  style="" class="soft-wrong" />
-                </label>
+                <?php if(get_current_user_id()): ?>
+                    <div class="saved-card-notice"><?php esc_html_e('In order to use saved card on future orders You will have to be logged in.', 'tpay') ?></div>
+                <?php endif ?>
             </div>
         </div>
-        <label class="save-card">
-            <input type="checkbox" value="save" name="save-card" /> <?php esc_html_e('Save card', 'tpay') ?>
-        </label>
-        <?php if(!get_current_user_id()): ?>
-            <div class="saved-card-notice"><?php esc_html_e('In order to use saved card on future orders You will have to be logged in.', 'tpay') ?></div>
-        <?php endif ?>
-        <?php if($cards): ?>
-            <div class="saved-cards">
-                <p class="saved-cards-title"><?php esc_html_e('Pay by saved card', 'tpay') ?></p>
-                <?php foreach($cards as $key => $card): ?>
-                    <label>
-                        <input type="checkbox" name="saved-card-unchecked" value="<?php echo esc_attr($key) ?>" /> <?php echo esc_html(strtoupper($card['vendor']).' * * * '.$card['short_code']) ?>
-                    </label>
-                <?php endforeach ?>
-            </div>
-        <?php endif ?>
         <input type="hidden" name="carddata" id="carddata" value=""/>
         <input type="hidden" name="card_hash" id="card_hash" value=""/>
         <input type="hidden" name="card_vendor" id="card_vendor" value=""/>
         <input type="hidden" name="card_short_code" id="card_short_code" value=""/>
     </div>
+    <div class="separator"></div>
     <?php echo $agreements ?>
 </div>
 <?php endif ?>

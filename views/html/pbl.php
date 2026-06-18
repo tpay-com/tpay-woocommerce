@@ -67,6 +67,7 @@ $list = array_filter($list, function (\Tpay\Api\Dtos\Channel $channel) use ($gen
 });
 ?>
 <div id="tpay-payment" class="tpay-pbl-container">
+    <div class="separator"></div>
     <ul class="pbl-error woocommerce-error" role="alert">
         <li><?php esc_html_e('Choose payment method.', 'tpay') ?></li>
     </ul>
@@ -89,7 +90,7 @@ $list = array_filter($list, function (\Tpay\Api\Dtos\Channel $channel) use ($gen
                         <div class="tpay-group-logo-holder">
                             <img src="<?php echo esc_url($item->image->url) ?>"
                                  class="tpay-group-logo"
-                                 alt="<?php echo esc_attr($item->name) ?>">
+                                 alt="<?php echo esc_attr($item->fullName) ?>">
                         </div>
                         <span class="name"><?php echo esc_html($item->fullName) ?></span>
                     </div>
@@ -98,5 +99,6 @@ $list = array_filter($list, function (\Tpay\Api\Dtos\Channel $channel) use ($gen
         <?php
             endforeach; ?><?php endif; ?>
     </div>
+    <div class="separator"></div>
     <?php echo $agreements ?>
 </div>

@@ -20,7 +20,8 @@ $(document).ready(function () {
     function checkOrder() {
         let paymentData = {
             action: 'tpay_blik0_transaction_status',
-            transactionId: tpayThankYou.transactionId,
+            orderId: tpayThankYou.orderId,
+            orderKey: tpayThankYou.orderKey,
             nonce: tpayThankYou.nonce
         };
 
@@ -127,7 +128,8 @@ $(document).ready(function () {
 
         var paymentData = {
             action: 'tpay_blik0_repay',
-            transactionId: tpayThankYou.transactionId,
+            orderId: tpayThankYou.orderId,
+            orderKey: tpayThankYou.orderKey,
             blikCode: getCleanBlikCode(),
             transactionCounter: parseInt(localStorage.getItem('tpay_transaction_counter')),
             nonce: tpayThankYou.nonce
@@ -190,8 +192,8 @@ $(document).ready(function () {
 
         var paymentData = {
             action: 'tpay_pay_by_transfer',
-            transactionId: tpayThankYou.transactionId,
             orderId: tpayThankYou.orderId,
+            orderKey: tpayThankYou.orderKey,
             nonce: tpayThankYou.nonce
         };
 

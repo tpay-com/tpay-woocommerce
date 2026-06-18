@@ -151,9 +151,8 @@ class Tpay extends TpayGateways
         }
     }
 
-    public function payByTransfer(string $transactionId, string $orderId)
+    public function payByTransfer(WC_Order $order)
     {
-        $order = wc_get_order($orderId);
         $payer_data = $this->gateway_helper->payer_data($order, tpayOption('global_tax_id_meta_field_name'));
         $merchant_email = get_option('admin_email');
 
@@ -161,7 +160,7 @@ class Tpay extends TpayGateways
             $merchant_email = tpayOption('global_merchant_email');
         }
 
-        $crc = $this->createCRC($orderId);
+        $crc = $this->createCRC($order->get_id());
 
         $payment_data = [
             'description' => __('Order', 'tpay').' #'.$order->get_id(),
@@ -181,6 +180,7 @@ class Tpay extends TpayGateways
             ],
         ];
 
+        $previousTransactionId = $order->get_transaction_id();
         $payment_data = apply_filters('tpay_transport_before_transaction', $payment_data, $order);
         $transaction = $this->tpay_api()->transactions()->createTransaction($payment_data);
         apply_filters('tpay_transport_after_transaction', $transaction, $order);
@@ -194,7 +194,7 @@ class Tpay extends TpayGateways
                 '%s%s%s%s%s',
                 $this->id_seller,
                 $transaction['title'],
-                $this->payment_data['amount'],
+                $payment_data['amount'],
                 $crc,
                 $this->security_code
             )
@@ -209,7 +209,9 @@ class Tpay extends TpayGateways
 
         $order->save();
 
-        $this->cancelTransaction($transactionId);
+        if ($previousTransactionId) {
+            $this->cancelTransaction($previousTransactionId);
+        }
 
         return [
             'status' => 'correct',

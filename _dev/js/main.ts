@@ -106,19 +106,36 @@ $(document).ready(function () {
         $('#place_order').removeClass('stop_propagation');
         $('.card-container .wrong').removeClass('wrong');
     });
-    $('body').on('click', '.saved-cards input', function () {
-        if ($(this).prop('checked') === true) {
-            $('.saved-cards input').not($(this)).prop('checked', false);
-            $('.saved-cards input').not($(this)).attr('name', 'saved-card-unchecked');
-            $(this).attr('name', 'saved-card');
-            clear_card_fields();
-            $('.card-container').find('input').attr('readonly', true);
-        } else {
-            $(this).attr('name', 'saved-card-unchecked');
-            $('.card-container').find('input').attr('readonly', false);
-        }
 
+    function toggleAnotherCardForm(show) {
+        if (show) {
+            $('#another-card-form').show();
+        } else {
+            $('#another-card-form').hide();
+            clear_card_fields();
+        }
+    }
+
+    // Click handler
+    $('body').on('click', '.saved-card-label input, .another-card-label input', function () {
+
+        const isAnother = $(this).closest('.another-card-label').length > 0;
+
+        $('.saved-card-label input, .another-card-label input')
+            .not(this)
+            .prop('checked', false);
+
+        $('.saved-cards input').not($(this)).attr('name', 'saved-card-unchecked');
+        $(this).attr('name', 'saved-card');
+
+        toggleAnotherCardForm(isAnother);
     });
+
+    // Initial state
+    const hasSavedCards = $('.saved-card-label').length > 0;
+    if (!hasSavedCards) {
+        toggleAnotherCardForm(true);
+    }
 
     function clear_card_fields() {
         $("#carddata").val('');
@@ -129,29 +146,6 @@ $(document).ready(function () {
         $('#cvc').val('');
         $('.card-container .wrong').removeClass('wrong');
     }
-
-    // $('body').on('click', '.saved-cards > label', function(){
-    //     if($(this).find('input').hasClass('active-sc')){
-    //         $(this).find('input').prop('checked', false);
-    //         $(this).find('input').removeClass('active-sc');
-    //         $("#card_short_code").attr('readonly', false);
-    //         $('#card_number').attr('readonly', false);
-    //         $('#expiry_date').attr('readonly', false);
-    //     }
-    //     else{
-    //         $(this).find('input').prop('checked', true);
-    //         $(this).find('input').addClass('active-sc');
-    //         $("#card_short_code").attr('readonly', true);
-    //         $('#card_number').attr('readonly', true);
-    //         $('#expiry_date').attr('readonly', true);
-    //     }
-    //     // var th = $(this);
-    //     // $('.saved-cards > label').each(function(){
-    //     //     if($(this) != th){
-    //     //         $(this).find('input').removeClass('active-sc');
-    //     //     }
-    //     // })
-    // })
 
     $('body').on('click', '[class*="tpay_blik-payment-"]', function () {
         $('[class*="tpay_blik-payment-"]').removeClass('active');
