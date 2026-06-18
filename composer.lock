@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a32d34b161b9cf31809b4f27390d91be",
+    "content-hash": "f4a4e0ed2c1a594d933593f77bf9edbd",
     "packages": [
         {
             "name": "paragonie/constant_time_encoding",
@@ -385,23 +385,23 @@
         },
         {
             "name": "tpay-com/tpay-openapi-php",
-            "version": "2.4.6",
+            "version": "dev-recurring-methods",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tpay-com/tpay-openapi-php.git",
-                "reference": "1b980ba0c8234275f07b9e91025aec2070c2c087"
+                "reference": "d1ac6a6f2b07ad191b3caa442f26eb214f026181"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tpay-com/tpay-openapi-php/zipball/1b980ba0c8234275f07b9e91025aec2070c2c087",
-                "reference": "1b980ba0c8234275f07b9e91025aec2070c2c087",
+                "url": "https://api.github.com/repos/tpay-com/tpay-openapi-php/zipball/d1ac6a6f2b07ad191b3caa442f26eb214f026181",
+                "reference": "d1ac6a6f2b07ad191b3caa442f26eb214f026181",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-fileinfo": "*",
                 "ext-json": "*",
-                "php": ">=5.6.0",
+                "php": ">=7.1",
                 "phpseclib/phpseclib": "^2 || ^3",
                 "psr/cache": "^1 || ^2 || ^3",
                 "psr/log": "^1 || ^2 || ^3",
@@ -440,9 +440,9 @@
                 "docs": "https://openapi.tpay.com",
                 "email": "support@tpay.com",
                 "issues": "https://github.com/tpay-com/tpay-openapi-php/issues",
-                "source": "https://github.com/tpay-com/tpay-openapi-php/tree/2.4.6"
+                "source": "https://github.com/tpay-com/tpay-openapi-php/tree/recurring-methods"
             },
-            "time": "2026-05-13T12:43:59+00:00"
+            "time": "2026-06-18T08:06:50+00:00"
         }
     ],
     "packages-dev": [
@@ -672,7 +672,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "tpay-com/tpay-openapi-php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
