@@ -68,6 +68,12 @@ class TpaySF extends TpayGateways
                 $use_card = $card;
             }
 
+            $merchant_email = get_option('admin_email');
+
+            if (tpayOption('global_merchant_email')) {
+                $merchant_email = tpayOption('global_merchant_email');
+            }
+
             $payer_data = $this->gateway_helper->payer_data($order, tpayOption('global_tax_id_meta_field_name'));
             $payment_data = [
                 'description' => __('Order', 'tpay').' #'.$order->get_id(),
@@ -83,7 +89,7 @@ class TpaySF extends TpayGateways
                     ],
                     'notification' => [
                         'url' => add_query_arg('wc-api', $this->gateway_data('api'), home_url('/')),
-                        'email' => $payer_data['email'],
+                        'email' => $merchant_email,
                     ],
                 ],
             ];
