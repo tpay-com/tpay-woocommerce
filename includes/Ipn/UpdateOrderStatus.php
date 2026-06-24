@@ -46,6 +46,20 @@ class UpdateOrderStatus implements IpnInterface
             throw new TpayException('Order not found');
         }
 
+        if (!$this->validateCurrency($order, $notification)) {
+            $notificationCurrency = $notification->tr_currency ? $notification->tr_currency->getValue() : null;
+
+            $this->gateway_helper->tpay_logger(
+                sprintf(
+                    'Niezgodna waluta zamówienia: order=%s, notification=%s',
+                    $order->get_currency(),
+                    var_export($notificationCurrency, true)
+                )
+            );
+
+            throw new RuntimeException('Order currency mismatch');
+        }
+
         if (!$this->validateAmount($order, $notification)) {
             $this->gateway_helper->tpay_logger(
                 sprintf(
@@ -136,5 +150,24 @@ class UpdateOrderStatus implements IpnInterface
     {
         return number_format((float) $order->get_total(), 2, '.', '')
             === number_format((float) $notification->tr_amount->getValue(), 2, '.', '');
+    }
+
+    private function validateCurrency(WC_Order $order, BasicPayment $notification): bool
+    {
+        $value = null;
+
+        if (isset($notification->tr_currency) && $notification->tr_currency) {
+            $value = $notification->tr_currency->getValue();
+        }
+
+        if (!is_string($value) || '' === trim($value)) {
+            return true;
+        }
+
+        $notificationCurrency = strtoupper(trim($value));
+
+        $orderCurrency = strtoupper(trim($order->get_currency()));
+
+        return $orderCurrency === $notificationCurrency;
     }
 }
