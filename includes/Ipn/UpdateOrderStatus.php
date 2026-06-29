@@ -92,7 +92,7 @@ class UpdateOrderStatus implements IpnInterface
 
     public function completeOrder(WC_Order $order, BasicPayment $notification): void
     {
-        $order->payment_complete($notification->tr_id->getValue());
+        $order->payment_complete($order->get_transaction_id());
 
         $status = $this->getOrderStatus($order);
         $crc = $notification->tr_crc->getValue();
