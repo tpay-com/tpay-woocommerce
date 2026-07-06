@@ -46,6 +46,20 @@ class UpdateOrderStatus implements IpnInterface
             throw new TpayException('Order not found');
         }
 
+        if (!$this->validateCurrency($order, $notification)) {
+            $notificationCurrency = $notification->tr_currency ? $notification->tr_currency->getValue() : null;
+
+            $this->gateway_helper->tpay_logger(
+                sprintf(
+                    'Niezgodna waluta zamówienia: order=%s, notification=%s',
+                    $order->get_currency(),
+                    var_export($notificationCurrency, true)
+                )
+            );
+
+            throw new RuntimeException('Order currency mismatch');
+        }
+
         if (!$this->validateAmount($order, $notification)) {
             $this->gateway_helper->tpay_logger(
                 sprintf(
@@ -58,18 +72,25 @@ class UpdateOrderStatus implements IpnInterface
             throw new RuntimeException('Order amount mismatch');
         }
 
+        if (1 === $notification->test_mode->getValue()) {
+            $order->add_order_note(
+                'Odebrano potwierdzenie płatności Tpay w trybie testowym - środki nie zostały pobrane od klienta'
+            );
+            $this->gateway_helper->tpay_logger(
+                'Odebrano powiadomienie trybu testowego dla zamówienia: '.$order->get_id().', transakcja: '.$order->get_transaction_id()
+            );
+
+            header('HTTP/1.1 200 OK');
+            echo 'TRUE';
+            exit();
+        }
+
         switch ($status) {
             case 'TRUE':
-            case 'PAID':
                 $this->completeOrder($order, $notification);
                 break;
             case 'CHARGEBACK':
                 $order->update_status('refunded');
-                break;
-            case 'FALSE':
-                $this->gateway_helper->tpay_logger(
-                    'Przyjęto zgłoszenie z bramki Tpay, że płatność za zamówienie nie powiodło się. Zrzut: '.print_r($notification->getNotificationAssociative(), 1)
-                );
                 break;
             default:
                 throw new TpayException('Unknown notification status: '.$status);
@@ -78,7 +99,7 @@ class UpdateOrderStatus implements IpnInterface
 
     public function completeOrder(WC_Order $order, BasicPayment $notification): void
     {
-        $order->payment_complete($notification->tr_id->getValue());
+        $order->payment_complete($order->get_transaction_id());
 
         $status = $this->getOrderStatus($order);
         $crc = $notification->tr_crc->getValue();
@@ -136,5 +157,24 @@ class UpdateOrderStatus implements IpnInterface
     {
         return number_format((float) $order->get_total(), 2, '.', '')
             === number_format((float) $notification->tr_amount->getValue(), 2, '.', '');
+    }
+
+    private function validateCurrency(WC_Order $order, BasicPayment $notification): bool
+    {
+        $value = null;
+
+        if (isset($notification->tr_currency) && $notification->tr_currency) {
+            $value = $notification->tr_currency->getValue();
+        }
+
+        if (!is_string($value) || '' === trim($value)) {
+            return true;
+        }
+
+        $notificationCurrency = strtoupper(trim($value));
+
+        $orderCurrency = strtoupper(trim($order->get_currency()));
+
+        return $orderCurrency === $notificationCurrency;
     }
 }
