@@ -72,18 +72,25 @@ class UpdateOrderStatus implements IpnInterface
             throw new RuntimeException('Order amount mismatch');
         }
 
+        if (1 === $notification->test_mode->getValue()) {
+            $order->add_order_note(
+                'Odebrano potwierdzenie płatności Tpay w trybie testowym - środki nie zostały pobrane od klienta'
+            );
+            $this->gateway_helper->tpay_logger(
+                'Odebrano powiadomienie trybu testowego dla zamówienia: '.$order->get_id().', transakcja: '.$order->get_transaction_id()
+            );
+
+            header('HTTP/1.1 200 OK');
+            echo 'TRUE';
+            exit();
+        }
+
         switch ($status) {
             case 'TRUE':
-            case 'PAID':
                 $this->completeOrder($order, $notification);
                 break;
             case 'CHARGEBACK':
                 $order->update_status('refunded');
-                break;
-            case 'FALSE':
-                $this->gateway_helper->tpay_logger(
-                    'Przyjęto zgłoszenie z bramki Tpay, że płatność za zamówienie nie powiodło się. Zrzut: '.print_r($notification->getNotificationAssociative(), 1)
-                );
                 break;
             default:
                 throw new TpayException('Unknown notification status: '.$status);
