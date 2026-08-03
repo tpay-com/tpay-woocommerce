@@ -71,7 +71,7 @@ final class TpayBlock extends AbstractPaymentMethodType
             'channels' => $channels,
             'icon' => $this->gateway->icon,
             'tpayDirect' => $this->gateway->isBankSelectionHidden(),
-            'cartTotal' => WC()->cart ? WC()->cart->get_cart_contents_total() : null,
+            'cartTotal' => $this->gateway->getCartTotal(),
             'fields' => $fields,
             'supports' => array_filter($this->gateway->supports, [$this->gateway, 'supports']),
             'channelNotSelectedMessage' => __('Select a bank', 'tpay'),

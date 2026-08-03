@@ -61,7 +61,7 @@ final class TpayCCBlock extends AbstractPaymentMethodType
             'description' => $this->gateway->description,
             'channels' => $channels,
             'icon' => $this->gateway->icon,
-            'cartTotal' => WC()->cart ? WC()->cart->get_cart_contents_total() : null,
+            'cartTotal' => $this->gateway->getCartTotal(),
             'fields' => $fields,
             //            'supports' => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] ),
         ];

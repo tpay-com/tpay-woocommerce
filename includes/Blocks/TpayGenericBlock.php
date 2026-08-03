@@ -101,8 +101,10 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
                 "tpaygeneric-{$channel->id}",
                 array_keys($availablePayments)
             )) {
+                $paymentGateway = $availablePayments["tpaygeneric-{$channel->id}"];
+                $description = wp_kses_post($paymentGateway->description);
                 $fieldsCopy = wpautop(
-                    wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description'])
+                    $description
                 ).$fields;
 
                 if (TpayGeneric::BLIK_BNPL === $channel->id) {
@@ -116,7 +118,7 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
             </span
         </div><br/><small>%s</small>
 HTML,
-                        wp_kses_post($availablePayments["tpaygeneric-{$channel->id}"]->settings['description']),
+                        $description,
                         __('What is BLIK Pay Later?', 'tpay'),
                         __('Shop now with BLIK Pay Later and settle your payment within 30 days – all in your bank\'s app.', 'tpay'),
                         $fields
@@ -127,8 +129,8 @@ HTML,
 
                 $config[$channel->id] = [
                     'id' => $channel->id,
-                    'title' => $availablePayments["tpaygeneric-{$channel->id}"]->title,
-                    'description' => '',
+                    'title' => $paymentGateway->title,
+                    'description' => $description,
                     'icon' => $channel->image->url,
                     'fields' => $fieldsCopy,
                     'constraints' => $channel->constraints,
