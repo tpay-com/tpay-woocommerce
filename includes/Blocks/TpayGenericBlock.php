@@ -71,6 +71,8 @@ final class TpayGenericBlock extends AbstractPaymentMethodType
 
     public function get_payment_method_data(): array
     {
+        $this->gateway->description = '';
+
         ob_start();
         $this->gateway->payment_fields();
         $fields = ob_get_clean();
