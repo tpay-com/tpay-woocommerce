@@ -87,11 +87,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         return array_filter($list, function (Channel $channel) {
             foreach ($channel->constraints as $constraint) {
                 if ('amount' === $constraint->field) {
-                    $cart_content_total = 0;
-
-                    if (!is_admin() && WC()->cart) {
-                        $cart_content_total = WC()->cart->get_cart_contents_total();
-                    }
+                    $cart_content_total = $this->getCartTotal();
 
                     if ('min' == $constraint->type && $cart_content_total < $constraint->value) {
                         return false;
@@ -135,13 +131,21 @@ abstract class TpayGateways extends WC_Payment_Gateway
 
     public function getCartTotal()
     {
-        $cart_content_total = 0;
+        $orderId = absint(get_query_var('order-pay'));
 
-        if (!is_admin() && WC()->cart) {
-            $cart_content_total = WC()->cart->get_cart_contents_total();
+        if ($orderId) {
+            $order = wc_get_order($orderId);
+
+            if ($order) {
+                return (float) $order->get_total();
+            }
         }
 
-        return $cart_content_total;
+        if (!is_admin() && WC()->cart) {
+            return (float) WC()->cart->get_cart_contents_total();
+        }
+
+        return 0;
     }
 
     public function tpay_api()

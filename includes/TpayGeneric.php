@@ -53,6 +53,8 @@ class TpayGeneric extends TpayGateways
         if (self::BLIK_BNPL === $this->channelId) {
             include plugin_dir_path(__FILE__).'../views/html/blik-bnpl.php';
         } else {
+            echo $description;
+
             include plugin_dir_path(__FILE__).'../views/html/agreements.php';
         }
     }
