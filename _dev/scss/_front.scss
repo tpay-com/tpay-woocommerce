@@ -502,7 +502,9 @@
   }
 }
 
-li.wc_payment_method[class*="payment_method_"]
+// Covers fixed Tpay gateways, dynamic tpaygeneric-{channelId} gateways, and Pekao installments.
+li.wc_payment_method[class*="payment_method_tpay"],
+li.wc_payment_method[class*="payment_method_pekao"]
 {
   > input[type="radio"],
   > label {
