@@ -78,7 +78,7 @@ class TpayBlik extends TpayGateways
         $this->set_payment_data($order, self::CHANNEL_ID);
 
         if (!$this->additional_payment_data() && $this->blik0_enabled) {
-            return false;
+            return ['result' => 'failure'];
         }
 
         $result = $this->process_transaction($order);
@@ -87,7 +87,7 @@ class TpayBlik extends TpayGateways
             if ($errors_list = $this->gateway_helper->tpay_has_errors($result)) {
                 wc_add_notice(implode(' ', $errors_list), 'error');
 
-                return false;
+                return ['result' => 'failure'];
             }
 
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);

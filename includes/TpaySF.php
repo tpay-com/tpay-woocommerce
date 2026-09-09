@@ -181,7 +181,7 @@ class TpaySF extends TpayGateways
         $this->set_payment_data($order, TpayCC::CHANNEL_ID);
 
         if (!$this->additional_payment_data($order_id)) {
-            return false;
+            return ['result' => 'failure'];
         }
 
         $result = $this->process_transaction($order);

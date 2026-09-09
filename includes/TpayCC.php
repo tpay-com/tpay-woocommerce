@@ -40,7 +40,7 @@ class TpayCC extends TpayGateways
                 $this->gateway_helper->tpay_logger('Nieudana próba płatności kartą na stronie Tpay- zwrócone następujące błędy: '.implode(' ', $errors_list));
                 wc_add_notice(implode(' ', $errors_list), 'error');
 
-                return false;
+                return ['result' => 'failure'];
             }
 
             $redirect = $result['transactionPaymentUrl'] ?: $this->get_return_url($order);
@@ -59,6 +59,6 @@ class TpayCC extends TpayGateways
         }
         wc_add_notice(__('Payment error', 'tpay'), 'error');
 
-        return false;
+        return ['result' => 'failure'];
     }
 }
