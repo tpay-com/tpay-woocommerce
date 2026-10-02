@@ -32,7 +32,7 @@ class Transactions
         }
 
         $cached = $this->cache->get(self::CHANNELS_CACHE_KEY);
-        if ($cached) {
+        if ($cached && is_array($cached) && $this->channelsValid($cached)) {
             self::$microCache['channels'] = $cached;
 
             return $cached;
@@ -42,30 +42,38 @@ class Transactions
             return [];
         }
 
-        $result = $this->getTransactionsApi()->getChannels();
+        try {
+            $result = $this->getTransactionsApi()->getChannels();
 
-        if (!isset($result['result']) || 'success' !== $result['result']) {
-            $this->logger->error('Unable to retrieve channels from API');
+            if (!isset($result['result']) || 'success' !== $result['result']) {
+                $this->logger->error('Unable to retrieve channels from API');
+            }
+
+            $channels = array_map(function (array $channel) {
+                return new Channel(
+                    (int)$channel['id'],
+                    $channel['name'],
+                    $channel['fullName'],
+                    new Image($channel['image']['url']),
+                    $channel['available'],
+                    $channel['onlinePayment'],
+                    $channel['instantRedirection'],
+                    array_map(function (array $group) {
+                        return new Group((int)$group['id'], $group['name'], new Image($group['image']['url']));
+                    }, $channel['groups']),
+                    array_map(function (array $constraint) {
+                        return new Constraint($constraint['field'], $constraint['type'], $constraint['value']);
+                    }, $channel['constraints'])
+                );
+            }, $result['channels']);
+
+            if (!$this->channelsValid($channels)) {
+                throw new \InvalidArgumentException('Unable to build channels list based on API response');
+            }
+        } catch (\Throwable $e) {
+            self::$microCache['channels'] = [];
+            return [];
         }
-
-        $channels = array_map(function (array $channel) {
-            return new Channel(
-                (int) $channel['id'],
-                $channel['name'],
-                $channel['fullName'],
-                new Image($channel['image']['url']),
-                $channel['available'],
-                $channel['onlinePayment'],
-                $channel['instantRedirection'],
-                array_map(function (array $group) {
-                    return new Group((int) $group['id'], $group['name'], new Image($group['image']['url']));
-                }, $channel['groups']),
-                array_map(function (array $constraint) {
-                    return new Constraint($constraint['field'], $constraint['type'], $constraint['value']);
-                }, $channel['constraints'])
-            );
-        }, $result['channels']);
-
         $this->cache->set(self::CHANNELS_CACHE_KEY, $channels);
         self::$microCache['channels'] = $channels;
 
@@ -75,5 +83,16 @@ class Transactions
     private function getTransactionsApi()
     {
         return $this->client->connect() ? $this->client->connect()->transactions() : null;
+    }
+
+    private function channelsValid(array $cached)
+    {
+       $valid = true;
+       array_walk($cached, function ($value, $key) use (&$valid) {
+           if (!$value instanceof Channel) {
+               $valid = false;
+           }
+       });
+       return $valid;
     }
 }
