@@ -385,6 +385,9 @@ add_action('woocommerce_order_status_cancelled', function ($order_id) {
         $client = new Client();
         $transactionId = $order->get_transaction_id();
         $api = $client->connect();
+        if (false === $api) {
+            throw new Exception('Tpay API unavailable');
+        }
         $api->transactions()->cancelTransaction($transactionId);
     } catch (Throwable $e) {
         wc_get_logger()->notice('Failed to cancel Tpay transaction', ['transaction_id' => $transactionId ?? null, 'order_id' => $order_id, 'reason' => $e->getMessage()]);

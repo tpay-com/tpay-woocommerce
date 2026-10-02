@@ -167,6 +167,11 @@ abstract class TpayGateways extends WC_Payment_Gateway
             $token = $this->cache->get(Client::TOKEN_CACHE_KEY);
 
             if ($token) {
+                if (Client::INVALID_AUTH === $token) {
+                    self::$tpayConnection = false; // microcache that tpay connection is unavailable
+
+                    return false;
+                }
                 self::$tpayConnection->setCustomToken($token);
             } else {
                 self::$tpayConnection->authorization();
@@ -177,6 +182,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
         } catch (Exception $exception) {
             $this->gateway_helper->tpay_logger('Bramka Tpay nie została uruchomiona - brak danych lub dane niepoprawne');
             self::$tpayConnection = false; // microcache that tpay connection is unavailable
+            $this->cache->set(Client::TOKEN_CACHE_KEY, Client::INVALID_AUTH, 60);
             if (is_admin() && strpos($exception->getMessage(), 'Authorization error')) {
                 @add_settings_error('general', 'settings_updated', 'Tpay: Authorization error, wrong credentials.', 'error');
             }
