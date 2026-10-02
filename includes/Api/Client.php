@@ -10,7 +10,6 @@ use Tpay\OpenApi\Api\TpayApi;
 class Client
 {
     public const TOKEN_CACHE_KEY = 'tpay_token';
-
     public const INVALID_AUTH = '__invalid_auth__';
 
     /** @var null|string */
@@ -56,6 +55,7 @@ class Client
             if ($token) {
                 if (self::INVALID_AUTH === $token) {
                     self::$api = false; // microcache that tpay connection is unavailable
+
                     return false;
                 }
                 self::$api->setCustomToken($token);

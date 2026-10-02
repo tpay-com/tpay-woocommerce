@@ -169,6 +169,7 @@ abstract class TpayGateways extends WC_Payment_Gateway
             if ($token) {
                 if (Client::INVALID_AUTH === $token) {
                     self::$tpayConnection = false; // microcache that tpay connection is unavailable
+
                     return false;
                 }
                 self::$tpayConnection->setCustomToken($token);

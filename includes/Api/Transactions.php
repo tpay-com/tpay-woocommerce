@@ -2,6 +2,8 @@
 
 namespace Tpay\Api;
 
+use InvalidArgumentException;
+use Throwable;
 use Tpay\Api\Dtos\Channel;
 use Tpay\Api\Dtos\Constraint;
 use Tpay\Api\Dtos\Group;
@@ -51,7 +53,7 @@ class Transactions
 
             $channels = array_map(function (array $channel) {
                 return new Channel(
-                    (int)$channel['id'],
+                    (int) $channel['id'],
                     $channel['name'],
                     $channel['fullName'],
                     new Image($channel['image']['url']),
@@ -59,7 +61,7 @@ class Transactions
                     $channel['onlinePayment'],
                     $channel['instantRedirection'],
                     array_map(function (array $group) {
-                        return new Group((int)$group['id'], $group['name'], new Image($group['image']['url']));
+                        return new Group((int) $group['id'], $group['name'], new Image($group['image']['url']));
                     }, $channel['groups']),
                     array_map(function (array $constraint) {
                         return new Constraint($constraint['field'], $constraint['type'], $constraint['value']);
@@ -68,10 +70,11 @@ class Transactions
             }, $result['channels']);
 
             if (!$this->channelsValid($channels)) {
-                throw new \InvalidArgumentException('Unable to build channels list based on API response');
+                throw new InvalidArgumentException('Unable to build channels list based on API response');
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             self::$microCache['channels'] = [];
+
             return [];
         }
         $this->cache->set(self::CHANNELS_CACHE_KEY, $channels);
@@ -87,12 +90,13 @@ class Transactions
 
     private function channelsValid(array $cached)
     {
-       $valid = true;
-       array_walk($cached, function ($value, $key) use (&$valid) {
-           if (!$value instanceof Channel) {
-               $valid = false;
-           }
-       });
-       return $valid;
+        $valid = true;
+        array_walk($cached, function ($value, $key) use (&$valid) {
+            if (!$value instanceof Channel) {
+                $valid = false;
+            }
+        });
+
+        return $valid;
     }
 }
