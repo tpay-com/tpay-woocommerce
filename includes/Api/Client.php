@@ -10,6 +10,7 @@ use Tpay\OpenApi\Api\TpayApi;
 class Client
 {
     public const TOKEN_CACHE_KEY = 'tpay_token';
+    public const INVALID_AUTH = '__invalid_auth__';
 
     /** @var null|string */
     protected $apiKey;
@@ -52,6 +53,11 @@ class Client
             $token = $this->cache->get(self::TOKEN_CACHE_KEY);
 
             if ($token) {
+                if (self::INVALID_AUTH === $token) {
+                    self::$api = false; // microcache that tpay connection is unavailable
+
+                    return false;
+                }
                 self::$api->setCustomToken($token);
             } else {
                 self::$api->authorization();
@@ -62,6 +68,7 @@ class Client
         } catch (Throwable $exception) {
             $this->gatewayHelper->tpay_logger('Bramka Tpay nie została uruchomiona - brak danych lub dane niepoprawne');
             self::$api = false; // microcache that tpay connection is unavailable
+            $this->cache->set(self::TOKEN_CACHE_KEY, self::INVALID_AUTH, 60);
             if (is_admin() && strpos($exception->getMessage(), 'Authorization error')) {
                 add_settings_error(
                     'general',
