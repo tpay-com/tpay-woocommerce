@@ -454,10 +454,10 @@ class TpaySettings
             $disabled,
         );
 
-        echo '<div class="notice notice-warning inline regular-text">' . esc_html__(
+        echo '<div class="notice notice-warning inline regular-text">'.esc_html__(
             'If you offer customers traditional bank transfers (postal orders), set the transaction validity time to a minimum of 3 days. With a shorter timeframe, the order will be canceled before the funds are booked, and the customer\'s delayed payment will be automatically refunded. Alternatively, disable payment methods with extended processing times.',
             'tpay'
-        ) . '</div>';
+        ).'</div>';
     }
 
     /**
