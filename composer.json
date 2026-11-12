@@ -11,7 +11,7 @@
     "require": {
         "php": ">=7.1",
         "ext-json": "*",
-        "tpay-com/tpay-openapi-php": "dev-CYB-29"
+        "tpay-com/tpay-openapi-php": "dev-release/2.5.4"
     },
     "minimum-stability": "stable",
     "autoload": {
