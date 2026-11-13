@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2943e8bb40100ca036203d661a480196",
+    "content-hash": "ae69624222a0677a9fcbb65d949d468f",
     "packages": [
         {
             "name": "paragonie/constant_time_encoding",
@@ -385,16 +385,16 @@
         },
         {
             "name": "tpay-com/tpay-openapi-php",
-            "version": "dev-CYB-29",
+            "version": "2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tpay-com/tpay-openapi-php.git",
-                "reference": "4ae69ed0a84e688a2f91383a26ec89dfdc140404"
+                "reference": "ad7e4137d1fc14f34900a7632b98680017f1e5db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tpay-com/tpay-openapi-php/zipball/4ae69ed0a84e688a2f91383a26ec89dfdc140404",
-                "reference": "4ae69ed0a84e688a2f91383a26ec89dfdc140404",
+                "url": "https://api.github.com/repos/tpay-com/tpay-openapi-php/zipball/ad7e4137d1fc14f34900a7632b98680017f1e5db",
+                "reference": "ad7e4137d1fc14f34900a7632b98680017f1e5db",
                 "shasum": ""
             },
             "require": {
@@ -440,9 +440,9 @@
                 "docs": "https://openapi.tpay.com",
                 "email": "support@tpay.com",
                 "issues": "https://github.com/tpay-com/tpay-openapi-php/issues",
-                "source": "https://github.com/tpay-com/tpay-openapi-php/tree/CYB-29"
+                "source": "https://github.com/tpay-com/tpay-openapi-php/tree/2.6.0"
             },
-            "time": "2026-11-05T08:40:05+00:00"
+            "time": "2026-11-13T13:03:28+00:00"
         }
     ],
     "packages-dev": [
@@ -672,9 +672,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "tpay-com/tpay-openapi-php": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
